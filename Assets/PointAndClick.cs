@@ -52,15 +52,21 @@ public class PointAndClick : MonoBehaviour
             gameObject.name = "Player";*/
         }
 
-        if (collision.gameObject.name == "Obstacle")
+        if (collision.gameObject.name == "Obstacle_cyan")
         {
             Debug.Log("Collision");
             targetPosition = GameObject.Find("Player").transform.position;
-            //Destroys Object on Collision and spawns a new one
-            /*GameObject.Destroy(GameObject.Find("Player"));
-            GameObject gameObject = (GameObject)GameObject.Instantiate(Resources.Load("Player"), startPosition, rotation);
-            gameObject.name = "Player";*/
-
+            
+        }
+        else if (collision.gameObject.name == "Obstacle_yellow")
+        {
+            Debug.Log("Collision");
+            targetPosition = GameObject.Find("Player").transform.position;
+        }
+        else if (collision.gameObject.name == "Obstacle_red")
+        {
+            Debug.Log("Collision");
+            targetPosition = GameObject.Find("Player").transform.position;
         }
     }
 
