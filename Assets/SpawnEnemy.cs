@@ -6,12 +6,13 @@ public class SpawnEnemy : MonoBehaviour {
     public bool randomSpawn = false;
     Vector3 playerPosition;
     Vector3 startPosition;
+    Vector3 position;
     public float speed = 1;
 
     // Use this for initialization
     void Start () {
 
-        Vector3 position = new Vector3(Random.Range(-20.0F, 20.0F), 3, Random.Range(-16F, 16F));
+        position = new Vector3(Random.Range(-20.0F, 20.0F), 3, Random.Range(-16F, 16F));
         startPosition = transform.position;
         playerPosition = GameObject.Find("Player").transform.position;
 
@@ -27,10 +28,6 @@ public class SpawnEnemy : MonoBehaviour {
         float tempDB = InputAnalyser.LevelMax();
 
         if(tempDB > -5)
-        {
-            //doNothing
-        }
-        else if (tempDB > 5)
         {
             moveAway();
         }
@@ -52,6 +49,6 @@ public class SpawnEnemy : MonoBehaviour {
 
     void moveAway()
     {
-        transform.position = Vector3.MoveTowards(transform.position, startPosition, speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, position, speed * Time.deltaTime);
     }
 }
