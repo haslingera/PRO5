@@ -43,7 +43,7 @@ public class PlattformBehavior : MonoBehaviour {
 
     void moveTower()
     {
-        if (startPosition.y > -6)
+        if (startPosition.y > -6 && startPosition.y < 8)
         {
             if (transform.position.y == GameObject.Find("Plattform2").transform.position.y)
             {
