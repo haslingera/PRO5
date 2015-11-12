@@ -6,7 +6,7 @@ public class InputAnalyser : MonoBehaviour {
 	public static float MicLoudness;
 	
 	private string _device;
-	private float refValue = 0.01f;
+	private static float refValue = 0.01f;
 	
 	//mic initialization
 	void InitMic(){
@@ -20,11 +20,11 @@ public class InputAnalyser : MonoBehaviour {
 	}
 	
 	
-	AudioClip _clipRecord = new AudioClip();
-	int _sampleWindow = 128;
+	static AudioClip _clipRecord = new AudioClip();
+	static int _sampleWindow = 128;
 	
 	//get data from microphone into audioclip
-	public float  LevelMax()
+	public static float  LevelMax()
 	{
 		float levelMax = 0;
 		float[] waveData = new float[_sampleWindow];

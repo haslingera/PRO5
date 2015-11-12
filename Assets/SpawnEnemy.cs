@@ -23,4 +23,12 @@ public class SpawnEnemy : MonoBehaviour {
 	void Update () {
         transform.position = Vector3.MoveTowards(transform.position,playerPosition, speed * Time.deltaTime);
 	}
+
+    void OnCollisionEnter(Collision col)
+    {
+        if (col.gameObject.name == "Player")
+        {
+            Destroy(GameObject.Find("Player"));
+        }
+    }
 }
