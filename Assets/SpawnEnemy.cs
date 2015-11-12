@@ -21,7 +21,23 @@ public class SpawnEnemy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.position = Vector3.MoveTowards(transform.position,playerPosition, speed * Time.deltaTime);
+
+        float tempDB = InputAnalyser.LevelMax();
+
+        if(tempDB > -5)
+        {
+
+        }
+        else if ()
+        {
+
+        }
+
+        else {
+            transform.position = Vector3.MoveTowards(transform.position, playerPosition, speed * Time.deltaTime);
+        }
+
+        
 	}
 
     void OnCollisionEnter(Collision col)
