@@ -3,6 +3,9 @@ using System.Collections;
 
 public class AudioAnalyzer : MonoBehaviour {
 
+	// Static singleton instance
+	private static AudioAnalyzer instance;
+
 	public int numberOfSamples = 1024;
 	public float reference = 0.1f; // rms value for 0db
 	public float threshold = 0.01f; // minimum amplitude for calculating the pitch 
@@ -20,6 +23,13 @@ public class AudioAnalyzer : MonoBehaviour {
 	public bool drawLines = true;
 	private LineRenderer lineRenderer;
 
+	// Static singleton property
+	public static AudioAnalyzer Instance {
+		// Here we use the ?? operator, to return 'instance' if 'instance' does not equal null
+		// otherwise we assign instance to a new component and return that
+		get { return instance ?? (instance = new GameObject("AudioAnalyzer").AddComponent<AudioAnalyzer>()); }
+	}
+	
 	// Use this for initialization
 	void Start () {
 		//this.audioSource = this.gameObject.AddComponent<AudioSource>() as AudioSource;
@@ -45,7 +55,7 @@ public class AudioAnalyzer : MonoBehaviour {
 		this.lineRenderer.SetColors (Color.magenta, Color.magenta);
 		this.lineRenderer.enabled = drawLines;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		this.analyzeAudio ();
@@ -65,7 +75,7 @@ public class AudioAnalyzer : MonoBehaviour {
 		this.db = 20 * Mathf.Log10(rms / reference);
 		this.db = Mathf.Max (-160, this.db); // clip it to -160 on the bottom edge
 
-		Debug.Log ("decibel: " + this.db);
+		//Debug.Log ("decibel: " + this.db);
 
 		// analyze spectrum
 		this.audioSource.GetSpectrumData (this.spectrum, 0, FFTWindow.BlackmanHarris); // (spectrum, channel, FFTWindow)
@@ -104,6 +114,9 @@ public class AudioAnalyzer : MonoBehaviour {
 		//Debug.Log ("pitch: " + pitch);
 	}
 
+
+	public void prepare() { Debug.Log ("prepare"); } // only prepares
+
 	public double getDecibel() {
 		return this.db;
 	}
@@ -111,4 +124,5 @@ public class AudioAnalyzer : MonoBehaviour {
 	public double getFrequency() {
 		return this.pitch;
 	}
+
 }
