@@ -21,6 +21,7 @@ public class AudioAnalyzer : MonoBehaviour {
 
 	// visualization
 	public bool drawLines = true;
+    
 	private LineRenderer lineRenderer;
 
 	// Static singleton property

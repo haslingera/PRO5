@@ -6,6 +6,7 @@ public class InputAnalyser : MonoBehaviour {
 	public static float MicLoudness;
 	
 	private string _device;
+	private float refValue = 0.01f;
 	
 	//mic initialization
 	void InitMic(){
@@ -36,6 +37,10 @@ public class InputAnalyser : MonoBehaviour {
 			if (levelMax < wavePeak) {
 				levelMax = wavePeak;
 			}
+		}
+		levelMax = 20*Mathf.Log10(levelMax/refValue); // calculate dB
+		if (levelMax < -160) {
+			levelMax = -160; // clamp it to -160dB min
 		}
 		return levelMax;
 	}
