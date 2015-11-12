@@ -31,7 +31,6 @@ public class SpawnEnemy : MonoBehaviour {
         {
             moveAway();
         }
-
         else {
             transform.position = Vector3.MoveTowards(transform.position, playerPosition, speed * Time.deltaTime);
         }
