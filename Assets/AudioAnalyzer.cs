@@ -14,6 +14,7 @@ public class AudioAnalyzer : MonoBehaviour {
 
 	private float rms = 0.0f;
 	private float db = 0.0f;
+	private float pitch = 0.0f;
 
 	// visualization
 	public bool drawLines = true;
@@ -64,6 +65,7 @@ public class AudioAnalyzer : MonoBehaviour {
 		this.db = 20 * Mathf.Log10(rms / reference);
 		this.db = Mathf.Max (-160, this.db); // clip it to -160 on the bottom edge
 
+		Debug.Log ("decibel: " + this.db);
 
 		// analyze spectrum
 		this.audioSource.GetSpectrumData (this.spectrum, 0, FFTWindow.BlackmanHarris); // (spectrum, channel, FFTWindow)
@@ -97,7 +99,16 @@ public class AudioAnalyzer : MonoBehaviour {
 		}
 
 		float pitch = frequencyIndex * (this.sampleRate / 2.0f) / this.numberOfSamples;
+		this.pitch = pitch;
 
-		Debug.Log ("pitch: " + pitch);
+		//Debug.Log ("pitch: " + pitch);
+	}
+
+	public double getDecibel() {
+		return this.db;
+	}
+
+	public double getFrequency() {
+		return this.pitch;
 	}
 }
