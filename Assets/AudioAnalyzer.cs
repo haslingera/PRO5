@@ -1,5 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Audio;
+
+
+// Singleton Code from: http://clearcutgames.net/home/?p=437
+// Analyze Code from: http://answers.unity3d.com/questions/157940/getoutputdata-and-getspectrumdata-they-represent-t.html
 
 public class AudioAnalyzer : MonoBehaviour {
 
@@ -33,7 +38,6 @@ public class AudioAnalyzer : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		//this.audioSource = this.gameObject.AddComponent<AudioSource>() as AudioSource;
 		//this.audioSource = this.gameObject.GetComponent<AudioSource> ();
 		this.audioSource = this.gameObject.AddComponent<AudioSource> () as AudioSource;
 		this.samples = new float[this.numberOfSamples];
@@ -43,6 +47,11 @@ public class AudioAnalyzer : MonoBehaviour {
 		this.audioSource.clip = Microphone.Start ("Built-in Microphone", true, 1, this.sampleRate);
 		this.audioSource.loop = true;
 		this.audioSource.Play ((ulong) this.sampleRate);
+
+		AudioMixer mixer = Resources.Load("AudioMixer") as AudioMixer;
+		string _OutputMixer = "MutedGroup";        
+		this.audioSource.outputAudioMixerGroup = mixer.FindMatchingGroups(_OutputMixer)[0];
+
 
 		//this.lineRenderer = this.gameObject.GetComponent<LineRenderer> ();
 		this.lineRenderer = this.gameObject.AddComponent<LineRenderer> () as LineRenderer;
@@ -66,6 +75,7 @@ public class AudioAnalyzer : MonoBehaviour {
 	private void analyzeAudio() {
 		// analyze volume
 		this.audioSource.GetOutputData (this.samples, 0); // (samples, channel)
+
 
 		float amplitudeSum = 0.0f;
 		for (int i = 0; i < this.numberOfSamples; i++) {
