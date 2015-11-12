@@ -18,6 +18,7 @@ public class AudioAnalyzer : MonoBehaviour {
 
 	// visualization
 	public bool drawLines = true;
+    
 	private LineRenderer lineRenderer;
 
 	// Use this for initialization
