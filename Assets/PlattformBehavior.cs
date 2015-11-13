@@ -32,13 +32,21 @@ public class PlattformBehavior : MonoBehaviour {
         }
     }
 
-    void OnCollisionEnter(Collision col)
+    void OnCollisionStay(Collision col)
     {
         if (col.gameObject.name == "Player")
         {
             onObject = true;
         }
         else
+        {
+            onObject = false;
+        }
+    }
+
+    void OnCollisionExit(Collision col)
+    {
+        if (col.gameObject.name == "Player")
         {
             onObject = false;
         }
