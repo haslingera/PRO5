@@ -86,7 +86,7 @@ public class PlattformBehavior : MonoBehaviour {
     void moveRandomTower()
     {
         moveTo = new Vector3(transform.position.x,Random.Range(-6F, 8F), transform.position.z);
-        transform.position = Vector3.MoveTowards(transform.position, moveTo, 4 * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, moveTo, 10 * Time.deltaTime);
     }
 
     void moveCharakter()
@@ -117,6 +117,11 @@ public class PlattformBehavior : MonoBehaviour {
         temp = sillyMeme[9];
         int bar = temp - '0';
         bar++;
+
+        if(bar == 11)
+        {
+            return "Plattform10";
+        }
 
         return "Plattform" + bar;
     }
