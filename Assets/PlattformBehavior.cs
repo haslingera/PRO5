@@ -6,7 +6,8 @@ public class PlattformBehavior : MonoBehaviour {
     Vector3 startPosition;
     public float speed = 3;
     bool onObject;
-    double tempDB;
+    double DB;
+    double frequ;
     Vector3 moveTo;
     GameObject next;
     int counter = 0;
@@ -22,8 +23,9 @@ public class PlattformBehavior : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
-        tempDB = GameObject.Find("Audio Source").GetComponent<AudioAnalyzer>().getDecibel();
-        Debug.Log(tempDB);
+        DB = GameObject.Find("Audio Source").GetComponent<AudioAnalyzer>().getDecibel();
+        frequ = GameObject.Find("Audio Source").GetComponent<AudioAnalyzer>().getFrequency();
+        Debug.Log(frequ);
 
         if (onObject)
         {
@@ -58,8 +60,6 @@ public class PlattformBehavior : MonoBehaviour {
 
     void moveTower()
     {
-        if (startPosition.y > -6 && startPosition.y < 8)
-        {
             if ((int)transform.position.y == (int)GameObject.Find(getNext()).transform.position.y)
             {
                 Debug.Log("Hallo");
@@ -68,27 +68,27 @@ public class PlattformBehavior : MonoBehaviour {
             }
             else
             {
-                if (tempDB <= -10 && tempDB >= -50)
+                if (frequ >= 400 && frequ <= 700)
                 {
                     Debug.Log("UP");
                     moveUp();
                 }
-                else if (tempDB >= -10 && tempDB <= 10)
+                else if (frequ >= 0 && frequ <= 400)
                 {
                     Debug.Log("DOWN");
                     moveDown();
                 }
-            }
+            
 
         }
-        else if (startPosition.y <= -6)
+        /*else if (startPosition.y <= -6)
         {
             moveUp();
         }
         else if (startPosition.y >= 8)
         {
             moveDown();
-        }
+        }*/
 
     }
 
@@ -119,15 +119,21 @@ public class PlattformBehavior : MonoBehaviour {
     //Moves tower up
     void moveUp()
     {
-        startPosition.y += 1;
-        transform.position = Vector3.MoveTowards(transform.position, startPosition, speed * Time.deltaTime);
+        if (startPosition.y < 8)
+        {
+            startPosition.y += 1;
+            transform.position = Vector3.MoveTowards(transform.position, startPosition, speed * Time.deltaTime);
+        }
     }
 
     //moves tower down
     void moveDown()
     {
-        startPosition.y -= 1;
-        transform.position = Vector3.MoveTowards(transform.position, startPosition, speed * Time.deltaTime);
+        if (startPosition.y > -6)
+        {
+            startPosition.y -= 1;
+            transform.position = Vector3.MoveTowards(transform.position, startPosition, speed * Time.deltaTime);
+        }
     }
 
     //get the next tower name
