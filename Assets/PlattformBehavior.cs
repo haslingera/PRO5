@@ -10,16 +10,17 @@ public class PlattformBehavior : MonoBehaviour {
     Vector3 moveTo;
     GameObject next;
     int counter = 0;
+    bool choosen = false;
 
     // Use this for initialization
-    void Start () {
+    void Start() {
 
         startPosition = transform.position;
 
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update() {
 
         tempDB = GameObject.Find("Audio Source").GetComponent<AudioAnalyzer>().getDecibel();
         Debug.Log(tempDB);
@@ -51,6 +52,7 @@ public class PlattformBehavior : MonoBehaviour {
         if (col.gameObject.name == "Player")
         {
             onObject = false;
+            choosen = false;
         }
     }
 
@@ -60,29 +62,34 @@ public class PlattformBehavior : MonoBehaviour {
         {
             if ((int)transform.position.y == (int)GameObject.Find(getNext()).transform.position.y)
             {
+                Debug.Log("Hallo");
+                choosen = true;
                 moveCharakter();
             }
             else
             {
-                if (tempDB > -10d)
+                if (tempDB <= -10 && tempDB >= -50)
                 {
-                    moveDown();
-                }
-                else if (tempDB < -60d)
-                {
+                    Debug.Log("UP");
                     moveUp();
                 }
+                else if (tempDB >= -10 && tempDB <= 10)
+                {
+                    Debug.Log("DOWN");
+                    moveDown();
+                }
             }
+
         }
-        else if(startPosition.y == -6)
+        else if (startPosition.y <= -6)
         {
             moveUp();
         }
-        else if(startPosition.y == 8)
+        else if (startPosition.y >= 8)
         {
             moveDown();
         }
-            
+
     }
 
     void moveRandomTower()
@@ -103,9 +110,10 @@ public class PlattformBehavior : MonoBehaviour {
     //moves the charakter
     void moveCharakter()
     {
+        freeze(GameObject.Find(getNext()));
         Vector3 tempPlayer = GameObject.Find("Player").transform.position;
-        Vector3 tempNewPos = new Vector3(GameObject.Find(getNext()).transform.position.x,tempPlayer.y, GameObject.Find(getNext()).transform.position.z);
-        GameObject.Find("Player").transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 2 * Time.deltaTime);
+        Vector3 tempNewPos = new Vector3(GameObject.Find(getNext()).transform.position.x, tempPlayer.y, GameObject.Find(getNext()).transform.position.z);
+        GameObject.Find("Player").transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 5 * Time.deltaTime);
     }
 
     //Moves tower up
@@ -133,12 +141,23 @@ public class PlattformBehavior : MonoBehaviour {
         int bar = temp - '0';
         bar++;
 
-        if(bar == 11)
+        if (bar == 11)
         {
             return "Plattform10";
         }
 
+
         return "Plattform" + bar;
+    }
+
+    private void freeze(GameObject tower)
+    {
+        Debug.Log("Fahren");
+        if (choosen) {
+            float y = transform.position.y;
+            tower.transform.position = new Vector3(tower.transform.position.x, y, tower.transform.position.z);
+        }
+  
     }
 }
 
