@@ -6,9 +6,10 @@ public class PlattformBehavior : MonoBehaviour {
     Vector3 startPosition;
     public float speed = 3;
     bool onObject;
-    float tempDB;
+    double tempDB;
     Vector3 moveTo;
     GameObject next;
+    int counter = 0;
 
     // Use this for initialization
     void Start () {
@@ -20,7 +21,7 @@ public class PlattformBehavior : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        tempDB = InputAnalyser.LevelMax();
+        tempDB = 
 
         if (onObject)
         {
@@ -62,7 +63,7 @@ public class PlattformBehavior : MonoBehaviour {
             }
             else
             {
-                if (tempDB > -10)
+                if (tempDB > -40)
                 {
                     moveDown();
                 }
@@ -72,21 +73,30 @@ public class PlattformBehavior : MonoBehaviour {
                 }
             }
         }
-        else if(startPosition.y < -6)
+        /*else if(startPosition.y < -6)
         {
             moveUp();
         }
         else if(startPosition.y > 8)
         {
             moveDown();
-        }
+        }*/
             
     }
 
     void moveRandomTower()
     {
-        moveTo = new Vector3(transform.position.x,Random.Range(-6F, 8F), transform.position.z);
-        transform.position = Vector3.MoveTowards(transform.position, moveTo, 10 * Time.deltaTime);
+        if (counter == 0 || counter == 50) {
+            counter = 0;
+            moveTo = new Vector3(transform.position.x, Random.Range(-6F, 8F), transform.position.z);
+            transform.position = Vector3.MoveTowards(transform.position, moveTo, 20 * Time.deltaTime);
+            counter++;
+        }
+        else
+        {
+            transform.position = Vector3.MoveTowards(transform.position, moveTo, 20 * Time.deltaTime);
+            counter++;
+        }
     }
 
     void moveCharakter()
