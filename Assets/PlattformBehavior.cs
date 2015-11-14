@@ -21,7 +21,8 @@ public class PlattformBehavior : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        tempDB = 
+        tempDB = GameObject.Find("Audio Source").GetComponent<AudioAnalyzer>().getDecibel();
+        Debug.Log(tempDB);
 
         if (onObject)
         {
@@ -63,24 +64,24 @@ public class PlattformBehavior : MonoBehaviour {
             }
             else
             {
-                if (tempDB > -40)
+                if (tempDB > -10d)
                 {
                     moveDown();
                 }
-                else
+                else if (tempDB < -60d)
                 {
                     moveUp();
                 }
             }
         }
-        /*else if(startPosition.y < -6)
+        else if(startPosition.y == -6)
         {
             moveUp();
         }
-        else if(startPosition.y > 8)
+        else if(startPosition.y == 8)
         {
             moveDown();
-        }*/
+        }
             
     }
 
@@ -99,6 +100,7 @@ public class PlattformBehavior : MonoBehaviour {
         }
     }
 
+    //moves the charakter
     void moveCharakter()
     {
         Vector3 tempPlayer = GameObject.Find("Player").transform.position;
@@ -106,18 +108,21 @@ public class PlattformBehavior : MonoBehaviour {
         GameObject.Find("Player").transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 2 * Time.deltaTime);
     }
 
+    //Moves tower up
     void moveUp()
     {
         startPosition.y += 1;
         transform.position = Vector3.MoveTowards(transform.position, startPosition, speed * Time.deltaTime);
     }
 
+    //moves tower down
     void moveDown()
     {
         startPosition.y -= 1;
         transform.position = Vector3.MoveTowards(transform.position, startPosition, speed * Time.deltaTime);
     }
 
+    //get the next tower name
     string getNext()
     {
         string sillyMeme = name;
