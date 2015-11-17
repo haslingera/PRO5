@@ -6,30 +6,38 @@ public class PlattformBehavior : MonoBehaviour {
     Vector3 startPosition;
     public float speed = 3;
     bool onObject;
-    float tempDB;
+    double DB;
+    double frequ;
+    Vector3 moveTo;
+    GameObject next;
+    int counter = 0;
+    bool choosen = false;
 
     // Use this for initialization
-    void Start () {
+    void Start() {
 
         startPosition = transform.position;
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
 
-        tempDB = InputAnalyser.LevelMax();
+    }
+
+    // Update is called once per frame
+    void Update() {
+
+        DB = GameObject.Find("Audio Source").GetComponent<AudioAnalyzer>().getDecibel();
+        frequ = GameObject.Find("Audio Source").GetComponent<AudioAnalyzer>().getFrequency();
+        Debug.Log(frequ);
+
         if (onObject)
         {
             moveTower();
         }
         else
         {
-            //moveRandomTower();
+            moveRandomTower();
         }
     }
 
-    void OnCollisionEnter(Collision col)
+    void OnCollisionStay(Collision col)
     {
         if (col.gameObject.name == "Player")
         {
@@ -41,42 +49,123 @@ public class PlattformBehavior : MonoBehaviour {
         }
     }
 
+    void OnCollisionExit(Collision col)
+    {
+        if (col.gameObject.name == "Player")
+        {
+            onObject = false;
+            choosen = false;
+        }
+    }
+
     void moveTower()
     {
-        if (startPosition.y > -6 && startPosition.y < 8)
-        {
-            if (transform.position.y == GameObject.Find("Plattform2").transform.position.y)
+            if ((int)transform.position.y == (int)GameObject.Find(getNext()).transform.position.y)
             {
+                Debug.Log("Hallo");
+                choosen = true;
                 moveCharakter();
             }
             else
             {
-                if (tempDB < 5)
+                if (frequ >= 400 && frequ <= 700)
                 {
-                    startPosition.y += 1;
-                    transform.position = Vector3.MoveTowards(transform.position, startPosition, speed * Time.deltaTime);
+                    Debug.Log("UP");
+                    moveUp();
                 }
-                else
+                else if (frequ >= 0 && frequ <= 400)
                 {
-                    startPosition.y -= 1;
-                    transform.position = Vector3.MoveTowards(transform.position, startPosition, speed * Time.deltaTime);
+                    Debug.Log("DOWN");
+                    moveDown();
                 }
-            }
+            
+
         }
+        /*else if (startPosition.y <= -6)
+        {
+            moveUp();
+        }
+        else if (startPosition.y >= 8)
+        {
+            moveDown();
+        }*/
+
     }
 
     void moveRandomTower()
     {
-        Vector3 temp = new Vector3(transform.position.x,Random.Range(-6F, 8F), transform.position.z);
-        transform.position = Vector3.MoveTowards(transform.position, temp, 4 * Time.deltaTime);
+        if (counter == 0 || counter == 50) {
+            counter = 0;
+            moveTo = new Vector3(transform.position.x, Random.Range(-6F, 8F), transform.position.z);
+            transform.position = Vector3.MoveTowards(transform.position, moveTo, 20 * Time.deltaTime);
+            counter++;
+        }
+        else
+        {
+            transform.position = Vector3.MoveTowards(transform.position, moveTo, 20 * Time.deltaTime);
+            counter++;
+        }
     }
 
+    //moves the charakter
     void moveCharakter()
     {
+        freeze(GameObject.Find(getNext()));
         Vector3 tempPlayer = GameObject.Find("Player").transform.position;
-        Vector3 tempNewPos = new Vector3(startPosition.x,tempPlayer.y,startPosition.z);
-        GameObject.Find("Player").transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 2 * Time.deltaTime);
+        Vector3 tempNewPos = new Vector3(GameObject.Find(getNext()).transform.position.x, tempPlayer.y, GameObject.Find(getNext()).transform.position.z);
+        GameObject.Find("Player").transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 5 * Time.deltaTime);
+    }
+
+    //Moves tower up
+    void moveUp()
+    {
+        if (startPosition.y < 8)
+        {
+            startPosition.y += 1;
+            transform.position = Vector3.MoveTowards(transform.position, startPosition, speed * Time.deltaTime);
+        }
+    }
+
+    //moves tower down
+    void moveDown()
+    {
+        if (startPosition.y > -6)
+        {
+            startPosition.y -= 1;
+            transform.position = Vector3.MoveTowards(transform.position, startPosition, speed * Time.deltaTime);
+        }
+    }
+
+    //get the next tower name
+    string getNext()
+    {
+        string sillyMeme = name;
+
+        char temp;
+
+        temp = sillyMeme[9];
+        int bar = temp - '0';
+        bar++;
+
+        if (bar == 11)
+        {
+            return "Plattform10";
+        }
+
+
+        return "Plattform" + bar;
+    }
+
+    private void freeze(GameObject tower)
+    {
+        Debug.Log("Fahren");
+        if (choosen) {
+            float y = transform.position.y;
+            tower.transform.position = new Vector3(tower.transform.position.x, y, tower.transform.position.z);
+        }
+  
     }
 }
+
 
 
