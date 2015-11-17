@@ -11,9 +11,9 @@ public class AudioAnalyzer : MonoBehaviour {
 	// Static singleton instance
 	private static AudioAnalyzer instance;
 
-	public int numberOfSamples = 1024;
-	public float reference = 0.1f; // rms value for 0db
-	public float threshold = 0.01f; // minimum amplitude for calculating the pitch 
+	private int numberOfSamples = 1024;
+	private float reference = 0.1f; // rms value for 0db
+	private float threshold = 0.01f; // minimum amplitude for calculating the pitch 
 
 	private AudioSource audioSource;
 	private float[] samples;
@@ -25,8 +25,7 @@ public class AudioAnalyzer : MonoBehaviour {
 	private float pitch = 0.0f;
 
 	// visualization
-	public bool drawLines = true;
-    
+	private bool drawLines = true;
 	private LineRenderer lineRenderer;
 
 	// Static singleton property
@@ -50,7 +49,7 @@ public class AudioAnalyzer : MonoBehaviour {
 
 		AudioMixer mixer = Resources.Load("AudioMixer") as AudioMixer;
 		string _OutputMixer = "MutedGroup";        
-		this.audioSource.outputAudioMixerGroup = mixer.FindMatchingGroups(_OutputMixer)[0];
+		//this.audioSource.outputAudioMixerGroup = mixer.FindMatchingGroups(_OutputMixer)[0];
 
 
 		//this.lineRenderer = this.gameObject.GetComponent<LineRenderer> ();
@@ -128,11 +127,15 @@ public class AudioAnalyzer : MonoBehaviour {
 
 	public void prepare() { Debug.Log ("prepare"); } // only prepares
 
-	public double getDecibel() {
+	public float getDecibel() {
 		return this.db;
 	}
 
-	public double getFrequency() {
+	public float getRMS() {
+		return this.rms;
+	}
+
+	public float getFrequency() {
 		return this.pitch;
 	}
 
