@@ -12,6 +12,7 @@ public class PlattformBehavior : MonoBehaviour {
     GameObject next;
     int counter = 0;
     bool choosen = false;
+    bool visited = false;
 
     // Use this for initialization
     void Start() {
@@ -25,15 +26,23 @@ public class PlattformBehavior : MonoBehaviour {
 
         DB = GameObject.Find("Audio Source").GetComponent<AudioAnalyzer>().getDecibel();
         frequ = GameObject.Find("Audio Source").GetComponent<AudioAnalyzer>().getFrequency();
-        Debug.Log(frequ);
+        //Debug.Log(frequ);
+        isVisited();
 
-        if (onObject)
+        if (onPlayer())
         {
             moveTower();
         }
+        else if (!onPlayer() && visited)
+        {
+            Debug.Log("Stop");
+            Stop();
+        }
         else
         {
-            moveRandomTower();
+            if (!onPlayer()) {
+                moveRandomTower();
+            }
         }
     }
 
@@ -49,12 +58,21 @@ public class PlattformBehavior : MonoBehaviour {
         }
     }
 
-    void OnCollisionExit(Collision col)
+
+   bool onPlayer()
     {
-        if (col.gameObject.name == "Player")
+        Vector3 tower = transform.position;
+        Vector3 player = GameObject.Find("Player").transform.position;
+
+        if(player.x >= tower.x-1 && player.x <= tower.x + 1)
         {
-            onObject = false;
-            choosen = false;
+            //Debug.Log("On");
+            return true;
+        }
+        else
+        {
+            //Debug.Log("Off");
+            return false;
         }
     }
 
@@ -62,7 +80,7 @@ public class PlattformBehavior : MonoBehaviour {
     {
             if ((int)transform.position.y == (int)GameObject.Find(getNext()).transform.position.y)
             {
-                Debug.Log("Hallo");
+                //Debug.Log("Hallo");
                 choosen = true;
                 moveCharakter();
             }
@@ -70,12 +88,12 @@ public class PlattformBehavior : MonoBehaviour {
             {
                 if (frequ >= 400 && frequ <= 700)
                 {
-                    Debug.Log("UP");
+                    //Debug.Log("UP");
                     moveUp();
                 }
                 else if (frequ >= 0 && frequ <= 400)
                 {
-                    Debug.Log("DOWN");
+                    //Debug.Log("DOWN");
                     moveDown();
                 }
             
@@ -158,12 +176,35 @@ public class PlattformBehavior : MonoBehaviour {
 
     private void freeze(GameObject tower)
     {
-        Debug.Log("Fahren");
+        //Debug.Log("Fahren");
         if (choosen) {
             float y = transform.position.y;
             tower.transform.position = new Vector3(tower.transform.position.x, y, tower.transform.position.z);
         }
   
+    }
+
+    private void Stop()
+    {
+        if (transform.position.y != 8) {
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, 8F, transform.position.z), speed * Time.deltaTime);
+        } 
+    }
+
+    private void isVisited()
+    {
+        Vector3 tower = transform.position;
+        Vector3 player = GameObject.Find("Player").transform.position;
+
+        if (player.x > tower.x + 1.5)
+        {
+            Debug.Log(name +" Visited");
+            visited = true;
+        }
+        else
+        {
+            visited = false;
+        }
     }
 }
 
