@@ -11,7 +11,7 @@ public class AudioAnalyzer : MonoBehaviour {
 	// Static singleton instance
 	private static AudioAnalyzer instance;
 
-	private int numberOfSamples = 1024;
+	private int numberOfSamples = 1024 * 8;
 	private float reference = 0.1f; // rms value for 0db
 	private float threshold = 0.01f; // minimum amplitude for calculating the pitch 
 
@@ -101,9 +101,9 @@ public class AudioAnalyzer : MonoBehaviour {
 		for (int i = 0; i < this.numberOfSamples; i++) {
 
 			// add point to line Renderer to show the visual feedback of the spectrum
-			this.lineRenderer.SetPosition (i, new Vector3(frontOfCamera.x + Camera.main.transform.right.x * (i / 10.0f) + Camera.main.transform.up.x * this.spectrum[i] * 30, 
-			                                         frontOfCamera.y + Camera.main.transform.right.y * (i / 10.0f) + Camera.main.transform.up.y * this.spectrum[i] * 30,
-			                                         frontOfCamera.z + Camera.main.transform.right.z * (i / 10.0f) + Camera.main.transform.up.z * this.spectrum[i] * 30));
+			this.lineRenderer.SetPosition (i, new Vector3(frontOfCamera.x + Camera.main.transform.right.x * (i / (((float) this.numberOfSamples) / 1024.0f) / 15) - Camera.main.transform.right.x * 5 + Camera.main.transform.up.x * this.spectrum[i] * 30, 
+			                                         frontOfCamera.y + Camera.main.transform.right.y * (i / (((float) this.numberOfSamples) / 1024.0f) / 15) - Camera.main.transform.right.y * 5 + Camera.main.transform.up.y * this.spectrum[i] * 30,
+			                                         frontOfCamera.z + Camera.main.transform.right.z * (i / (((float) this.numberOfSamples) / 1024.0f) / 15) - Camera.main.transform.right.z * 5 + Camera.main.transform.up.z * this.spectrum[i] * 30));
 
 			if (this.spectrum[i] > maxAmount) {
 				maxAmount = this.spectrum[i];
@@ -112,16 +112,18 @@ public class AudioAnalyzer : MonoBehaviour {
 		}
 
 		float frequencyIndex = maxFrequencyIndex;
+		Debug.Log ("frequencyIndex: " + frequencyIndex);
 		if (maxFrequencyIndex > 0 && maxFrequencyIndex < this.numberOfSamples - 1) {
 			float dL = this.spectrum[maxFrequencyIndex - 1] / this.spectrum[maxFrequencyIndex];
 			float dR = this.spectrum[maxFrequencyIndex + 1] / this.spectrum[maxFrequencyIndex];
 			frequencyIndex += 0.5f * (dR * dR - dL * dL);
 		}
-
+		Debug.Log ("frequency Index: " + frequencyIndex);
 		float pitch = frequencyIndex * (this.sampleRate / 2.0f) / this.numberOfSamples;
 		this.pitch = pitch;
 
-		//Debug.Log ("pitch: " + pitch);
+		// frequency goes from 0 - 22000 Hz approximately (upper limit: samplerate/2)
+		Debug.Log ("pitch: " + pitch);
 	}
 
 
