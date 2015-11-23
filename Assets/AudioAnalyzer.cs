@@ -76,6 +76,15 @@ public class AudioAnalyzer : MonoBehaviour {
 		this.audioSource.GetOutputData (this.samples, 0); // (samples, channel)
 
 
+
+		double signalSum;
+		for (int l = -this.numberOfSamples; l < this.numberOfSamples; l++) {
+			for (int i = 0; i < this.numberOfSamples; i++) {
+				signalSum += this.samples [i] * this.samples [i + l];
+			}
+		}
+
+
 		float amplitudeSum = 0.0f;
 		for (int i = 0; i < this.numberOfSamples; i++) {
 			amplitudeSum += this.samples[i] * this.samples[i]; // sum the square volumes for RMS value
