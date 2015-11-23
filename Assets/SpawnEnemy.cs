@@ -32,6 +32,8 @@ public class SpawnEnemy : MonoBehaviour {
 		playerPosition = GameObject.Find("Player").transform.position;
 		enem = GameObject.Find ("Enemy");
 
+		//var instantiated = Instantiate (enem, position, transform.rotation);
+
 		cam = Camera.main;
 		planes = GeometryUtility.CalculateFrustumPlanes(cam);
 		objColl = GetComponent<Collider>();
@@ -57,7 +59,7 @@ public class SpawnEnemy : MonoBehaviour {
 
 		Debug.Log ("Attack "+count);
 
-		if (count > 400) {
+		if (count > 100) {
 			attack();
 			count = 0;
 		} else {
@@ -93,8 +95,8 @@ public class SpawnEnemy : MonoBehaviour {
 	void attack(){
 
 		position = spawnPoint [Random.Range(0,spawnPoint.Length)];
-		transform.position = Vector3.MoveTowards(transform.position, position , 40 * Time.deltaTime);
 		startPosition = transform.position;
+		Destroy (GameObject.Find ("Enemy"));
 
 		speed++;
 	}
