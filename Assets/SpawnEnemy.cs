@@ -9,14 +9,32 @@ public class SpawnEnemy : MonoBehaviour {
     Vector3 position;
     public float speed = 1;
 	float distance = 0;
-	float count = 0;
+	float count;
+	bool visible = true;
+	public GameObject enem;
+	public Collider objColl;
+	private Camera cam;
+	private Plane[] planes;
+	private Vector3[] spawnPoint;
 
     // Use this for initialization
     void Start () {
 
-        position = new Vector3(Random.Range(-20.0F, 20.0F), 3, Random.Range(-16F, 16F));
+		spawnPoint = new Vector3[5];
+		spawnPoint [0] = new Vector3 (21.9f,3f,24f);
+		spawnPoint [1] = new Vector3 (21.9f,3f,-24f);
+		spawnPoint [2] = new Vector3 (-15f,3f,-24f);
+		spawnPoint [3] = new Vector3 (18f,3f,1f);
+		spawnPoint [4] = new Vector3 (-14f,3f,29f);
+
+		position = spawnPoint [Random.Range(0,spawnPoint.Length)];
         startPosition = transform.position;
 		playerPosition = GameObject.Find("Player").transform.position;
+		enem = GameObject.Find ("Enemy");
+
+		cam = Camera.main;
+		planes = GeometryUtility.CalculateFrustumPlanes(cam);
+		objColl = GetComponent<Collider>();
 
         if (randomSpawn)
         {
@@ -30,19 +48,25 @@ public class SpawnEnemy : MonoBehaviour {
         float tempDB = InputAnalyser.LevelMax();
 		distance = Vector3.Distance (playerPosition, transform.position);
 
-		if (count == 3) {
+		if (GeometryUtility.TestPlanesAABB (planes, objColl.bounds))
+			visible = true;
+		else {
+			visible = false;
+			count++;
+		}
+
+		Debug.Log ("Attack "+count);
+
+		if (count > 400) {
 			attack();
-			Debug.Log ("Attack");
+			count = 0;
 		} else {
 			if (tempDB > -5) {
-				Debug.Log ("ha"+count);
 				moveAway();
 			} else {
 				transform.position = Vector3.MoveTowards (transform.position, playerPosition, speed * Time.deltaTime);
 			}
 		}
-
-        
 	}
 
     void OnCollisionEnter(Collision col)
@@ -60,14 +84,20 @@ public class SpawnEnemy : MonoBehaviour {
 			
 		Vector3 temp = +1 * player;
 		Vector3 goal = position;
-		Debug.Log ("temp" + goal);
 		goal += temp;
+		goal.y = 3;
 
 		transform.position = Vector3.MoveTowards(transform.position, position+goal , speed * Time.deltaTime);
     }
 
 	void attack(){
-		GameObject enemy = GameObject.Find ("Enemy");
-		//iTween.MoveTo (enemy, new Vector3(Random.Range (enemy - 4, enemy + 4), 3, Random.Range (enemy + 4, enemy - 4)), 2);
+
+		position = spawnPoint [Random.Range(0,spawnPoint.Length)];
+		transform.position = Vector3.MoveTowards(transform.position, position , 40 * Time.deltaTime);
+		startPosition = transform.position;
+
+		speed++;
 	}
 }
+
+
