@@ -32,8 +32,6 @@ public class SpawnEnemy : MonoBehaviour {
 		playerPosition = GameObject.Find("Player").transform.position;
 		enem = GameObject.Find ("Enemy");
 
-		//var instantiated = Instantiate (enem, position, transform.rotation);
-
 		cam = Camera.main;
 		planes = GeometryUtility.CalculateFrustumPlanes(cam);
 		objColl = GetComponent<Collider>();
@@ -94,9 +92,11 @@ public class SpawnEnemy : MonoBehaviour {
 
 	void attack(){
 
+		GameObject clone = (GameObject)Instantiate (enem, position, transform.rotation);
 		position = spawnPoint [Random.Range(0,spawnPoint.Length)];
 		startPosition = transform.position;
 		Destroy (GameObject.Find ("Enemy"));
+		clone.transform.name = "Enemy";
 
 		speed++;
 	}
