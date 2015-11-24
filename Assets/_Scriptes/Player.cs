@@ -5,13 +5,14 @@ public class Player : MonoBehaviour {
 
 
 	public int lives = 2;
-	int blendShapeCount;
+	//int blendShapeCount;
 	SkinnedMeshRenderer skinnedMeshRenderer;
 	Mesh skinnedMesh;
-	float blendOne = 0f;
-	float blendTwo = 0f;
-	float blendSpeed = 1f;
-	bool blendOneFinished = false;
+	//float blendOne = 0f;
+	//float blendTwo = 0f;
+	//float blendSpeed = 1f;
+	//bool blendOneFinished = false;
+	public bool talkDirtyToMe = false;
 
 	// Use this for initialization
 	void Start () {
@@ -24,9 +25,12 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		float tempDB = GameObject.Find ("Audio").GetComponent<InputAnalyser>().MicLoudness;
+		if (talkDirtyToMe) {
 
-		skinnedMeshRenderer.SetBlendShapeWeight (0, tempDB+60);
+			float tempDB = GameObject.Find ("Audio").GetComponent<InputAnalyser> ().MicLoudness;
+
+			skinnedMeshRenderer.SetBlendShapeWeight (0, tempDB + 60);
+		}
 
 		/*if (blendShapeCount > 1) {
 			
