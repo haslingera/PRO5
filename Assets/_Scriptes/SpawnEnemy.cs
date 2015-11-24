@@ -77,7 +77,13 @@ public class SpawnEnemy : MonoBehaviour {
     {
         if (col.gameObject.name == "Player")
         {
-            Destroy(GameObject.Find("Player"));
+			if(GameObject.Find ("Player").GetComponent<Player>().lives > 0){
+				attack();
+				this.count = 0;
+			}
+			else{
+				endGame();
+			}
         }
     }
 
@@ -101,6 +107,10 @@ public class SpawnEnemy : MonoBehaviour {
 		Destroy (GameObject.Find ("Enemy"));
 		clone.name = "Enemy";
 
+	}
+
+	void endGame(){
+		Destroy (GameObject.Find ("Player"));
 	}
 }
 
