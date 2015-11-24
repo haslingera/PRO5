@@ -3,7 +3,7 @@ using System.Collections;
 
 public class InputAnalyser : MonoBehaviour {
 	
-	public static float MicLoudness;
+	public float MicLoudness;
 	
 	private string _device;
 	private static float refValue = 0.01f;

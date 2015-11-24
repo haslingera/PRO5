@@ -47,7 +47,7 @@ public class SpawnEnemy : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        float tempDB = GameObject.Find ("Audio").GetComponent<InputAnalyser>().LevelMax();
+        float tempDB = GameObject.Find ("Audio").GetComponent<InputAnalyser>().LevelMax;
 
 		distance = Vector3.Distance (playerPosition, transform.position);
 
@@ -79,6 +79,7 @@ public class SpawnEnemy : MonoBehaviour {
         {
 			if(GameObject.Find ("Player").GetComponent<Player>().lives > 0){
 				attack();
+				GameObject.Find ("Player").GetComponent<Player>().lives -= 1;
 				this.count = 0;
 			}
 			else{
