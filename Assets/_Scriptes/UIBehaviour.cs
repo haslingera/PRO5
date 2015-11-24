@@ -4,36 +4,77 @@ using UnityEngine.UI;
 
 public class UIBehaviour : MonoBehaviour {
 
-	Hashtable ht;
-	Hashtable ht2;
+	Vector3 originalCameraPosition;
+	Vector3 originalCameraRotation;
+	float originalCameraSize;
+	bool orange = true;
 
 	// Use this for initialization
 	void Start () {
-
-		ht = new Hashtable();
-		ht.Add("x",GameObject.Find("Player").transform.position.x);
-		ht.Add("y",GameObject.Find("Player").transform.position.y);
-		ht.Add("z",GameObject.Find("Player").transform.position.z);
-		ht.Add("time",2);
-
 		Camera camera = GameObject.Find ("Main Camera").GetComponent<Camera> ();
+		originalCameraPosition = camera.transform.position;
+		originalCameraRotation = camera.transform.eulerAngles;
+		originalCameraSize = camera.orthographicSize;
+		CameraEnter (camera);
 
-		ht2 = new Hashtable();
-		ht2.Add("from",camera.orthographicSize);
-		ht2.Add("to",0.1);
-		ht2.Add ("time", 2);
-		ht2.Add ("onupdatetarget", this.gameObject);
-		ht2.Add ("onupdate","changeCameraSize");
-
-		iTween.MoveTo(GameObject.Find ("Main Camera"), ht);
-		iTween.ValueTo (GameObject.Find ("Main Camera"), ht2);
-		iTween.RotateTo(GameObject.Find ("Main Camera"),iTween.Hash("y",90,"easetype",iTween.EaseType.easeInOutSine,"time",2));
-
-		//StartCoroutine(ChangeText());
 	}
 
 	void changeCameraSize(float value) {
 		GameObject.Find ("Main Camera").GetComponent<Camera>().orthographicSize = value;
+	}
+
+	void CameraExit(Camera camera, bool move, float moveX, float moveY, float moveZ, bool rotate, float rotateX, float rotateY, float rotateZ, bool zoom, float zoomFactor, float seconds) {
+
+		if (move) {
+			iTween.MoveTo(GameObject.Find ("Main Camera"), iTween.Hash("x", moveX, "y", moveY, "z", moveZ, "time", seconds));
+		}
+
+		if (rotate) {
+			iTween.RotateTo(GameObject.Find ("Main Camera"),iTween.Hash("x", rotateX, "y", rotateY, "z", rotateZ, "easetype",iTween.EaseType.easeInOutSine,"time",seconds));
+		}
+
+		if (zoom) {
+			iTween.ValueTo (GameObject.Find ("Main Camera"), iTween.Hash("from",originalCameraSize, "to",0.1, "time", seconds, "onupdatetarget", this.gameObject, "onupdate","changeCameraSize"));
+		}
+
+		StartCoroutine (StartCameraEnter());
+
+	}
+
+	IEnumerator StartCameraEnter() {
+		yield return new WaitForSeconds(2.5f);
+
+		if (orange) {
+			GameObject.Find ("Main Camera").GetComponent<Camera> ().backgroundColor = new Color (0f / 255f, 210f / 255f, 201f / 255f, 255f / 255f);
+			GameObject.Find ("Player").GetComponent<Renderer> ().material.SetColor ("_Color", new Color (255f / 255f, 152f / 255f, 0f / 255f, 255f / 255f));
+			orange = false;
+		} else {
+			GameObject.Find ("Main Camera").GetComponent<Camera> ().backgroundColor = new Color (255f / 255f, 152f / 255f, 0f / 255f, 255f / 255f);
+			GameObject.Find ("Player").GetComponent<Renderer> ().material.SetColor ("_Color", new Color (0f / 255f, 210f / 255f, 201f / 255f, 255f / 255f));
+			orange = true;
+		}
+
+		CameraEnter (GameObject.Find ("Main Camera").GetComponent<Camera> ());
+	}
+
+	void CameraEnter(Camera camera) {
+
+		camera.transform.eulerAngles = new Vector3(-90f, 90f, 0f);
+		camera.transform.position = originalCameraPosition;
+		camera.orthographicSize = originalCameraSize;
+
+		iTween.MoveTo(GameObject.Find ("Main Camera"), iTween.Hash("x", originalCameraPosition.x, "y", originalCameraPosition.y, "z", originalCameraPosition.z, "time", 2f));
+
+		iTween.RotateTo(GameObject.Find ("Main Camera"),iTween.Hash("x", originalCameraRotation.x, "y", originalCameraRotation.y, "z", originalCameraRotation.z, "easetype",iTween.EaseType.easeInOutSine,"time",2f));
+
+		StartCoroutine (StartCameraExit());
+
+	}
+
+	IEnumerator StartCameraExit() {
+		yield return new WaitForSeconds(2.5f);
+		GameObject player = GameObject.Find ("Player");
+		CameraExit (GameObject.Find ("Main Camera").GetComponent<Camera> (), true, player.transform.position.x, player.transform.position.y, player.transform.position.z, true, 90f, 90f, 0f, true, 0.1f, 2f);
 	}
 
 	IEnumerator ChangeText() {
@@ -41,7 +82,7 @@ public class UIBehaviour : MonoBehaviour {
 		GameObject.Find ("startText").transform.localScale = new Vector3(0, 0, 0);
 		GameObject.Find ("startText").GetComponent<Text> ().enabled = true;
 
-		ht = new Hashtable();
+		Hashtable ht = new Hashtable();
 		ht.Add("x",1.0);
 		ht.Add("y",1.0);
 		ht.Add("7",1.0);
