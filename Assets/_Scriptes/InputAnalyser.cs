@@ -24,7 +24,7 @@ public class InputAnalyser : MonoBehaviour {
 	static int _sampleWindow = 128;
 	
 	//get data from microphone into audioclip
-	public static float  LevelMax()
+	public float  LevelMax()
 	{
 		float levelMax = 0;
 		float[] waveData = new float[_sampleWindow];

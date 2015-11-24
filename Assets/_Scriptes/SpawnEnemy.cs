@@ -11,15 +11,17 @@ public class SpawnEnemy : MonoBehaviour {
 	float distance = 0;
 	float count;
 	bool visible = true;
-	public GameObject enem;
+	GameObject enem;
 	public Collider objColl;
 	private Camera cam;
 	private Plane[] planes;
 	private Vector3[] spawnPoint;
+	public int limit = 300;
 
     // Use this for initialization
     void Start () {
 
+		count = 0;
 		spawnPoint = new Vector3[5];
 		spawnPoint [0] = new Vector3 (21.9f,3f,24f);
 		spawnPoint [1] = new Vector3 (21.9f,3f,-24f);
@@ -45,7 +47,8 @@ public class SpawnEnemy : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        float tempDB = InputAnalyser.LevelMax();
+        float tempDB = GameObject.Find ("Audio").GetComponent<InputAnalyser>().LevelMax();
+
 		distance = Vector3.Distance (playerPosition, transform.position);
 
 		if (GeometryUtility.TestPlanesAABB (planes, objColl.bounds))
@@ -55,16 +58,17 @@ public class SpawnEnemy : MonoBehaviour {
 			count++;
 		}
 
-		Debug.Log ("Attack "+count);
+		Debug.Log (tempDB);
 
-		if (count > 100) {
+		if (count > limit) {
 			attack();
 			count = 0;
 		} else {
 			if (tempDB > -5) {
 				moveAway();
 			} else {
-				transform.position = Vector3.MoveTowards (transform.position, playerPosition, speed * Time.deltaTime);
+				this.speed += 0.1f;
+				this.transform.position = Vector3.MoveTowards (this.transform.position, playerPosition, speed * Time.deltaTime);
 			}
 		}
 	}
@@ -87,18 +91,16 @@ public class SpawnEnemy : MonoBehaviour {
 		goal += temp;
 		goal.y = 3;
 
-		transform.position = Vector3.MoveTowards(transform.position, position+goal , speed * Time.deltaTime);
+		transform.position = Vector3.MoveTowards(transform.position, position+goal , 10 * Time.deltaTime);
     }
 
 	void attack(){
 
-		GameObject clone = (GameObject)Instantiate (enem, position, transform.rotation);
-		position = spawnPoint [Random.Range(0,spawnPoint.Length)];
-		startPosition = transform.position;
+		this.transform.position = spawnPoint [Random.Range(0,spawnPoint.Length)];
+		GameObject clone = Instantiate (GameObject.Find ("Enemy"), position, transform.rotation) as GameObject;
 		Destroy (GameObject.Find ("Enemy"));
-		clone.transform.name = "Enemy";
+		clone.name = "Enemy";
 
-		speed++;
 	}
 }
 
