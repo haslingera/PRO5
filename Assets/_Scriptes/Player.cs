@@ -13,6 +13,7 @@ public class Player : MonoBehaviour {
 	//float blendSpeed = 1f;
 	//bool blendOneFinished = false;
 	public bool talkDirtyToMe = false;
+	public bool talkFrequ = false;
 
 	// Use this for initialization
 	void Start () {
@@ -30,6 +31,15 @@ public class Player : MonoBehaviour {
 			float tempDB = GameObject.Find ("Audio").GetComponent<InputAnalyser> ().MicLoudness;
 
 			skinnedMeshRenderer.SetBlendShapeWeight (0, tempDB + 60);
+		}
+
+		if (talkFrequ) {
+			
+			float tempFQ = GameObject.Find ("Audio").GetComponent<InputAnalyser> ().getPitch();
+			if(tempFQ != -1)
+				skinnedMeshRenderer.SetBlendShapeWeight (0, tempFQ/8);
+			else
+				skinnedMeshRenderer.SetBlendShapeWeight(0,0f);
 		}
 
 		/*if (blendShapeCount > 1) {
