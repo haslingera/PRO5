@@ -1,21 +1,50 @@
 fileFormatVersion: 2
 guid: dc02667fc2d483941af284232e97865d
-timeCreated: 1448377605
+timeCreated: 1448378411
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: control
-    100002: eyes
-    100004: //RootNode
-    400000: control
-    400002: eyes
-    400004: //RootNode
+    100000: blobBody_neutral
+    100002: control
+    100004: Eye_left
+    100006: Eye_right
+    100008: eyeControl
+    100010: Eyes
+    100012: eyes
+    100014: //RootNode
+    100016: Tooth_big
+    100018: Tooth_small
+    100020: Toothes
+    100022: transform3
+    100024: transform4
+    100026: transform5
+    100028: transform6
+    100030: transform7
+    400000: blobBody_neutral
+    400002: control
+    400004: Eye_left
+    400006: Eye_right
+    400008: eyeControl
+    400010: Eyes
+    400012: eyes
+    400014: //RootNode
+    400016: Tooth_big
+    400018: Tooth_small
+    400020: Toothes
+    400022: transform3
+    400024: transform4
+    400026: transform5
+    400028: transform6
+    400030: transform7
+    2300000: Toothes
+    3300000: Toothes
     4300000: blobBody_neutral
-    4300002: control
+    4300002: Toothes
+    4300004: Eyes
     9500000: //RootNode
-    13700000: control
-    13700002: //RootNode
+    13700000: blobBody_neutral
+    13700002: Eyes
   materials:
     importMaterials: 1
     materialName: 0
