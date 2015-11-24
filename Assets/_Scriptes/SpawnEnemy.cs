@@ -47,7 +47,7 @@ public class SpawnEnemy : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        float tempDB = GameObject.Find ("Audio").GetComponent<InputAnalyser>().LevelMax;
+        float tempDB = GameObject.Find ("Audio").GetComponent<InputAnalyser>().MicLoudness;
 
 		distance = Vector3.Distance (playerPosition, transform.position);
 
