@@ -2,177 +2,71 @@
 using System.Collections;
 using System.Threading;
 
-public class InputAnalyser : MonoBehaviour {
-	
-	public float MicLoudness;
-	
-	private string _device;
-	private bool _isInitialized;
-	private static float refValue = 0.01f;
-	static int _sampleWindow = 128;
-	static AudioClip _clipRecord = new AudioClip();
+public class YIN {
 
 
-	// YIN Frequency Detection variables
-	public bool trackFrequency = false;
-	public int yinSampleWindow = 1024;
-
+	private int yinSampleWindow;
 	private int yinBufferSize;
 	private int yinHalfBufferSize;
 	private float yinProbability;
 	private float yinThreshold;
 	private float yinPitch;
-
+	
 	private float[] yinBuffer;
 	private int[] dataBuffer;
-	// YIN Frequency Detection variables end
+	private float[] dirtySamples;
+	private bool gotSamples;
 
-	private YIN yin;
-	private Thread yinThread;
+	/*public YIN(float[] samples) {
 
+	}*/
 
+	public YIN() {
+		this.gotSamples = false;
+	}
 
-	// -------------------------
-	//         Methods
-	// -------------------------
-
-	// Called when before first update begins
-	void Start () {
-		this.yinPitch = -1.0f;
+	public void setupSamples(float[] samples) {
+		this.gotSamples = true;
+		this.dirtySamples = samples;
+		this.yinSampleWindow = samples.Length;
+		
 		this.dataBuffer = new int[this.yinSampleWindow];
-
-
-		// start the yin Thread in Background
-		this.yin = new YIN();
-		this.yinThread = new Thread(new ThreadStart(yin.startYIN));
-		this.yinThread.IsBackground = true;
-		this.yinThread.Start ();
-	}
-	
-	//mic initialization
-	void InitMic() {
-		if(_device == null) _device = Microphone.devices[0];
-		_clipRecord = Microphone.Start(_device, true, 999, 44100);
-	}
-	
-	void StopMicrophone() {
-		Microphone.End(_device);
 	}
 
-	//get data from microphone into audioclip
-	public float  LevelMax() {
-		float levelMax = 0;
-		float[] waveData = new float[_sampleWindow];
-		int micPosition = Microphone.GetPosition(null)-(_sampleWindow+1); // null means the first microphone
-		if (micPosition < 0) return 0;
-		_clipRecord.GetData(waveData, micPosition);
-
-		// Getting a peak on the last 128 samples
-		for (int i = 0; i < _sampleWindow; i++) {
-			float wavePeak = waveData[i] * waveData[i];
-			if (levelMax < wavePeak) {
-				levelMax = wavePeak;
-			}
+	public void startYIN() {
+		if (!this.gotSamples) {
+			return;
+		}
+		// copy the dirtySamples to int array (and scale them)
+		for (int i = 0; i < this.yinSampleWindow; i++) {
+			this.dataBuffer[i] = (int) (this.dirtySamples[i] * 255);
 		}
 
-		levelMax = 20*Mathf.Log10(levelMax/refValue); // calculate dB
-
-		if (levelMax < -160) {
-			levelMax = -160; // clamp it to -160dB min
+		// perform the yin algorithm
+		float pitch = 0.0f;
+		int bufferSize = 100;
+		while (pitch < 10.0f && bufferSize < this.yinSampleWindow) {
+			this.yinInit(bufferSize);
+			pitch = this.yinGetPitch();
+			bufferSize += 4;
 		}
-		return levelMax;
-	}
 
-	void Update() {
-		// levelMax equals to the highest normalized value power 2, a small number because < 1
-		// pass the value to a static var so we can access it from anywhere
-		MicLoudness = LevelMax ();
-
-		if (!this.yinThread.IsAlive) {
-			// read mic data
-			float[] waveData = new float[this.yinSampleWindow];
-			int micPosition = Microphone.GetPosition(null)-(this.yinSampleWindow+1); // null means the first microphone
-			if (micPosition < 0) return;
-			_clipRecord.GetData(waveData, micPosition);
-			
-			// restart thread
-			this.yin.setupSamples(waveData);
-			this.yinThread = new Thread(new ThreadStart(yin.startYIN));
-			this.yinThread.IsBackground = true;
-			this.yinThread.Start ();
-		} 
-
-		// if frequency should be tracked do this now
-		/*if (this.trackFrequency) {
-
-			// read samples from the microphone
-			float[] waveData = new float[this.yinSampleWindow];
-			int micPosition = Microphone.GetPosition(null)-(this.yinSampleWindow+1); // null means the first microphone
-			if (micPosition < 0) return;
-			_clipRecord.GetData(waveData, micPosition);
-
-			// scale the data to [-255 | 255]
-			for (int i = 0; i < this.yinSampleWindow; i++) {
-				this.dataBuffer[i] = (int) (waveData[i] * 255);
-			}
-
-			float pitch = 0.0f;
-			int bufferSize = 100;
-			while (pitch < 10.0f && bufferSize < this.yinSampleWindow) {
-				this.yinInit(bufferSize);
-				pitch = this.yinGetPitch();
-				bufferSize += 2;
-			}
-
+		lock (this) {
 			this.yinPitch = pitch;
-			Debug.Log ("pitch: " + pitch + ", bufferSize: " + bufferSize);
-		}*/
-	}
-	
-	// start mic when scene starts
-	void OnEnable()
-	{
-		InitMic();
-		_isInitialized=true;
-	}
-	
-	//stop mic when loading a new level or quit application
-	void OnDisable()
-	{
-		StopMicrophone();
-	}
-	
-	void OnDestroy()
-	{
-		StopMicrophone();
-	}
-
-	// make sure the mic gets started & stopped when application gets focused
-	void OnApplicationFocus(bool focus) {
-		if (focus) {
-			//Debug.Log("Focus");
-			if(!_isInitialized) {
-				//Debug.Log("Init Mic");
-				InitMic();
-				_isInitialized=true;
-			}
-		}    
-
-		if (!focus) {
-			//Debug.Log("Pause");
-			StopMicrophone();
-			//Debug.Log("Stop Mic");
-			_isInitialized=false;	
 		}
 	}
 
-
+	public float getPitch() {
+		lock (this) {
+			return this.yinPitch;
+		}
+	}
 
 
 	// -----------------------
 	//     YIN Algorith 
 	// -----------------------
-
+	
 	// Init the YIN variables according to buffer size
 	private void yinInit(int bufferSize) {
 		this.yinBufferSize = bufferSize;
@@ -292,7 +186,6 @@ public class InputAnalyser : MonoBehaviour {
 		}
 		
 		return betterTau;
-		return tauEstimate;
 	}
 	
 	// Method to call to start the calculation
@@ -316,14 +209,4 @@ public class InputAnalyser : MonoBehaviour {
 		
 		return pitchInHertz;
 	}
-
-	public float getPitch () {
-		return this.yin.getPitch ();
-	}
-
-
-	// --------------------
-	// YIN Algorithm Ends
-	// --------------------
-
 }
