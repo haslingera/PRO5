@@ -27,9 +27,10 @@ public class PlattformBehavior : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
-		DB = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().MicLoudness;
+		DB = AudioAnalyzer.Instance.getPitch();//GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().MicLoudness;
 		//frequ = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().getPitch ();
-        //Debug.Log(frequ);
+        Debug.Log(DB);
+
         isVisited();
 
         if (first == 1 && !GameObject.Find("Plattform1").GetComponent<PlattformBehavior>().onPlayer())
@@ -100,7 +101,7 @@ public class PlattformBehavior : MonoBehaviour {
         }
             else
             {
-                if (DB >= 500 )
+                if (DB > 500 )
                 {
                     //Debug.Log("UP");
                     moveUp();
