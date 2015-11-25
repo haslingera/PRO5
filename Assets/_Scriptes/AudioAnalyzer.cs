@@ -1,153 +1,168 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Audio;
+using System.Threading;
 
 
 // Singleton Code from: http://clearcutgames.net/home/?p=437
 // Analyze Code from: http://answers.unity3d.com/questions/157940/getoutputdata-and-getspectrumdata-they-represent-t.html
 
-public class AudioAnalyzer : MonoBehaviour {
+public class AudioAnalyzer : MonoBehaviour
+{
 
 	// Static singleton instance
 	private static AudioAnalyzer instance;
 
-	private int numberOfSamples = 1024 * 8;
-	private float reference = 0.1f; // rms value for 0db
-	private float threshold = 0.01f; // minimum amplitude for calculating the pitch 
-
-	private AudioSource audioSource;
-	private float[] samples;
-	private float[] spectrum;
-	private int sampleRate;
-
-	private float rms = 0.0f;
-	private float db = 0.0f;
-	private float pitch = 0.0f;
-
-	// visualization
-	private bool drawLines = true;
-	private LineRenderer lineRenderer;
-
+	private float MicLoudness;
+	
+	private string _device;
+	private bool _isInitialized;
+	private static float refValue = 0.01f;
+	static int _sampleWindow = 128;
+	static AudioClip _clipRecord = new AudioClip ();
+	
+	
+	// YIN Frequency Detection variables
+	public bool trackFrequency = false;
+	public int yinSampleWindow = 1024;
+	
+	private int yinBufferSize;
+	private int yinHalfBufferSize;
+	private float yinProbability;
+	private float yinThreshold;
+	private float yinPitch;
+	
+	private float[] yinBuffer;
+	private int[] dataBuffer;
+	// YIN Frequency Detection variables end
+	
+	private YIN yin;
+	private Thread yinThread;
 	// Static singleton property
 	public static AudioAnalyzer Instance {
 		// Here we use the ?? operator, to return 'instance' if 'instance' does not equal null
 		// otherwise we assign instance to a new component and return that
-		get { return instance ?? (instance = new GameObject("AudioAnalyzer").AddComponent<AudioAnalyzer>()); }
+		get { return instance ?? (instance = new GameObject ("AudioAnalyzer").AddComponent<AudioAnalyzer> ()); }
 	}
+
+	void Start ()
+	{
+		this.yinPitch = -1.0f;
+		this.dataBuffer = new int[this.yinSampleWindow];
 	
-	// Use this for initialization
-	void Start () {
-		//this.audioSource = this.gameObject.GetComponent<AudioSource> ();
-		this.audioSource = this.gameObject.AddComponent<AudioSource> () as AudioSource;
-		this.samples = new float[this.numberOfSamples];
-		this.spectrum = new float[this.numberOfSamples];
-		this.sampleRate = 44100;
-
-		this.audioSource.clip = Microphone.Start ("Built-in Microphone", true, 1, this.sampleRate);
-		this.audioSource.loop = true;
-		this.audioSource.Play ((ulong) this.sampleRate);
-
-		AudioMixer mixer = Resources.Load("AudioMixer") as AudioMixer;
-		string _OutputMixer = "MutedGroup";        
-		//this.audioSource.outputAudioMixerGroup = mixer.FindMatchingGroups(_OutputMixer)[0];
-
-
-		//this.lineRenderer = this.gameObject.GetComponent<LineRenderer> ();
-		this.lineRenderer = this.gameObject.AddComponent<LineRenderer> () as LineRenderer;
-		this.lineRenderer.SetVertexCount (this.numberOfSamples);
-
-		Material lineMaterial = Resources.Load("LineMaterial", typeof(Material)) as Material;
-		this.lineRenderer.material = lineMaterial;
-		this.lineRenderer.useWorldSpace = true;
-		this.lineRenderer.useLightProbes = false;
-		this.lineRenderer.SetWidth (0.05f, 0.05f);
-		this.lineRenderer.SetColors (Color.magenta, Color.magenta);
-		this.lineRenderer.enabled = drawLines;
+	
+		// start the yin Thread in Background
+		this.yin = new YIN ();
+		this.yinThread = new Thread (new ThreadStart (yin.startYIN));
+		this.yinThread.IsBackground = true;
+		this.yinThread.Start ();
 	}
 
-	// Update is called once per frame
-	void Update () {
-		this.analyzeAudio ();
+//mic initialization
+	void InitMic ()
+	{
+		if (_device == null)
+			_device = Microphone.devices [0];
+		_clipRecord = Microphone.Start (_device, true, 999, 44100);
 	}
 
+	void StopMicrophone ()
+	{
+		Microphone.End (_device);
+	}
 
-	private void analyzeAudio() {
-		// analyze volume
-		this.audioSource.GetOutputData (this.samples, 0); // (samples, channel)
-
-
-		/*
-		double signalSum;
-		for (int l = -this.numberOfSamples; l < this.numberOfSamples; l++) {
-			for (int i = 0; i < this.numberOfSamples; i++) {
-				signalSum += this.samples [i] * this.samples [i + l];
+//get data from microphone into audioclip
+	private float LevelMax ()
+	{
+		float levelMax = 0;
+		float[] waveData = new float[_sampleWindow];
+		int micPosition = Microphone.GetPosition (null) - (_sampleWindow + 1); // null means the first microphone
+		if (micPosition < 0)
+			return 0;
+		_clipRecord.GetData (waveData, micPosition);
+	
+		// Getting a peak on the last 128 samples
+		for (int i = 0; i < _sampleWindow; i++) {
+			float wavePeak = waveData [i] * waveData [i];
+			if (levelMax < wavePeak) {
+				levelMax = wavePeak;
 			}
 		}
-*/
-
-		float amplitudeSum = 0.0f;
-		for (int i = 0; i < this.numberOfSamples; i++) {
-			amplitudeSum += this.samples[i] * this.samples[i]; // sum the square volumes for RMS value
+	
+		levelMax = 20 * Mathf.Log10 (levelMax / refValue); // calculate dB
+	
+		if (levelMax < -160) {
+			levelMax = -160; // clamp it to -160dB min
 		}
+		return levelMax;
+	}
 
-		this.rms = Mathf.Sqrt (amplitudeSum / (float) this.numberOfSamples);
-		this.db = 20 * Mathf.Log10(rms / reference);
-		this.db = Mathf.Max (-160, this.db); // clip it to -160 on the bottom edge
+	void Update ()
+	{
+		// levelMax equals to the highest normalized value power 2, a small number because < 1
+		// pass the value to a static var so we can access it from anywhere
+		MicLoudness = LevelMax ();
+	
+		if (!this.yinThread.IsAlive) {
+			// read mic data
+			float[] waveData = new float[this.yinSampleWindow];
+			int micPosition = Microphone.GetPosition (null) - (this.yinSampleWindow + 1); // null means the first microphone
+			if (micPosition < 0)
+				return;
+			_clipRecord.GetData (waveData, micPosition);
+		
+			// restart thread
+			this.yin.setupSamples (waveData);
+			this.yinThread = new Thread (new ThreadStart (yin.startYIN));
+			this.yinThread.IsBackground = true;
+			this.yinThread.Start ();
+		} 
+	}
 
-		//Debug.Log ("decibel: " + this.db);
+// start mic when scene starts
+	void OnEnable ()
+	{
+		InitMic ();
+		_isInitialized = true;
+	}
 
-		// analyze spectrum
-		this.audioSource.GetSpectrumData (this.spectrum, 0, FFTWindow.BlackmanHarris); // (spectrum, channel, FFTWindow)
+//stop mic when loading a new level or quit application
+	void OnDisable ()
+	{
+		StopMicrophone ();
+	}
 
-		int maxFrequencyIndex = 0;
-		float maxAmount = 0.0f;
+	void OnDestroy ()
+	{
+		StopMicrophone ();
+	}
 
-		// for visual feedback: calculate position in front of the camera
-		Vector3 frontOfCamera = new Vector3(Camera.main.transform.position.x + Camera.main.transform.forward.x * 20,
-		                                    Camera.main.transform.position.y + Camera.main.transform.forward.y * 20,
-		                                    Camera.main.transform.position.z + Camera.main.transform.forward.z * 20);
-
-		for (int i = 0; i < this.numberOfSamples; i++) {
-
-			// add point to line Renderer to show the visual feedback of the spectrum
-			this.lineRenderer.SetPosition (i, new Vector3(frontOfCamera.x + Camera.main.transform.right.x * (i / (((float) this.numberOfSamples) / 1024.0f) / 15) - Camera.main.transform.right.x * 5 + Camera.main.transform.up.x * this.spectrum[i] * 30, 
-			                                         frontOfCamera.y + Camera.main.transform.right.y * (i / (((float) this.numberOfSamples) / 1024.0f) / 15) - Camera.main.transform.right.y * 5 + Camera.main.transform.up.y * this.spectrum[i] * 30,
-			                                         frontOfCamera.z + Camera.main.transform.right.z * (i / (((float) this.numberOfSamples) / 1024.0f) / 15) - Camera.main.transform.right.z * 5 + Camera.main.transform.up.z * this.spectrum[i] * 30));
-
-			if (this.spectrum[i] > maxAmount) {
-				maxAmount = this.spectrum[i];
-				maxFrequencyIndex = i; 
+// make sure the mic gets started & stopped when application gets focused
+	void OnApplicationFocus (bool focus)
+	{
+		if (focus) {
+			//Debug.Log("Focus");
+			if (!_isInitialized) {
+				//Debug.Log("Init Mic");
+				InitMic ();
+				_isInitialized = true;
 			}
+		}    
+	
+		if (!focus) {
+			//Debug.Log("Pause");
+			StopMicrophone ();
+			//Debug.Log("Stop Mic");
+			_isInitialized = false;	
 		}
-
-		float frequencyIndex = maxFrequencyIndex;
-		Debug.Log ("frequencyIndex: " + frequencyIndex);
-		if (maxFrequencyIndex > 0 && maxFrequencyIndex < this.numberOfSamples - 1) {
-			float dL = this.spectrum[maxFrequencyIndex - 1] / this.spectrum[maxFrequencyIndex];
-			float dR = this.spectrum[maxFrequencyIndex + 1] / this.spectrum[maxFrequencyIndex];
-			frequencyIndex += 0.5f * (dR * dR - dL * dL);
-		}
-		Debug.Log ("frequency Index: " + frequencyIndex);
-		float pitch = frequencyIndex * (this.sampleRate / 2.0f) / this.numberOfSamples;
-		this.pitch = pitch;
-
-		// frequency goes from 0 - 22000 Hz approximately (upper limit: samplerate/2)
-		Debug.Log ("pitch: " + pitch);
 	}
 
-
-	public void prepare() { Debug.Log ("prepare"); } // only prepares
-
-	public float getDecibel() {
-		return this.db;
+	public float getPitch() {
+		return this.yin.getPitch ();
 	}
 
-	public float getRMS() {
-		return this.rms;
-	}
-
-	public float getFrequency() {
-		return this.pitch;
+	public float getMicLoudness() {
+		return this.MicLoudness;
 	}
 
 }

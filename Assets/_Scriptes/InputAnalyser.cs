@@ -35,7 +35,7 @@ public class InputAnalyser : MonoBehaviour {
 	// -------------------------
 	//         Methods
 	// -------------------------
-
+	
 	// Called when before first update begins
 	void Start () {
 		this.yinPitch = -1.0f;
@@ -60,7 +60,7 @@ public class InputAnalyser : MonoBehaviour {
 	}
 
 	//get data from microphone into audioclip
-	public float  LevelMax() {
+	public float LevelMax() {
 		float levelMax = 0;
 		float[] waveData = new float[_sampleWindow];
 		int micPosition = Microphone.GetPosition(null)-(_sampleWindow+1); // null means the first microphone

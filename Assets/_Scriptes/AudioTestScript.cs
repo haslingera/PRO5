@@ -27,7 +27,6 @@ public class AudioTestScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//Debug.Log("Decibel: " + AudioAnalyzer.Instance.getDecibel ());
-		Debug.Log ("RMS: " + AudioAnalyzer.Instance.getRMS ());
 		/*this.audioSource.GetOutputData (this.samples, 0); // (samples, channel)
 
 		float amplitudeSum = 0.0f;

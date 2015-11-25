@@ -17,10 +17,6 @@ public class YIN {
 	private float[] dirtySamples;
 	private bool gotSamples;
 
-	/*public YIN(float[] samples) {
-
-	}*/
-
 	public YIN() {
 		this.gotSamples = false;
 	}
