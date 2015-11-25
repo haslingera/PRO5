@@ -38,11 +38,18 @@ public class AudioAnalyzer : MonoBehaviour
 	
 	private YIN yin;
 	private Thread yinThread;
+
+
+
 	// Static singleton property
 	public static AudioAnalyzer Instance {
 		// Here we use the ?? operator, to return 'instance' if 'instance' does not equal null
 		// otherwise we assign instance to a new component and return that
 		get { return instance ?? (instance = new GameObject ("AudioAnalyzer").AddComponent<AudioAnalyzer> ()); }
+	}
+
+	public void Init() {
+
 	}
 
 	void Start ()
