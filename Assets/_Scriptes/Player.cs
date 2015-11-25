@@ -16,8 +16,10 @@ public class Player : MonoBehaviour {
 	//bool blendOneFinished = false;
 	public bool talkDirtyToMe = false;
 	public bool talkFrequ = false;
+	public bool rotate = false;
 	int count = 1;
 	int blink;
+	float oldAngle = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -70,6 +72,14 @@ public class Player : MonoBehaviour {
 		}
 	*/
 	
+		if (rotate) {
+
+			var targetPos = GameObject.Find ("Enemy").transform.position;
+			targetPos.y = this.transform.position.y; //set targetPos y equal to mine, so I only look at my own plane
+			var targetDir = Quaternion.LookRotation(targetPos - this.transform.position);
+			this.transform.rotation = Quaternion.Slerp(transform.rotation, targetDir, 6*Time.deltaTime);
+		}
+
 	}
 
 	void Blink(){

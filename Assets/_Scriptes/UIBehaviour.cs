@@ -15,12 +15,14 @@ public class UIBehaviour : MonoBehaviour {
 		originalCameraPosition = camera.transform.position;
 		originalCameraRotation = camera.transform.eulerAngles;
 		originalCameraSize = camera.orthographicSize;
+		AdjustCamera (camera);
 		CameraEnter (camera);
 
 	}
 
 	void changeCameraSize(float value) {
-		GameObject.Find ("Main Camera").GetComponent<Camera>().orthographicSize = value;
+		ChangeOrthographicCameraSize (GameObject.Find ("Main Camera").GetComponent<Camera>(), value);
+		Debug.Log (value);
 	}
 
 	void CameraExit(Camera camera, bool move, float moveX, float moveY, float moveZ, bool rotate, float rotateX, float rotateY, float rotateZ, bool zoom, float zoomFactor, float seconds) {
@@ -61,7 +63,7 @@ public class UIBehaviour : MonoBehaviour {
 
 		camera.transform.eulerAngles = new Vector3(-90f, 90f, 0f);
 		camera.transform.position = originalCameraPosition;
-		camera.orthographicSize = originalCameraSize;
+		ChangeOrthographicCameraSize (camera, originalCameraSize);
 
 		iTween.MoveTo(GameObject.Find ("Main Camera"), iTween.Hash("x", originalCameraPosition.x, "y", originalCameraPosition.y, "z", originalCameraPosition.z, "time", 2f));
 
@@ -100,6 +102,41 @@ public class UIBehaviour : MonoBehaviour {
 		yield return new WaitForSeconds(1);
 
 		GameObject.Find ("startText").GetComponent<Text> ().enabled = false;
+
+	}
+
+	void AdjustCamera(Camera camera) {
+
+		float screenRatio = (float)Screen.height / (float)Screen.width;
+
+		if (screenRatio >= 1.78f) {
+			float newRatio = 1f / 1.78f;
+			float newScale = screenRatio / newRatio;
+			
+			camera.projectionMatrix = Matrix4x4.Ortho(
+				-camera.orthographicSize * 1.78f, camera.orthographicSize * 1.78f,
+				-camera.orthographicSize * newScale, camera.orthographicSize * newScale,
+				camera.nearClipPlane, camera.farClipPlane);
+		}
+
+
+	}
+
+	void ChangeOrthographicCameraSize(Camera camera, float size) {
+
+		float screenRatio = (float)Screen.height / (float)Screen.width;
+
+		if (screenRatio >= 1.78f) {
+			float newRatio = 1f / 1.78f;
+			float newScale = screenRatio / newRatio;
+			
+			camera.projectionMatrix = Matrix4x4.Ortho (
+				-size * 1.78f, size * 1.78f,
+				-size * newScale, size * newScale,
+				camera.nearClipPlane, camera.farClipPlane);
+		} else {
+			camera.orthographicSize = size;
+		}
 
 	}
 
