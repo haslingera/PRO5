@@ -28,7 +28,7 @@ public class PlattformBehavior : MonoBehaviour {
     void Update() {
 
 		DB = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().MicLoudness;
-		frequ = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().getPitch ();
+		//frequ = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().getPitch ();
         Debug.Log(frequ);
         isVisited();
 
@@ -137,10 +137,7 @@ public class PlattformBehavior : MonoBehaviour {
 
         freeze(GameObject.Find(getNext()));
         GameObject.Find("Player").transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 1 * Time.deltaTime);
-        /*while (temp < 5000)
-        {
-            temp++;
-        }    */    
+  
     }
 
     //Moves tower up
