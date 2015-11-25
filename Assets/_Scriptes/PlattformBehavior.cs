@@ -14,20 +14,22 @@ public class PlattformBehavior : MonoBehaviour {
     int first = 1;
     bool choosen = false;
     bool visited = false;
+	GameObject Player;
 
     // Use this for initialization
     void Start() {
 
         startPosition = transform.position;
+		Player = GameObject.Find ("Player");
 
     }
 
     // Update is called once per frame
     void Update() {
 
-        DB = GameObject.Find("Audio Source").GetComponent<AudioAnalyzer>().getDecibel();
-        frequ = GameObject.Find("Audio Source").GetComponent<AudioAnalyzer>().getFrequency();
-        //Debug.Log(frequ);
+		DB = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().MicLoudness;
+		frequ = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().getPitch ();
+        Debug.Log(frequ);
         isVisited();
 
         if (first == 1 && !GameObject.Find("Plattform1").GetComponent<PlattformBehavior>().onPlayer())
@@ -49,7 +51,7 @@ public class PlattformBehavior : MonoBehaviour {
             {
                 if (!onPlayer())
                 {
-                    moveRandomTower();
+                    //moveRandomTower();
                 }
             }
         }
@@ -71,9 +73,8 @@ public class PlattformBehavior : MonoBehaviour {
     bool onPlayer()
     {
         Vector3 tower = transform.position;
-        Vector3 player = GameObject.Find("Player").transform.position;
 
-        if(player.x >= tower.x-1 && player.x <= tower.x + 1)
+		if(Player.transform.position.x == tower.x)//Player.transform.position.x >= tower.x-1 && Player.transform.position.x <= tower.x + 1)
         {
             //Debug.Log("On");
             return true;
@@ -90,7 +91,7 @@ public class PlattformBehavior : MonoBehaviour {
         if ((int)transform.position.y == (int)GameObject.Find(getNext()).transform.position.y)
         {
             //Debug.Log("Hallo");
-            choosen = true;
+            this.choosen = true;
             moveCharakter();
         }
         else if(transform.position.y > 3.10 && transform.position.y < 3.15 && name == "Plattform10")
@@ -99,12 +100,12 @@ public class PlattformBehavior : MonoBehaviour {
         }
             else
             {
-                if (frequ >= 400 && frequ <= 700)
+                if (frequ >= 500 )
                 {
                     //Debug.Log("UP");
                     moveUp();
                 }
-                else if (frequ >= 0 && frequ <= 400)
+                else
                 {
                     //Debug.Log("DOWN");
                     moveDown();
@@ -131,16 +132,15 @@ public class PlattformBehavior : MonoBehaviour {
     void moveCharakter()
     {
         int temp = 0;
-        Vector3 tempPlayer = GameObject.Find("Player").transform.position;
+        Vector3 tempPlayer = Player.transform.position;
         Vector3 tempNewPos = new Vector3(GameObject.Find(getNext()).transform.position.x, tempPlayer.y, GameObject.Find(getNext()).transform.position.z);
 
         freeze(GameObject.Find(getNext()));
-        GameObject.Find("Player").transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 15 * Time.deltaTime);
-        while (temp < 5000)
+        GameObject.Find("Player").transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 1 * Time.deltaTime);
+        /*while (temp < 5000)
         {
             temp++;
-        }
-        
+        }    */    
     }
 
     //Moves tower up
@@ -218,14 +218,14 @@ public class PlattformBehavior : MonoBehaviour {
         }
     }
 
-    private void startGame()
+	private void  startGame()
     {
-        Vector3 tempPlayer = GameObject.Find("Player").transform.position;
-        Vector3 tempNewPos = new Vector3(GameObject.Find("Plattform1").transform.position.x, tempPlayer.y, GameObject.Find("Plattform1").transform.position.z);
+        Vector3 tempPlayer = Player.transform.position;
+		Vector3 tempNewPos = new Vector3(GameObject.Find("Plattform1").transform.position.x, tempPlayer.y, GameObject.Find("Plattform1").transform.position.z);
 
         freeze(GameObject.Find("Plattform1"));
-        GameObject.Find("Player").transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 1 * Time.deltaTime);
-        //Debug.Log(tempNewPos);
+		Player.transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 1 * Time.deltaTime);
+		//yield return new WaitForSeconds(5);
     }
 
     private void endGame()
