@@ -3,26 +3,20 @@ using System.Collections;
 
 public class FlyDestroyer : MonoBehaviour {
 
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	public string collidingTag;
+	public float minPitch;
+	public float maxPitch;
 
+	void Start() {
+		AudioAnalyzer.Instance.Init ();
+	}
 
 	void OnTriggerStay(Collider other) {
-		if (other.GetComponent<Collider>().CompareTag("Fly")) {
-			DestroyObject (gameObject);
-		}
-	}
-
-	void OnTriggerEnter(Collider other) {
-		Debug.Log ("meh");
-		if (other.GetComponent<Collider>().CompareTag ("Fly")) {
-			DestroyObject(gameObject);
+		Debug.Log (AudioAnalyzer.Instance.getPitch ());
+		if (AudioAnalyzer.Instance.getPitch() > minPitch && AudioAnalyzer.Instance.getPitch() < maxPitch) {
+			if (other.GetComponent<Collider>().CompareTag(collidingTag)) {
+				DestroyObject (other.gameObject);
+			}
 		}
 	}
 }
