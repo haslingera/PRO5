@@ -14,20 +14,20 @@ public class GlassDestroyer : MonoBehaviour {
 		movement = GetComponent<StationaryMovement> ();
 	}
 
-	void FixedUpdate () {
-		if ((GetComponent<InputAnalyser>().MicLoudness+60) > 0f) {
+	void Update () {
+		if ((AudioAnalyzer.Instance.getMicLoudness()+60) > 0f) {
 			transform.position = new Vector3 (Mathf.Sin (Time.time*30)*(Time.time - startTime)/5f, transform.position.y,transform.position.z);
 		}
 		
-		if (GetComponent<InputAnalyser>().MicLoudness > 35f) {
+		if (AudioAnalyzer.Instance.getMicLoudness() > 35f) {
 			endTime = Time.time;
 		}
 
 
-		if (!screaming && GetComponent<InputAnalyser>().MicLoudness > 35f) {
+		if (!screaming && AudioAnalyzer.Instance.getMicLoudness() > 35f) {
 			screaming = true;
 			startTime = Time.time;
-		} else if(GetComponent<InputAnalyser>().MicLoudness < 35f) {
+		} else if(AudioAnalyzer.Instance.getMicLoudness() < 35f) {
 			if (!stopscream && Time.time - startTime > 2.0f) {
 				stopscream = true;
 				endTime = Time.time;

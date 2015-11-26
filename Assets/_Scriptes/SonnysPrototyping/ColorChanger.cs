@@ -6,8 +6,10 @@ public class ColorChanger : MonoBehaviour {
 	private Renderer mesh;
 	public Material defaultColor;
 	public Material changingColor;
-	public float minPitch;
-	public float maxPitch;
+	public bool volume;
+	public float min;
+	public float max;
+
 
 	// Use this for initialization
 	void Start () {
@@ -17,11 +19,20 @@ public class ColorChanger : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void FixedUpdate () {
-		if (AudioAnalyzer.Instance.getPitch () > minPitch && AudioAnalyzer.Instance.getPitch () < maxPitch) {
-			mesh.material = changingColor;
+	void Update () {
+		if (!volume) {
+			if (AudioAnalyzer.Instance.getPitch() > min && AudioAnalyzer.Instance.getPitch() < max) {
+				mesh.material = changingColor;
+			} else {
+				mesh.material = defaultColor;
+			}
 		} else {
-			mesh.material = defaultColor;
+			if (AudioAnalyzer.Instance.getMicLoudness() > min && AudioAnalyzer.Instance.getMicLoudness() < max) {
+				mesh.material = changingColor;
+			} else {
+				mesh.material = defaultColor;
+			}
 		}
+
 	}
 }
