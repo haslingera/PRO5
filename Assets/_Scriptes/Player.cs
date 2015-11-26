@@ -46,7 +46,7 @@ public class Player : MonoBehaviour {
 
 		if (talkFrequ) {
 			
-			float tempFQ = GameObject.Find ("Audio").GetComponent<InputAnalyser> ().getPitch();
+			float tempFQ = AudioAnalyzer.Instance.getPitch();
 			if(tempFQ != -1){
 				skinnedMeshRenderer.SetBlendShapeWeight (0, tempFQ/8);
 				skinnedMeshRendererEyes.SetBlendShapeWeight(6, tempFQ/8);
@@ -103,12 +103,16 @@ public class Player : MonoBehaviour {
 
 		float db;
 		float endDB = 0;
-		db = GameObject.Find ("Audio").GetComponent<InputAnalyser> ().MicLoudness;
+		db = AudioAnalyzer.Instance.getMicLoudness();
 		endDB = (Mathf.InverseLerp(-70, 40, db))*100;
 		//Debug.Log(endDB);
 		if (endDB < 40)
 			return 0;
 		return endDB;
+	}
+
+	void Awake(){
+		AudioAnalyzer.Instance.Init ();
 	}
 
 }
