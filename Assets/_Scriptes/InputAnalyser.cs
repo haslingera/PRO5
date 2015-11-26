@@ -35,7 +35,7 @@ public class InputAnalyser : MonoBehaviour {
 	// -------------------------
 	//         Methods
 	// -------------------------
-	
+
 	// Called when before first update begins
 	void Start () {
 		this.yinPitch = -1.0f;

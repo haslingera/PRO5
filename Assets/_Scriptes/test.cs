@@ -5,8 +5,8 @@ public class test : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		UIBehaviour.Instance.LevelStart ();
-		UIBehaviour.Instance.LevelEnd (true, true, true);
+		//UIBehaviour.Instance.LevelStart ();
+		//UIBehaviour.Instance.LevelEnd (true, true, true);
 		StartCoroutine (startNau ());
 	}
 	

@@ -23,7 +23,8 @@ public class UIBehaviour : MonoBehaviour {
 	public static UIBehaviour Instance {
 		get {
 			if (instance==null) {
-				instance = new UIBehaviour();
+				instance = new GameObject ("UIBehaviour").AddComponent<UIBehaviour> ();
+				//instance = new UIBehaviour();
 			}
 			return instance;
 		}
