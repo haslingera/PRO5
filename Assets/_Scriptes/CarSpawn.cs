@@ -28,7 +28,7 @@ public class CarSpawn : MonoBehaviour {
 
 
 		if (!this.moves () && !onTheMove) {
-			this.speed = Random.Range (1, 3);
+			this.speed = Random.Range (1, 5);
 			iTween.MoveTo (this.gameObject, iTween.Hash ("z", -16, "easetype", "linear", "time", speed));
 			this.onTheMove = true;
 		}
@@ -37,38 +37,23 @@ public class CarSpawn : MonoBehaviour {
 			spawnCar();
 		}
 		else if(this.gameObject.transform.position.z == -16){
-			//spawnCar();
 			destroyCar();
 		}
 	}
 
 	void spawnCar(){
 
-		/*if(GameObject.Find ("Counter").GetComponent<counterCar> ().getCars (1) <=2 || 
-		   GameObject.Find ("Counter").GetComponent<counterCar> ().getCars (2) <=2 ||
-		   GameObject.Find ("Counter").GetComponent<counterCar> ().getCars(3) <=2){
-			clone = Instantiate (Resources.Load("Car"+Random.Range(1,4)), this.start, transform.rotation) as GameObject;
-			//iTween.Stop(this.gameObject);
-			//clone.GetComponent<CarSpawn>().setOnMove(true);
-			//iTween.MoveTo (clone, iTween.Hash ("z", -16, "easetype", "linear", "time", speed));
-			clone.name = name;
-		}		
-		*/
+		float dist = Vector3.Distance(this.gameObject.transform.position,this.start);
 
-		clone = Instantiate (Resources.Load("Car"+Random.Range(1,4)), this.start, transform.rotation) as GameObject;
-		clone.name = name;
+		if (dist > 50) {
+			clone = Instantiate (Resources.Load ("Car" + Random.Range (1, 4)), this.start, transform.rotation) as GameObject;
+			clone.name = name;
+		}
+
 	}
 
 	void destroyCar(){
 
-		/*if (this.gameObject.name == "Clone1")
-			GameObject.Find ("Counter").GetComponent<counterCar> ().subC1 ();
-		if (this.gameObject.name == "Clone2")
-			GameObject.Find ("Counter").GetComponent<counterCar> ().subC2 ();
-		if (this.gameObject.name == "Clone3")
-			GameObject.Find ("Counter").GetComponent<counterCar> ().subC3 ();
-	*/
-		Destroy (this.gameObject);
 		if (clone != null) {
 			clone.name = name;
 			clone.GetComponent<CarSpawn> ().setOnMove (true);
@@ -76,6 +61,7 @@ public class CarSpawn : MonoBehaviour {
 			spawnCar();
 		}
 		this.onTheMove = false;
+		Destroy (this.gameObject);
 	}
 
 	void setOnMove(bool x){
