@@ -23,6 +23,8 @@ public class AudioAnalyzer : MonoBehaviour {
 	// YIN Frequency Detection variables
 	public bool trackFrequency = false;
 	public int yinSampleWindow = 1024;
+
+
 	
 	private int yinBufferSize;
 	private int yinHalfBufferSize;
