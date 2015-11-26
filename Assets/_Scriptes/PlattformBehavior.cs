@@ -30,7 +30,7 @@ public class PlattformBehavior : MonoBehaviour {
 
 		DB = AudioAnalyzer.Instance.getPitch();//GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().MicLoudness;
 		//frequ = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().getPitch ();
-        
+		Debug.Log (DB);
 
         isVisited();
 
@@ -43,7 +43,7 @@ public class PlattformBehavior : MonoBehaviour {
             first++;
             if (onPlayer())
             {
-				Debug.Log("Hallo");
+				//Debug.Log("Hallo");
                 moveTower();
             }
             else if (!onPlayer() && visited)
@@ -91,18 +91,26 @@ public class PlattformBehavior : MonoBehaviour {
 
     void moveTower()
     {
+		//Debug.Log("Hallo");
         if ((int)transform.position.y == (int)GameObject.Find (getNext ()).transform.position.y) {
-			//Debug.Log("Hallo");
+			Vector3 temp = new Vector3(this.transform.position.x, GameObject.Find (getNext ()).transform.position.y,
+			                           this.transform.position.z);
+			transform.position = temp;
 			this.choosen = true;
-			moveCharakter ();
-		} else if (transform.position.y > 3.10 && transform.position.y < 3.15 && name == "Plattform10") {
+			moveCharakter();
+
+		} else if (transform.position.y > 3.10 && transform.position.y < 3.20 && this.name == "Plattform10") {
 			endGame ();
 		} else {
 			if ((int)DB > 350) {
-				Debug.Log ("UP");
+				//Debug.Log ("UP");
 				moveUp ();
+			}
+			else if((int)DB == -1){
+				//Do noting
+			
 			} else if ((int)DB < 350) {
-				Debug.Log ("DOWN");
+				//Debug.Log ("DOWN");
 				moveDown ();
 			}
 		}
@@ -125,14 +133,15 @@ public class PlattformBehavior : MonoBehaviour {
     }
 
     //moves the charakter
-    void moveCharakter()
+	void  moveCharakter()
     {
         Vector3 tempPlayer = Player.transform.position;
         Vector3 tempNewPos = new Vector3(GameObject.Find(getNext()).transform.position.x, tempPlayer.y, GameObject.Find(getNext()).transform.position.z);
 
         freeze(GameObject.Find(getNext()));
-        Player.transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 6 * Time.deltaTime);
-  
+
+		iTween.MoveTo(Player, tempNewPos, 2);
+
     }
 
     //Moves tower up
@@ -221,10 +230,10 @@ public class PlattformBehavior : MonoBehaviour {
 
     private void endGame()
     {
-        Stop(transform.position.y);
+        Stop(this.transform.position.y);
         Vector3 tempPlayer = GameObject.Find("Player").transform.position;
         Vector3 tempNewPos = new Vector3(GameObject.Find("End").transform.position.x, tempPlayer.y, GameObject.Find("End").transform.position.z);
-        GameObject.Find("Player").transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 3 * Time.deltaTime);
+		iTween.MoveTo(Player, tempNewPos, 2);
         isVisited();
     }
 
@@ -232,7 +241,7 @@ public class PlattformBehavior : MonoBehaviour {
     {
         Vector3 tower = this.transform.position;
         GameObject player = GameObject.Find("Player");
-        player.transform.position = Vector3.MoveTowards(player.transform.position, new Vector3(tower.x, player.transform.position.y+x, tower.z), 10 *Time.deltaTime);
+        Player.transform.position = Vector3.MoveTowards(player.transform.position, new Vector3(tower.x, player.transform.position.y+x, tower.z), 10 *Time.deltaTime);
     }
 }
 
