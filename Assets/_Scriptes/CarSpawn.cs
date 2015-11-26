@@ -7,18 +7,18 @@ public class CarSpawn : MonoBehaviour {
 	float speed;
 	Vector3 start;
 	Vector3 end;
-	bool onTheMove = true;
+	bool onTheMove = false;
 	GameObject clone;
 	string name;
 
 	// Use this for initialization
 	void Start () {
-	
+
+		iTween.Stop (this.gameObject);
 		start = this.gameObject.transform.position;
-		name = this.gameObject.name;
+		name = gameObject.name;
 		player = GameObject.Find ("Player");
 		end = new Vector3 (this.gameObject.transform.position.x,this.gameObject.transform.position.y,-16f);
-		iTween.Stop (this.gameObject);
 		iTween.Init (this.gameObject);
 
 	}
@@ -26,36 +26,56 @@ public class CarSpawn : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (!moves()) {
-			speed = Random.Range (1, 3);
-			Debug.Log (gameObject.name);
+
+		if (!this.moves () && !onTheMove) {
+			this.speed = Random.Range (1, 3);
 			iTween.MoveTo (this.gameObject, iTween.Hash ("z", -16, "easetype", "linear", "time", speed));
-			this.onTheMove = false;
+			this.onTheMove = true;
 		}
 
-		/*if((int)this.gameObject.transform.position.z == Random.Range(-4,2)){
+		else if((int)this.gameObject.transform.position.z == Random.Range(-12,-4)){
 			spawnCar();
-		}*/
-		if(this.gameObject.transform.position.z == -16){
-			spawnCar();
+		}
+		else if(this.gameObject.transform.position.z == -16){
+			//spawnCar();
 			destroyCar();
 		}
 	}
 
 	void spawnCar(){
 
-		clone = Instantiate (this.gameObject, this.start, transform.rotation) as GameObject;
-		//iTween.Stop(this.gameObject);
-		//clone.GetComponent<CarSpawn>().setOnMove(false);
-		//iTween.MoveTo (clone, iTween.Hash ("z", -16, "easetype", "linear", "time", speed));
+		/*if(GameObject.Find ("Counter").GetComponent<counterCar> ().getCars (1) <=2 || 
+		   GameObject.Find ("Counter").GetComponent<counterCar> ().getCars (2) <=2 ||
+		   GameObject.Find ("Counter").GetComponent<counterCar> ().getCars(3) <=2){
+			clone = Instantiate (Resources.Load("Car"+Random.Range(1,4)), this.start, transform.rotation) as GameObject;
+			//iTween.Stop(this.gameObject);
+			//clone.GetComponent<CarSpawn>().setOnMove(true);
+			//iTween.MoveTo (clone, iTween.Hash ("z", -16, "easetype", "linear", "time", speed));
+			clone.name = name;
+		}		
+		*/
+
+		clone = Instantiate (Resources.Load("Car"+Random.Range(1,4)), this.start, transform.rotation) as GameObject;
 		clone.name = name;
 	}
 
 	void destroyCar(){
 
+		/*if (this.gameObject.name == "Clone1")
+			GameObject.Find ("Counter").GetComponent<counterCar> ().subC1 ();
+		if (this.gameObject.name == "Clone2")
+			GameObject.Find ("Counter").GetComponent<counterCar> ().subC2 ();
+		if (this.gameObject.name == "Clone3")
+			GameObject.Find ("Counter").GetComponent<counterCar> ().subC3 ();
+	*/
 		Destroy (this.gameObject);
-		onTheMove = true;
-
+		if (clone != null) {
+			clone.name = name;
+			clone.GetComponent<CarSpawn> ().setOnMove (true);
+		} else {
+			spawnCar();
+		}
+		this.onTheMove = false;
 	}
 
 	void setOnMove(bool x){
