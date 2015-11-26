@@ -1,44 +1,23 @@
 fileFormatVersion: 2
-guid: b2bc4f3730778184ebf8c058d12d8e15
-timeCreated: 1448443449
+guid: c21ade05d7eb14f54a3d2793f3fa47dd
+timeCreated: 1448353290
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: Eye_left
-    100002: Eye_right
-    100004: Eyes
-    100006: eyes
-    100008: EyeShapes
-    100010: //RootNode
-    100012: Neutral
-    100014: Toothes
-    100016: Tounge_default1
-    100018: ToungeShapes1
-    100020: transform2
-    100022: transform3
-    400000: Eye_left
-    400002: Eye_right
-    400004: Eyes
-    400006: eyes
-    400008: EyeShapes
-    400010: //RootNode
-    400012: Neutral
-    400014: Toothes
-    400016: Tounge_default1
-    400018: ToungeShapes1
-    400020: transform2
-    400022: transform3
-    2300000: Toothes
-    3300000: Toothes
-    4300000: Neutral
-    4300002: Eyes
-    4300004: Toothes
-    4300006: Tounge_default1
+    100000: pCylinder1
+    100002: //RootNode
+    100004: ramp
+    400000: pCylinder1
+    400002: //RootNode
+    400004: ramp
+    2300000: pCylinder1
+    2300002: ramp
+    3300000: pCylinder1
+    3300002: ramp
+    4300000: pCylinder1
+    4300002: ramp
     9500000: //RootNode
-    13700000: Eyes
-    13700002: Neutral
-    13700004: Tounge_default1
   materials:
     importMaterials: 1
     materialName: 0
@@ -62,7 +41,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 50
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -76,7 +55,7 @@ ModelImporter:
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
-    useFileScale: 1
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     splitTangentsAcrossUV: 1
@@ -97,7 +76,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

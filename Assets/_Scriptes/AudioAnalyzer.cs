@@ -7,9 +7,7 @@ using System.Threading;
 // Singleton Code from: http://clearcutgames.net/home/?p=437
 // Analyze Code from: http://answers.unity3d.com/questions/157940/getoutputdata-and-getspectrumdata-they-represent-t.html
 
-public class AudioAnalyzer : MonoBehaviour
-{
-
+public class AudioAnalyzer : MonoBehaviour {
 	// Static singleton instance
 	private static AudioAnalyzer instance;
 
