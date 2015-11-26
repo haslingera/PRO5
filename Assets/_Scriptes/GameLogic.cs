@@ -5,13 +5,15 @@ public class GameLogic {
 
 	// Singleton Methods
 	private static GameLogic instance;
-
+	
 	// Static singleton property
 	public static GameLogic Instance {
 		// Here we use the ?? operator, to return 'instance' if 'instance' does not equal null
 		// otherwise we assign instance to a new component and return that
 		get { return instance ?? (instance = new GameLogic()); }
 	}
+
+	
 
 
 	// -------------------------
@@ -20,6 +22,7 @@ public class GameLogic {
 	
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
+	private string[] levels = new string[] {"Test_Blendshapes", "Flappy Schrei", "Pong Schrei", "Fliegenesser", "Plattformen-Szene-Absolut"};
 
 	public void startNewSinglePlayerGame() {
 		this.numberOfLives = 3;
@@ -31,7 +34,9 @@ public class GameLogic {
 	}
 
 	public void loadNextLevel() {
-		Application.LoadLevel ("Test_Blendshapes");
+		// load random next level
+		int randomNumber = Random.Range(0, this.levels.Length);
+		Application.LoadLevel (this.levels[randomNumber]);
 	}
 
 
