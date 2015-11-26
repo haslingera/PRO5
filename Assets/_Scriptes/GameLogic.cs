@@ -22,7 +22,7 @@ public class GameLogic {
 	
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
-	private string[] levels = new string[] {"Test_Blendshapes", "Flappy Schrei", "Pong Schrei", "Fliegenesser", "Plattformen-Szene-Absolut"};
+	private string[] levels = new string[] {"Destroy Schrei", "Flappy Schrei", "Fliegenesser"};
 
 	public void startNewSinglePlayerGame() {
 		this.numberOfLives = 3;
@@ -35,8 +35,8 @@ public class GameLogic {
 
 	public void loadNextLevel() {
 		// load random next level
-		int randomNumber = Random.Range(0, this.levels.Length);
-		Application.LoadLevel (this.levels[randomNumber]);
+		int randomNumber = Random.Range(0, this.levels.Length * 5);
+		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
 	}
 
 

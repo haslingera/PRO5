@@ -41,7 +41,8 @@ public class GlassDestroyer : MonoBehaviour {
 
 		Debug.Log (Time.time - startTime);
 		if (Time.time - startTime >= 5f) {
-			Destroy (gameObject);
+
+			//Destroy (gameObject);
 		}
 	}
 }

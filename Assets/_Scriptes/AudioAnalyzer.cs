@@ -50,6 +50,10 @@ public class AudioAnalyzer : MonoBehaviour {
 
 	}
 
+	void Awake() {
+		DontDestroyOnLoad (transform.gameObject);
+	}
+
 	void Start ()
 	{
 		this.yinPitch = -1.0f;
