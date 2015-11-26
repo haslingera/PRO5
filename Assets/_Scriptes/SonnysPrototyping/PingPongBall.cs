@@ -12,12 +12,12 @@ public class PingPongBall : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
-		if (allowed1 && GetComponent<InputAnalyser>().MicLoudness > 0.1f) {
+	void Update () {
+		if (allowed1 && AudioAnalyzer.Instance.getMicLoudness() > 0.1f) {
 			movement.constantSpeedX += 0.1f;
 			movement.revertMovement();
 			allowed1 = false;
-		} else if (allowed2 && GetComponent<InputAnalyser>().MicLoudness > 0.1f) {
+		} else if (allowed2 && AudioAnalyzer.Instance.getMicLoudness() > 0.1f) {
 			movement.constantSpeedX += 0.1f;
 			movement.revertMovement();
 			allowed2 = false;

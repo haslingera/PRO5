@@ -14,7 +14,7 @@ public class FlappySchrei : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (GetComponent<InputAnalyser>().MicLoudness > 0.01f) {
+		if (AudioAnalyzer.Instance.getMicLoudness() > 0.01f) {
 			if (movement.constantSpeedZ <= maxSpeed) {
 				movement.constantSpeedZ += acceleration;
 			}

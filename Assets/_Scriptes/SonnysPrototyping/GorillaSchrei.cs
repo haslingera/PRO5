@@ -21,20 +21,19 @@ public class GorillaSchrei : MonoBehaviour {
 
 	void FixedUpdate () {
 		float passedTime = Time.time - startTime;
-		if (passedTime >= rythm[count]) {
-			GetComponent<Renderer>().material = materials[1];
-			if (!result && GetComponent<InputAnalyser>().MicLoudness > 30.0f) {
+		if (passedTime >= rythm [count]) {
+			GetComponent<Renderer> ().material = materials [1];
+			if (!result && AudioAnalyzer.Instance.getMicLoudness () > 30.0f) {
 				result = true;
 				greenTime = passedTime;
 			} else if (result) {
-				GetComponent<Renderer>().material = materials[2];
-				if (passedTime - greenTime > 0.3f){
+				GetComponent<Renderer> ().material = materials [2];
+				if (passedTime - greenTime > 0.3f) {
 					newTimer ();
 				}
-			} else if (!result && passedTime - rythm[count] < 1.3f && passedTime - rythm[count] > 1.0f) {
-				GetComponent<Renderer>().material = materials[3];
-			} else if (passedTime - rythm[count] > 1.3f) {
-				newTimer ();
+			} else if (!result && passedTime - rythm [count] < 1.3f && passedTime - rythm [count] > 1.0f) {
+				GetComponent<Renderer> ().material = materials [3];
+			} else if (passedTime - rythm [count] > 1.3f) {
 			}
 		}
 	}

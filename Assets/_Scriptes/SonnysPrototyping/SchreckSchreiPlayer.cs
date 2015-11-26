@@ -16,7 +16,7 @@ public class SchreckSchreiPlayer : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (GetComponent<InputAnalyser>().MicLoudness > 30f) {
+		if (AudioAnalyzer.Instance.getMicLoudness() > 30f) {
 			if (moved) {
 				movement.moveToPoint(new Vector3 (-5.7f, 1.0f,-2.5f), 0.0f, 0.1f);
 				moved = false;

@@ -10,18 +10,17 @@ public class Runner : MonoBehaviour {
 	private bool already = false;
 	
 	void Start () {
-		sound = GetComponent<InputAnalyser> ();
 		rigbi = GetComponent<Rigidbody> ();
 	}
 	
 
 	void FixedUpdate () {
 
-		if (sound.getPitch() < 300f && sound.getPitch() > 0f) {
+		if (AudioAnalyzer.Instance.getPitch() < 300f && AudioAnalyzer.Instance.getPitch() > 0f) {
 			duck ();
 		}
 
-		if (sound.getPitch() > 500f) {
+		if (AudioAnalyzer.Instance.getPitch() > 500f) {
 			jump ();
 		}
 
