@@ -63,4 +63,10 @@ public class Player_Road_Scene : MonoBehaviour {
 	void Awake(){
 		AudioAnalyzer.Instance.Init ();
 	}
+
+	public void resetPlayer(){
+
+		this.transform.position = start;
+
+	}
 }

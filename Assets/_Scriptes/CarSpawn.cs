@@ -75,4 +75,12 @@ public class CarSpawn : MonoBehaviour {
 			return true;
 	}
 
+	void OnCollisionEnter(Collision col)
+	{
+		if (col.gameObject.name == "Player")
+		{
+			GameObject.Find("Player").GetComponent<Player_Road_Scene>().resetPlayer();
+		}
+	}
+
 }
