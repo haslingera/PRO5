@@ -4,21 +4,24 @@ using System.Collections;
 public class ColorChanger : MonoBehaviour {
 
 	private Renderer mesh;
-	public Material[] materials;
+	public Material defaultColor;
+	public Material changingColor;
+	public float minPitch;
+	public float maxPitch;
 
 	// Use this for initialization
 	void Start () {
 		mesh = GetComponent<Renderer> ();
 		mesh.enabled = true;
-
+		AudioAnalyzer.Instance.Init ();
 	}
 
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (GetComponent<InputAnalyser>().MicLoudness > 0.1f) {
-			mesh.material = materials[0] ;
+		if (AudioAnalyzer.Instance.getPitch () > minPitch && AudioAnalyzer.Instance.getPitch () < maxPitch) {
+			mesh.material = changingColor;
 		} else {
-			mesh.material = materials[1];
+			mesh.material = defaultColor;
 		}
 	}
 }
