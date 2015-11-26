@@ -4,121 +4,113 @@ using UnityEngine.UI;
 
 public class UIBehaviour : MonoBehaviour {
 
+	Color backgroundColor;
+	Color zoomToObjectColor;
+
+	Camera camera;
+	GameObject zoomToObject;
+
 	Vector3 originalCameraPosition;
 	Vector3 originalCameraRotation;
 	float originalCameraSize;
-	bool orange = true;
 
-	// Use this for initialization
-	void Start () {
-		Camera camera = GameObject.Find ("Main Camera").GetComponent<Camera> ();
+	bool first = true;
+
+	private static UIBehaviour instance = null;
+
+	private UIBehaviour () {}
+	
+	public static UIBehaviour Instance {
+		get {
+			if (instance==null) {
+				instance = new UIBehaviour();
+			}
+			return instance;
+		}
+	}
+
+	public void LevelStart() {
+
+		//Set Camera And Zoom To Object
+		camera = GameObject.Find ("Main Camera").GetComponent<Camera> ();
+		if (GameObject.FindGameObjectsWithTag ("ZoomTo").Length != 0) {
+			zoomToObject = GameObject.FindGameObjectsWithTag ("ZoomTo") [0];
+		} else {
+			zoomToObject = GameObject.Find ("Neutral");
+		}
+			
+		//Set Original Camera;
 		originalCameraPosition = camera.transform.position;
 		originalCameraRotation = camera.transform.eulerAngles;
 		originalCameraSize = camera.orthographicSize;
-		AdjustCamera (camera);
-		CameraEnter (camera);
 
-	}
+		//Set Camera To See All Things That Were Seen In 16:9
+		AdjustCamera ();
 
-	void changeCameraSize(float value) {
-		ChangeOrthographicCameraSize (GameObject.Find ("Main Camera").GetComponent<Camera>(), value);
-		Debug.Log (value);
-	}
+		//Get's a new color based on the last player color
+		SetBackgroundColorFromZoomToObject ();
 
-	void CameraExit(Camera camera, bool move, float moveX, float moveY, float moveZ, bool rotate, float rotateX, float rotateY, float rotateZ, bool zoom, float zoomFactor, float seconds) {
+		//Switch Colors
+		Color tempColor = this.backgroundColor;
+		backgroundColor = zoomToObjectColor;
+		zoomToObjectColor = tempColor;
 
-		if (move) {
-			iTween.MoveTo(GameObject.Find ("Main Camera"), iTween.Hash("x", moveX, "y", moveY, "z", moveZ, "time", seconds));
-		}
+		GameObject.Find ("Main Camera").GetComponent<Camera> ().backgroundColor = backgroundColor;
+		GameObject.Find ("Neutral").GetComponent<Renderer> ().material.SetColor ("_Color", zoomToObjectColor);
 
-		if (rotate) {
-			iTween.RotateTo(GameObject.Find ("Main Camera"),iTween.Hash("x", rotateX, "y", rotateY, "z", rotateZ, "easetype",iTween.EaseType.easeInOutSine,"time",seconds));
-		}
-
-		if (zoom) {
-			iTween.ValueTo (GameObject.Find ("Main Camera"), iTween.Hash("from",originalCameraSize, "to",0.1, "time", seconds, "onupdatetarget", this.gameObject, "onupdate","changeCameraSize"));
-		}
-
-		StartCoroutine (StartCameraEnter());
-
-	}
-
-	IEnumerator StartCameraEnter() {
-		yield return new WaitForSeconds(2.5f);
-
-		if (orange) {
-			GameObject.Find ("Main Camera").GetComponent<Camera> ().backgroundColor = new Color (0f / 255f, 210f / 255f, 201f / 255f, 255f / 255f);
-			GameObject.Find ("Player").GetComponent<Renderer> ().material.SetColor ("_Color", new Color (255f / 255f, 152f / 255f, 0f / 255f, 255f / 255f));
-			orange = false;
-		} else {
-			GameObject.Find ("Main Camera").GetComponent<Camera> ().backgroundColor = new Color (255f / 255f, 152f / 255f, 0f / 255f, 255f / 255f);
-			GameObject.Find ("Player").GetComponent<Renderer> ().material.SetColor ("_Color", new Color (0f / 255f, 210f / 255f, 201f / 255f, 255f / 255f));
-			orange = true;
-		}
-
-		CameraEnter (GameObject.Find ("Main Camera").GetComponent<Camera> ());
-	}
-
-	void CameraEnter(Camera camera) {
-
+		//Set the camera upwards and to the original position  
 		camera.transform.eulerAngles = new Vector3(-90f, 90f, 0f);
 		camera.transform.position = originalCameraPosition;
 		ChangeOrthographicCameraSize (camera, originalCameraSize);
 
-		iTween.MoveTo(GameObject.Find ("Main Camera"), iTween.Hash("x", originalCameraPosition.x, "y", originalCameraPosition.y, "z", originalCameraPosition.z, "time", 2f));
-
-		iTween.RotateTo(GameObject.Find ("Main Camera"),iTween.Hash("x", originalCameraRotation.x, "y", originalCameraRotation.y, "z", originalCameraRotation.z, "easetype",iTween.EaseType.easeInOutSine,"time",2f));
-
-		StartCoroutine (StartCameraExit());
+		//Start the camera entering process
+		iTween.MoveTo(camera.gameObject, iTween.Hash("x", originalCameraPosition.x, "y", originalCameraPosition.y, "z", originalCameraPosition.z, "time", 2f));
+		iTween.RotateTo(camera.gameObject,iTween.Hash("x", originalCameraRotation.x, "y", originalCameraRotation.y, "z", originalCameraRotation.z, "easetype",iTween.EaseType.easeInOutSine,"time",2f));
 
 	}
 
-	IEnumerator StartCameraExit() {
-		yield return new WaitForSeconds(2.5f);
-		GameObject player = GameObject.Find ("Player");
-		CameraExit (GameObject.Find ("Main Camera").GetComponent<Camera> (), true, player.transform.position.x, player.transform.position.y, player.transform.position.z, true, 90f, 90f, 0f, true, 0.1f, 2f);
+	void SetBackgroundColorFromZoomToObject() {
+		if (instance.first) {
+			first = false;
+			zoomToObjectColor = new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
+		}
+		backgroundColor = new Color(Random.Range(0.0f,1.0f),Random.Range(0.0f,1.0f),Random.Range(0.0f,1.0f));
 	}
 
-	IEnumerator ChangeText() {
+	public void LevelEnd(bool move, bool rotate, bool zoom) {
 
-		GameObject.Find ("startText").transform.localScale = new Vector3(0, 0, 0);
-		GameObject.Find ("startText").GetComponent<Text> ().enabled = true;
+		if (move) {
+			iTween.MoveTo(camera.gameObject, iTween.Hash("x", zoomToObject.transform.position.x, "y", zoomToObject.transform.position.y + zoomToObject.GetComponent<Renderer>().bounds.size.y + 1, "z", zoomToObject.transform.position.z, "time", 2f));
+		}
+		
+		if (rotate) {
+			iTween.RotateTo(camera.gameObject,iTween.Hash("x", 90f, "y", 90f, "z", 0f, "easetype",iTween.EaseType.easeInOutSine,"time",2f));
+		}
 
-		Hashtable ht = new Hashtable();
-		ht.Add("x",1.0);
-		ht.Add("y",1.0);
-		ht.Add("7",1.0);
-		ht.Add("time",0.5);
-		ht.Add("easetype",iTween.EaseType.easeOutCubic);
-
-		iTween.ScaleTo (GameObject.Find ("startText"),ht);
-
-		yield return new WaitForSeconds(1.5f);
-
-		Text startText = GameObject.Find ("startText").GetComponent<Text> ();
-
-		startText.text = "go!";
-
-		yield return new WaitForSeconds(1);
-
-		GameObject.Find ("startText").GetComponent<Text> ().enabled = false;
+		if (zoom) {
+			iTween.ValueTo (camera.gameObject, iTween.Hash("from",originalCameraSize, "to",0.1, "time", 2f, "onupdatetarget", zoomToObject.gameObject, "onupdate","ChangeCameraSize"));
+		}
 
 	}
 
-	void AdjustCamera(Camera camera) {
+	void ChangeCameraSize(float value) {
+		ChangeOrthographicCameraSize (GameObject.Find ("Main Camera").GetComponent<Camera>(), value);
+		Debug.Log (value);
+	}
+
+	void AdjustCamera() {
 
 		float screenRatio = (float)Screen.height / (float)Screen.width;
 
 		if (screenRatio >= 1.78f) {
 			float newRatio = 1f / 1.78f;
 			float newScale = screenRatio / newRatio;
-			
+
 			camera.projectionMatrix = Matrix4x4.Ortho(
 				-camera.orthographicSize * 1.78f, camera.orthographicSize * 1.78f,
 				-camera.orthographicSize * newScale, camera.orthographicSize * newScale,
 				camera.nearClipPlane, camera.farClipPlane);
 		}
-
 
 	}
 
@@ -138,6 +130,32 @@ public class UIBehaviour : MonoBehaviour {
 			camera.orthographicSize = size;
 		}
 
+	}
+
+	IEnumerator ChangeText() {
+
+		GameObject.Find ("startText").transform.localScale = new Vector3(0, 0, 0);
+		GameObject.Find ("startText").GetComponent<Text> ().enabled = true;
+		
+		Hashtable ht = new Hashtable();
+		ht.Add("x",1.0);
+		ht.Add("y",1.0);
+		ht.Add("7",1.0);
+		ht.Add("time",0.5);
+		ht.Add("easetype",iTween.EaseType.easeOutCubic);
+		
+		iTween.ScaleTo (GameObject.Find ("startText"),ht);
+		
+		yield return new WaitForSeconds(1.5f);
+		
+		Text startText = GameObject.Find ("startText").GetComponent<Text> ();
+		
+		startText.text = "go!";
+		
+		yield return new WaitForSeconds(1);
+		
+		GameObject.Find ("startText").GetComponent<Text> ().enabled = false;
+		
 	}
 
 }
