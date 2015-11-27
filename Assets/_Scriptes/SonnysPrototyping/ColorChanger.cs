@@ -11,6 +11,10 @@ public class ColorChanger : MonoBehaviour {
 	public float max;
 
 
+	void Awake() {
+		AudioAnalyzer.Instance.Init ();
+	}
+
 	// Use this for initialization
 	void Start () {
 		mesh = GetComponent<Renderer> ();

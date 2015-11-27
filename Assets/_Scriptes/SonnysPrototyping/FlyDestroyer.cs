@@ -12,7 +12,7 @@ public class FlyDestroyer : MonoBehaviour {
 	}
 
 	void OnTriggerStay(Collider other) {
-		Debug.Log (AudioAnalyzer.Instance.getPitch ());
+		//Debug.Log (AudioAnalyzer.Instance.getPitch ());
 		if (AudioAnalyzer.Instance.getPitch() > minPitch && AudioAnalyzer.Instance.getPitch() < maxPitch) {
 			if (other.GetComponent<Collider>().CompareTag(collidingTag)) {
 				DestroyObject (other.gameObject);

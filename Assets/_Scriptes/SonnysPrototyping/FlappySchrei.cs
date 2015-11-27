@@ -8,6 +8,10 @@ public class FlappySchrei : MonoBehaviour {
 	public float maxSpeed;
 	public float acceleration;
 
+	void Awake() {
+		AudioAnalyzer.Instance.Init ();
+	}
+
 	void Start () {
 		movement = GetComponent<StationaryMovement> ();
 	}

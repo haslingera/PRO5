@@ -23,9 +23,6 @@ public class AudioAnalyzer : MonoBehaviour {
 	// YIN Frequency Detection variables
 	public bool trackFrequency = false;
 	public int yinSampleWindow = 1024;
-
-
-	
 	private int yinBufferSize;
 	private int yinHalfBufferSize;
 	private float yinProbability;
@@ -70,21 +67,18 @@ public class AudioAnalyzer : MonoBehaviour {
 	}
 
 //mic initialization
-	void InitMic ()
-	{
+	void InitMic () {
 		if (_device == null)
 			_device = Microphone.devices [0];
 		_clipRecord = Microphone.Start (_device, true, 999, 44100);
 	}
 
-	void StopMicrophone ()
-	{
+	void StopMicrophone () {
 		Microphone.End (_device);
 	}
 
-//get data from microphone into audioclip
-	private float LevelMax ()
-	{
+	//get data from microphone into audioclip
+	private float LevelMax () {
 		float levelMax = 0;
 		float[] waveData = new float[_sampleWindow];
 		int micPosition = Microphone.GetPosition (null) - (_sampleWindow + 1); // null means the first microphone
@@ -108,8 +102,7 @@ public class AudioAnalyzer : MonoBehaviour {
 		return levelMax;
 	}
 
-	void Update ()
-	{
+	void Update () {
 		// levelMax equals to the highest normalized value power 2, a small number because < 1
 		// pass the value to a static var so we can access it from anywhere
 		MicLoudness = LevelMax ();

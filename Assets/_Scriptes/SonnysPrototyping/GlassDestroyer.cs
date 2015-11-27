@@ -10,6 +10,10 @@ public class GlassDestroyer : MonoBehaviour {
 	private bool stopscream = false;
 	private float endTime;
 
+	void Awake() {
+		AudioAnalyzer.Instance.Init ();
+	}
+
 	void Start () {
 		movement = GetComponent<StationaryMovement> ();
 	}
@@ -39,7 +43,7 @@ public class GlassDestroyer : MonoBehaviour {
 			startTime = Time.time;
 		}
 
-		Debug.Log (Time.time - startTime);
+		//Debug.Log (Time.time - startTime);
 		if (Time.time - startTime >= 5f) {
 
 			//Destroy (gameObject);
