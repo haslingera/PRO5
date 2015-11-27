@@ -30,11 +30,11 @@ public class PlattformBehavior : MonoBehaviour {
 
 		DB = AudioAnalyzer.Instance.getPitch();//GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().MicLoudness;
 		//frequ = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().getPitch ();
-		Debug.Log (DB);
+		//Debug.Log (DB);
 
         isVisited();
 
-        if (first == 1 && !GameObject.Find("Plattform1").GetComponent<PlattformBehavior>().onPlayer())
+		if (first == 1 && !GameObject.Find("Plattform1").GetComponent<PlattformBehavior>().onPlayer())
         {
             startGame();
         }
@@ -46,14 +46,15 @@ public class PlattformBehavior : MonoBehaviour {
 				//Debug.Log("Hallo");
                 moveTower();
             }
-            else if (!onPlayer() && visited)
+			else if (!onPlayer() && visited)
             {
                 Stop(8f);
             }
             else
             {
-                if (!onPlayer())
+                if (!onPlayer() && !choosen)
                 {
+					//Debug.Log ("Random"+name);
                     //moveRandomTower();
                 }
             }
@@ -75,11 +76,11 @@ public class PlattformBehavior : MonoBehaviour {
 
     bool onPlayer()
     {
-        Vector3 tower = this.transform.position;
+		Vector3 tow = this.transform.position;
 
-		if(Player.transform.position.x == tower.x)//Player.transform.position.x >= tower.x-1 && Player.transform.position.x <= tower.x + 1)
+		if(Player.transform.position.x == tow.x) //|| Player.transform.position.x >= tow.x-1 && Player.transform.position.x <= tow.x + 1)
         {
-            //Debug.Log("On");
+            //Debug.Log("On"+name);
             return true;
         }
         else
@@ -96,7 +97,7 @@ public class PlattformBehavior : MonoBehaviour {
 			Vector3 temp = new Vector3(this.transform.position.x, GameObject.Find (getNext ()).transform.position.y,
 			                           this.transform.position.z);
 			transform.position = temp;
-			this.choosen = true;
+			GameObject.Find(getNext()).GetComponent<PlattformBehavior>().choosen = true;
 			moveCharakter();
 
 		} else if (transform.position.y > 3.10 && transform.position.y < 3.20 && this.name == "Plattform10") {
@@ -119,17 +120,19 @@ public class PlattformBehavior : MonoBehaviour {
 
     void moveRandomTower()
     {
-        if (counter == 0 || counter == 50) {
-            counter = 0;
-            moveTo = new Vector3(transform.position.x, Random.Range(-6F, 8F), transform.position.z);
-            transform.position = Vector3.MoveTowards(transform.position, moveTo, 5 * Time.deltaTime);
-            counter++;
-        }
-        else
-        {
-            transform.position = Vector3.MoveTowards(transform.position, moveTo, 5 * Time.deltaTime);
-            counter++;
-        }
+		if(!onPlayer()){
+	        if (counter == 0 || counter == 50) {
+	            counter = 0;
+	            moveTo = new Vector3(transform.position.x, Random.Range(-6F, 8F), transform.position.z);
+	            transform.position = Vector3.MoveTowards(transform.position, moveTo, 5 * Time.deltaTime);
+	            counter++;
+	        }
+	        else
+	        {
+	            transform.position = Vector3.MoveTowards(transform.position, moveTo, 5 * Time.deltaTime);
+	            counter++;
+	        }
+		}
     }
 
     //moves the charakter
@@ -189,8 +192,9 @@ public class PlattformBehavior : MonoBehaviour {
     private void freeze(GameObject tower)
     {
         //Debug.Log("Fahren");
-        if (choosen) {
+		if (GameObject.Find(getNext()).GetComponent<PlattformBehavior>().choosen) {
             float y = transform.position.y;
+			//Debug.Log ("Freeze");
             tower.transform.position = Vector3.MoveTowards(tower.transform.position, tower.transform.position, speed * Time.deltaTime);
         }
   
