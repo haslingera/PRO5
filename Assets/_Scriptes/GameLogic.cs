@@ -57,6 +57,7 @@ public class GameLogic : MonoBehaviour {
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
 	private string[] levels = new string[] {"Destroy Schrei", "Flappy Schrei", "Fliegenesser"};
+	private string actualLevel = "";
 
 	public void startNewSinglePlayerGame() {
 		this.numberOfLives = 3;
@@ -97,7 +98,12 @@ public class GameLogic : MonoBehaviour {
 		this.actualLevelTime = this.defaultLevelTime;
 
 		// load random next level
-		int randomNumber = Random.Range(0, this.levels.Length * 5);
+		int randomNumber;
+		do {
+			randomNumber = Random.Range(0, this.levels.Length * 5);
+		} while(this.levels[randomNumber % this.levels.Length] == this.actualLevel);
+
+		this.actualLevel = this.levels[randomNumber % this.levels.Length];
 		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
 	}
 
