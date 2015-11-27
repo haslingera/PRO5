@@ -47,7 +47,7 @@ public class SpawnEnemy : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        float tempDB = GameObject.Find ("Audio").GetComponent<InputAnalyser>().MicLoudness;
+		float tempDB = AudioAnalyzer.Instance.getMicLoudness();
 
 		distance = Vector3.Distance (playerPosition, transform.position);
 
@@ -77,9 +77,9 @@ public class SpawnEnemy : MonoBehaviour {
     {
         if (col.gameObject.name == "Player")
         {
-			if(GameObject.Find ("Player").GetComponent<Player>().lives > 0){
+			if(GameObject.Find ("Player").GetComponent<Player_Animation>().lives > 0){
 				attack();
-				GameObject.Find ("Player").GetComponent<Player>().lives -= 1;
+				GameObject.Find ("Player").GetComponent<Player_Animation>().lives -= 1;
 				this.count = 0;
 			}
 			else{
@@ -112,6 +112,10 @@ public class SpawnEnemy : MonoBehaviour {
 
 	void endGame(){
 		Destroy (GameObject.Find ("Player"));
+	}
+
+	void Awake(){
+		AudioAnalyzer.Instance.Init ();
 	}
 }
 

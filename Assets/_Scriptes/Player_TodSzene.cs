@@ -1,14 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Player : MonoBehaviour {
+public class Player_TodSzene : MonoBehaviour {
 
 
 	public int lives = 2;
-	int count = 1;
-	public bool rotate = false;
-	float oldAngle = 0;
-
+	public bool  rotate = false;
 	// Use this for initialization
 	void Start () {
 
