@@ -23,6 +23,10 @@ public class Player_Road_Scene : MonoBehaviour {
 
 		db = AudioAnalyzer.Instance.getMicLoudness();
 
+		if((int)this.transform.position.x == (int)end.x){
+			Debug.Log ("END");
+		}
+
 		if (!move) {
 			if (db > 15f) {
 				newPos.x += 0.2f;
