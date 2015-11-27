@@ -52,4 +52,8 @@ public class Runner : MonoBehaviour {
 			startTimer = Time.time;
 		}
 	}
+
+	void Awake(){
+		AudioAnalyzer.Instance.Init ();
+	}
 }
