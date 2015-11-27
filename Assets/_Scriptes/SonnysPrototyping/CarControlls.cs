@@ -11,15 +11,15 @@ public class CarControlls : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		if (AudioAnalyzer.Instance.getPitch () >= 500) {
-			transform.Rotate(new Vector3 (0,1,0));
-		} else if (AudioAnalyzer.Instance.getPitch () < 500 && AudioAnalyzer.Instance.getPitch () > 100 ) {
-			transform.Rotate(new Vector3 (0,-1,0));
-		}
-
 		if (AudioAnalyzer.Instance.getMicLoudness () >= 35) {
-			rigibi.AddForce(new Vector3 (50,0,0));
-		
+			rigibi.AddForce (transform.forward * 35);
+			
+		} else {
+			if (AudioAnalyzer.Instance.getPitch () >= 300) {
+				transform.Rotate(new Vector3 (0,-1,0));
+			} else if (AudioAnalyzer.Instance.getPitch () < 300 && AudioAnalyzer.Instance.getPitch () > 50 ) {
+				transform.Rotate(new Vector3 (0,1,0));
+			}
 		}
 	}
 }
