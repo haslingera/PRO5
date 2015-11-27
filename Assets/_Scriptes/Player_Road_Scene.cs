@@ -30,12 +30,12 @@ public class Player_Road_Scene : MonoBehaviour {
 		db = AudioAnalyzer.Instance.getMicLoudness();
 
 		if (!move) {
-			if (db > 20f) {
+			if (db > 15f) {
 				iTween.MoveTo (this.gameObject, iTween.Hash ("x", 20, "easetype", "linear", "time", 4f));
 				move = true;
 			}
 		} else {
-			if (db > 20f) {
+			if (db >15f) {
 				iTween.Stop (this.gameObject);
 				move = false;
 			}
@@ -66,6 +66,7 @@ public class Player_Road_Scene : MonoBehaviour {
 
 	public void resetPlayer(){
 
+		iTween.Stop (this.gameObject);
 		this.transform.position = start;
 
 	}
