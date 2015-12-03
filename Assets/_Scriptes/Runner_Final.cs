@@ -8,25 +8,28 @@ public class Runner_Final : MonoBehaviour {
 	private float startTimer;
 	private float EndTimer;
 	private bool already = false;
+	private Vector3 scale;
 	
 	void Start () {
 		rigbi = GetComponent<Rigidbody> ();
+		scale = this.transform.localScale;
 	}
 	
 
 	void FixedUpdate () {
 
-		if (AudioAnalyzer.Instance.getPitch() < 300f && AudioAnalyzer.Instance.getPitch() > 0f) {
+
+		if (AudioAnalyzer.Instance.getPitch () < 300f && AudioAnalyzer.Instance.getPitch () > 0) {
 			duck ();
 		}
 
-		if (AudioAnalyzer.Instance.getPitch() > 500f) {
+		if (AudioAnalyzer.Instance.getPitch () > 500f) {
 			jump ();
 		}
 
 		if (Time.time - startTimer > 1f) {
 			already = false;
-			transform.localScale = new Vector3 (1f,1f,1f);
+			transform.localScale = scale;
 		}
 
 		if (!already) {
@@ -46,8 +49,10 @@ public class Runner_Final : MonoBehaviour {
 
 	private void duck() {
 		if (!already) {
-			transform.localScale = new Vector3 (1f, 0.5f, 1f);
-			transform.position -= new Vector3 (0f, 0.5f, 0f);
+			Vector3 temp = scale;
+			temp.y = 0.5f;
+			transform.localScale = temp;
+			transform.position -= new Vector3 (0f, 0.4f, 0f);
 			already = true;
 			startTimer = Time.time;
 		}
