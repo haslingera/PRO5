@@ -153,6 +153,10 @@ public class GameLogic : MonoBehaviour {
 		return this.numberOfLevelsCompleted;
 	}
 
+	public float getLevelSpeed() {
+		return ((float) this.currentBPM) / ((float) defaultBPM);
+	}
+
 	public void setLevelNumberOfBeats(int numberOfBeats) {
 		this.currentLevelNumberOfBeats = numberOfBeats;
 		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
