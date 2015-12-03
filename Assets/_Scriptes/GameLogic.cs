@@ -51,10 +51,12 @@ public class GameLogic : MonoBehaviour {
 	//    Actual Class Data
 	// -------------------------
 
+	private bool isInDemoMode = false;
+
 	//private float defaultLevelTime = 5.0f; // Default Time in Seconds
 	private float actualLevelTime;
 
-	private const int defaultBPM = 80;
+	private const int defaultBPM = 60;
 	private const int defaultLevelNumberOfBeats = 8;
 	private int currentBPM = defaultBPM;
 	private int currentLevelNumberOfBeats = 8;
@@ -66,6 +68,7 @@ public class GameLogic : MonoBehaviour {
 	private string actualLevel = "";
 
 	public void startNewSinglePlayerGame() {
+		this.isInDemoMode = false;
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = defaultBPM;
@@ -73,6 +76,18 @@ public class GameLogic : MonoBehaviour {
 		this.actualLevelTime = 60.0f / defaultBPM * defaultLevelNumberOfBeats;
 
 		this.loadNextLevel ();
+	}
+
+	public void startNewDemoGame(int numberOfBeats) {
+		this.isInDemoMode = true;
+
+		this.numberOfLives = 0;
+		this.numberOfLevelsCompleted = 0;
+		this.currentBPM = defaultBPM;
+		this.currentLevelNumberOfBeats = numberOfBeats;
+		this.actualLevelTime = 60.0f / defaultBPM * this.currentLevelNumberOfBeats;
+
+		this.didStartLevel = true;
 	}
 
 	public void didFinishLevel() {
