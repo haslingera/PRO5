@@ -9,14 +9,24 @@ public class Runner_Final : MonoBehaviour {
 	private float EndTimer;
 	private bool already = false;
 	private Vector3 scale;
+	private Vector3 start;
+	private bool onStart = true;
 	
 	void Start () {
 		rigbi = GetComponent<Rigidbody> ();
 		scale = this.transform.localScale;
+		start = new Vector3 (-44.51059f, -0.03087401f,-3.86591f);
 	}
 	
 
 	void FixedUpdate () {
+
+		if (onStart) {
+			this.transform.position = Vector3.MoveTowards (this.transform.position, start, 0.1f);
+			if(start.x == this.transform.position.x){
+				onStart = false;
+			}
+		}
 
 
 		if (AudioAnalyzer.Instance.getPitch () < 300f && AudioAnalyzer.Instance.getPitch () > 0) {
@@ -35,6 +45,10 @@ public class Runner_Final : MonoBehaviour {
 		if (!already) {
 			startTimer = Time.time;
 		}
+		if (!onStart &&(int)start.x != (int)this.transform.position.x) {
+			StartCoroutine(endGame());
+		}
+
 
 	}
 	
@@ -60,5 +74,10 @@ public class Runner_Final : MonoBehaviour {
 
 	void Awake(){
 		AudioAnalyzer.Instance.Init ();
+	}
+
+	IEnumerator endGame(){
+		yield return new WaitForSeconds(1);
+		GameLogic.Instance.didFailLevel ();
 	}
 }
