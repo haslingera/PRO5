@@ -1,11 +1,16 @@
 fileFormatVersion: 2
 guid: e264e56ec6bd339409134115e3ebaf10
+<<<<<<< HEAD
 timeCreated: 1449132831
+=======
+timeCreated: 1449131786
+>>>>>>> f0f93d9c8b2dc901b81d89da45ee91fbf5942124
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
     100000: eyes_default
+<<<<<<< HEAD
     100002: Neutral
     100004: //RootNode
     100006: teeth
@@ -13,6 +18,13 @@ ModelImporter:
     400002: Neutral
     400004: //RootNode
     400006: teeth
+=======
+    100002: //RootNode
+    100004: teeth
+    400000: eyes_default
+    400002: //RootNode
+    400004: teeth
+>>>>>>> f0f93d9c8b2dc901b81d89da45ee91fbf5942124
     2300000: teeth
     3300000: teeth
     4300000: Neutral
@@ -20,7 +32,11 @@ ModelImporter:
     4300004: eyes_default
     9500000: //RootNode
     13700000: eyes_default
+<<<<<<< HEAD
     13700002: Neutral
+=======
+    13700002: //RootNode
+>>>>>>> f0f93d9c8b2dc901b81d89da45ee91fbf5942124
   materials:
     importMaterials: 1
     materialName: 0
