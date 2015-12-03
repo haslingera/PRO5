@@ -1,34 +1,15 @@
 fileFormatVersion: 2
 guid: e264e56ec6bd339409134115e3ebaf10
-timeCreated: 1449102721
+timeCreated: 1449130920
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: back
-    100002: eyes_default
-    100004: left
-    100006: Neutral
-    100008: //RootNode
-    100010: pSphere2
-    100012: teeth
-    100014: transform4
-    400000: back
-    400002: eyes_default
-    400004: left
-    400006: Neutral
-    400008: //RootNode
-    400010: pSphere2
-    400012: teeth
-    400014: transform4
-    2300000: teeth
-    3300000: teeth
+    100000: //RootNode
+    400000: //RootNode
     4300000: Neutral
-    4300002: teeth
-    4300004: eyes_default
     9500000: //RootNode
-    13700000: eyes_default
-    13700002: Neutral
+    13700000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
