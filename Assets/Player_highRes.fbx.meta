@@ -1,15 +1,24 @@
 fileFormatVersion: 2
 guid: e264e56ec6bd339409134115e3ebaf10
-timeCreated: 1449130920
+timeCreated: 1449131786
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
+    100000: eyes_default
+    100002: //RootNode
+    100004: teeth
+    400000: eyes_default
+    400002: //RootNode
+    400004: teeth
+    2300000: teeth
+    3300000: teeth
     4300000: Neutral
+    4300002: teeth
+    4300004: eyes_default
     9500000: //RootNode
-    13700000: //RootNode
+    13700000: eyes_default
+    13700002: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
