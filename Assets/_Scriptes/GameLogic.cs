@@ -20,7 +20,7 @@ public class GameLogic : MonoBehaviour {
 	// --------------------
 
 	void Awake() {
-		DontDestroyOnLoad (this.transform.gameObject);
+		DontDestroyOnLoad(this.transform.gameObject);
 	}
 
 	void Start() {
@@ -51,8 +51,14 @@ public class GameLogic : MonoBehaviour {
 	//    Actual Class Data
 	// -------------------------
 
-	private float defaultLevelTime = 5.0f; // Default Time in Seconds
+	//private float defaultLevelTime = 5.0f; // Default Time in Seconds
 	private float actualLevelTime;
+
+	private const int defaultBPM = 80;
+	private const int defaultLevelNumberOfBeats = 8;
+	private int currentBPM = defaultBPM;
+	private int currentLevelNumberOfBeats = 8;
+
 	private bool didStartLevel = false;
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
@@ -62,8 +68,9 @@ public class GameLogic : MonoBehaviour {
 	public void startNewSinglePlayerGame() {
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
-		this.actualLevelTime = defaultLevelTime;
-		this.didStartLevel = false;
+		this.currentBPM = defaultBPM;
+		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats;
+		this.actualLevelTime = 60.0f / defaultBPM * defaultLevelNumberOfBeats;
 
 		this.loadNextLevel ();
 	}
@@ -95,7 +102,7 @@ public class GameLogic : MonoBehaviour {
 		this.didStartLevel = false;
 
 		// set time for new level
-		this.actualLevelTime = this.defaultLevelTime;
+		this.actualLevelTime = 60.0f / this.currentBPM * defaultLevelNumberOfBeats;
 
 		// load random next level
 		int randomNumber;
@@ -131,6 +138,12 @@ public class GameLogic : MonoBehaviour {
 		return this.numberOfLevelsCompleted;
 	}
 
+	public void setLevelNumberOfBeats(int numberOfBeats) {
+		this.currentLevelNumberOfBeats = numberOfBeats;
+		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
+	}
+
+	// deprecated
 	public void setLevelTime(float levelTime) {
 		this.actualLevelTime = levelTime;
 	}
