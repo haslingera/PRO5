@@ -8,12 +8,9 @@ public class Runner_Final : MonoBehaviour {
 	private float startTimer;
 	private float EndTimer;
 	private bool already = false;
-	private float[] height = new float[2];
 	
 	void Start () {
 		rigbi = GetComponent<Rigidbody> ();
-		height[0] = 0.13f;
-		height[1] = 2.1f;
 	}
 	
 
