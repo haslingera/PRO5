@@ -7,6 +7,7 @@ public class FlappySchrei : MonoBehaviour {
 
 	public float maxSpeed;
 	public float acceleration;
+	public float gameSpeed = 1.0f;
 
 	private Rigidbody rigbi;
 
@@ -22,9 +23,9 @@ public class FlappySchrei : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (AudioAnalyzer.Instance.getMicLoudness () > 30f) {
-			rigbi.AddForce (Vector3.up * 300);
+			rigbi.AddForce (Vector3.up * 300 * gameSpeed);
 		} else {
-			rigbi.AddForce(Physics.gravity * rigbi.mass);
+			rigbi.AddForce(Physics.gravity * rigbi.mass * gameSpeed);
 		}
 	}
 }

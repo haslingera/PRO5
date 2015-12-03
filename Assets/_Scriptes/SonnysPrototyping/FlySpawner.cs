@@ -9,12 +9,13 @@ public class FlySpawner : MonoBehaviour {
 	public float maxTime = 5.0f;
 	public bool randomSpawn = false;
 	public float rangeY;
+	public float gameSpeed = 1.0f;
 	
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (!isSpawning) {
 			isSpawning = true;
-			StartCoroutine(SpawnObject(Random.Range(minTime, maxTime)));
+			StartCoroutine(SpawnObject(Random.Range(minTime/gameSpeed, maxTime/gameSpeed)));
 		}
 	}
 
