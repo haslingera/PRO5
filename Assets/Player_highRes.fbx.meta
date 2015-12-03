@@ -1,15 +1,26 @@
 fileFormatVersion: 2
 guid: e264e56ec6bd339409134115e3ebaf10
-timeCreated: 1449130920
+timeCreated: 1449132831
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
+    100000: eyes_default
+    100002: Neutral
+    100004: //RootNode
+    100006: teeth
+    400000: eyes_default
+    400002: Neutral
+    400004: //RootNode
+    400006: teeth
+    2300000: teeth
+    3300000: teeth
     4300000: Neutral
+    4300002: teeth
+    4300004: eyes_default
     9500000: //RootNode
-    13700000: //RootNode
+    13700000: eyes_default
+    13700002: Neutral
   materials:
     importMaterials: 1
     materialName: 0
@@ -51,8 +62,8 @@ ModelImporter:
   tangentSpace:
     normalSmoothAngle: 60
     splitTangentsAcrossUV: 1
-    normalImportMode: 1
-    tangentImportMode: 1
+    normalImportMode: 0
+    tangentImportMode: 0
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
