@@ -14,6 +14,8 @@ public class Runner_ObstSpawn : MonoBehaviour {
 	void Start () {
 		height[0] = 0.13f;
 		height[1] = 2.1f;
+		setSpeed ();
+
 	}
 	
 	// Update is called once per frame
@@ -44,5 +46,10 @@ public class Runner_ObstSpawn : MonoBehaviour {
 		}
 	}
 
+	void setSpeed(){
+
+		GameObject.Find ("Obstacle").GetComponent<StationaryMovement> ().constantSpeedX = -0.2f;
+
+	}
 
 }
