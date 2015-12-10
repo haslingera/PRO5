@@ -29,7 +29,7 @@ public class FlySpawner : MonoBehaviour {
 		GameObject clone;
 		yield return new WaitForSeconds(seconds);
 		clone = Instantiate(spawningObject, transform.position + new Vector3(0,Random.Range (-rangeY, rangeY),0), spawningObject.transform.rotation) as GameObject; 
-		clone.GetComponent<StationaryMovement> ().constantSpeedX = -0.2f*gameSpeed;
+		clone.GetComponent<StationaryMovement> ().constantSpeedX *= gameSpeed;
 		isSpawning = false;
 	}
 
