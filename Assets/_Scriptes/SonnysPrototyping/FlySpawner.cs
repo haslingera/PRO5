@@ -4,13 +4,18 @@ using System.Collections;
 public class FlySpawner : MonoBehaviour {
 
 	public GameObject spawningObject;
-	private bool isSpawning = false;
 	public float minTime = 1.0f;
 	public float maxTime = 5.0f;
 	public bool randomSpawn = false;
 	public float rangeY;
-	public float gameSpeed = 1.0f;
-	
+
+	private bool isSpawning = false;
+	private float gameSpeed = 1f;
+
+	void Start () {
+		gameSpeed = GameObject.Find("LevelLogic").GetComponent<LevelLogic>().numberOfBeats/8.0f;
+	}
+
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (!isSpawning) {
@@ -20,9 +25,11 @@ public class FlySpawner : MonoBehaviour {
 	}
 
 	IEnumerator SpawnObject(float seconds)
-	{		
+	{	
+		GameObject clone;
 		yield return new WaitForSeconds(seconds);
-		Instantiate(spawningObject, transform.position + new Vector3(0,Random.Range (-rangeY, rangeY),0), spawningObject.transform.rotation); 
+		clone = Instantiate(spawningObject, transform.position + new Vector3(0,Random.Range (-rangeY, rangeY),0), spawningObject.transform.rotation) as GameObject; 
+		clone.GetComponent<StationaryMovement> ().constantSpeedX = -0.2f*gameSpeed;
 		isSpawning = false;
 	}
 
