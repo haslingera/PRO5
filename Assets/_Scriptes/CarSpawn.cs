@@ -28,7 +28,7 @@ public class CarSpawn : MonoBehaviour {
 
 
 		if (!this.moves () && !onTheMove) {
-			this.speed = Random.Range (1, 5);
+			this.speed = Random.Range (1, 8);
 			iTween.MoveTo (this.gameObject, iTween.Hash ("z", -16, "easetype", "linear", "time", speed));
 			this.onTheMove = true;
 		}
