@@ -1,0 +1,130 @@
+﻿using UnityEngine;
+using System.Collections.Generic;
+using System.Timers;
+
+public class AudioPlayer : MonoBehaviour {
+
+	//slider input
+	/*
+	public float soundVolume = 0.5;
+	public float musicVolume = 0.5;
+	*/
+
+	private static AudioPlayer instance;
+
+	private Queue<AudioClip> audioQueue;
+	private AudioSource audioSource;
+	private AudioSource backgroundAudioSource;
+	private float timeSinceLastPlay; // in seconds
+	private float timeOfLastPlayedClip; // in seconds
+ 
+	// Singleton Methods
+	// Static singleton property
+	public static AudioPlayer Instance {
+		// Here we use the ?? operator, to return 'instance' if 'instance' does not equal null
+		// otherwise we assign instance to a new component and return that
+		get { return instance ?? (instance = new GameObject ("AudioPlayer").AddComponent<AudioPlayer> ()); }
+	}
+	
+	void Awake() {
+		DontDestroyOnLoad(this.transform.gameObject);
+
+		this.audioSource = this.gameObject.AddComponent<AudioSource> ();
+		this.backgroundAudioSource = this.gameObject.AddComponent<AudioSource> ();
+		AudioClip iSawTheSignClip = Resources.Load ("iSawTheSign_short") as AudioClip;
+		this.backgroundAudioSource.clip = iSawTheSignClip;
+		this.backgroundAudioSource.pitch = 1.5f;
+		audioQueue = new Queue<AudioClip>();
+	}
+
+	protected void Update() {
+		timeSinceLastPlay += Time.deltaTime;
+	}
+
+	public void Init() { /* do nothing */ }
+
+	public void startBackgroundAudio() {
+		backgroundAudioSource.Play ();
+	}
+
+	public void queueAudioClip(AudioClip audioClip) {
+		this.queueAudioClip (audioClip, 0.0f);
+	}
+
+	public void queueAudioClip(AudioClip audioClip, float delay) {
+		Debug.Log ("queue audio clip called");
+		// calculate time for next audio playback
+		AudioClip[] audioClips = audioQueue.ToArray();
+		float totalWaitingTime = delay; // seconds
+		foreach (AudioClip ac in audioClips) {
+			totalWaitingTime += ac.length;
+		}
+			
+		totalWaitingTime += Mathf.Max (0, timeOfLastPlayedClip - timeSinceLastPlay);
+		int totalWaitingTimeInt = (int) totalWaitingTime * 1000;
+
+		audioQueue.Enqueue(audioClip);
+		Invoke ("playNextClipInQueue", totalWaitingTime);
+	}
+
+	public bool playAudioClipIfFree(AudioClip audioClip) {
+		if (timeSinceLastPlay > timeOfLastPlayedClip && audioQueue.Count == 0) {
+			timeOfLastPlayedClip = audioClip.length;
+			timeSinceLastPlay = 0.0f;
+
+			audioSource.PlayOneShot (audioClip);
+			return true;
+		}
+
+		return false;
+	}
+
+	public void playAudioClipForced(AudioClip audioClip) {
+		//  stop all other playback and delete the queue
+		audioQueue.Clear ();
+		audioSource.Stop ();
+
+		timeOfLastPlayedClip = audioClip.length;
+		timeSinceLastPlay = 0.0f;
+
+		audioSource.PlayOneShot (audioClip);
+	}
+
+	public void playSoundEffect(AudioClip audioClip) {
+		audioSource.PlayOneShot (audioClip);
+	}
+
+	public void playBackgroundSoundEffect() {
+		this.backgroundAudioSource.Play ();
+	}
+
+
+	private void playNextClipInQueue() {
+		Debug.Log ("Playing next shot out of queue: ");
+
+		// save the time and lenght of the clip that is going to be played
+		timeOfLastPlayedClip = audioQueue.Peek ().length;
+		timeSinceLastPlay = 0.0f;
+
+		// play the audio clip
+		audioSource.PlayOneShot (audioQueue.Dequeue ());
+	}
+
+	public void ChangeSoundVolume(float soundVolume){ //between 0 and 1
+		//change volume of sound effects (speech)
+		//AudioListener audioListner = GameObject.Find ("Main Camera").GetComponent<AudioListener> ();
+		//AudioListener.volume = soundVolume;
+		audioSource.volume = soundVolume;
+		PlayerPrefs.SetFloat("SoundVolume", (float) soundVolume);
+		// Best tutorial:
+		// http://answers.unity3d.com/questions/306684/how-to-change-volume-on-many-audio-objects-with-sp.html
+	}
+
+	public void ChangeMusicVolume(float musicVolume){ // between 0 and 1
+		//change volume of background music
+		backgroundAudioSource.volume = musicVolume;
+		PlayerPrefs.SetFloat("MusicVolume", (float) musicVolume);
+		// Best tutorial:
+		// http://answers.unity3d.com/questions/306684/how-to-change-volume-on-many-audio-objects-with-sp.html
+	}
+}
