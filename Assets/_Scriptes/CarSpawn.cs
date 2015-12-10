@@ -87,15 +87,13 @@ public class CarSpawn : MonoBehaviour {
 
 	void levelSpeed(){
 
-		if(worldSpeed < 1.4f)
-			this.speed = Random.Range (2, 7);
+		//Debug.Log (worldSpeed);
+		float temp = worldSpeed - 1;
 
-		if(worldSpeed > 1.4f && worldSpeed < 1.9f)
-			this.speed = Random.Range (2, 6);
-
-		if(worldSpeed > 1.9f)
-			this.speed = Random.Range (1, 4);
-
+		if(temp < 1)
+			this.speed = Random.Range (2-temp, 7-temp);
+		else
+			this.speed = Random.Range (1, 6-temp);
 	}
 
 }
