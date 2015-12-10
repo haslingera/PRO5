@@ -13,7 +13,7 @@ public class Player_Road_Scene : MonoBehaviour {
 	void Start () {
 
 		start = this.transform.position;
-		end = new Vector3 (20f, start.y,start.z);
+		end = new Vector3 (18f, start.y,start.z);
 		newPos = start;
 	
 	}
@@ -22,10 +22,6 @@ public class Player_Road_Scene : MonoBehaviour {
 	void Update () {
 
 		db = AudioAnalyzer.Instance.getMicLoudness();
-
-		if((int)this.transform.position.x == (int)end.x){
-			Debug.Log ("END");
-		}
 
 		if (!move) {
 			if (db > 15f) {
@@ -38,6 +34,10 @@ public class Player_Road_Scene : MonoBehaviour {
 				move = false;
 			}
 		}
+
+		if(this.transform.position.x > end.x){
+			GameLogic.Instance.didFinishLevel();
+		}
 	}
 
 	void Awake(){
@@ -46,8 +46,9 @@ public class Player_Road_Scene : MonoBehaviour {
 
 	public void  resetPlayer(){
 
-		this.transform.position = start;
-		newPos = start;
+		//this.transform.position = start;
+		//newPos = start;
+		GameLogic.Instance.didFailLevel ();
 
 	}
 }
