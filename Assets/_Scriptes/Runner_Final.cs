@@ -45,10 +45,11 @@ public class Runner_Final : MonoBehaviour {
 		if (!already) {
 			startTimer = Time.time;
 		}
-		if (!onStart &&(int)start.x != (int)this.transform.position.x) {
+		if (!onStart &&(int)start.x != (int)this.transform.position.x ) {
 			StartCoroutine(endGame());
 		}
-
+		if(this.transform.eulerAngles.x > 50 & this.transform.eulerAngles.x < 100)
+			Debug.Log (this.transform.eulerAngles.x);
 
 	}
 	
