@@ -10,6 +10,7 @@ public class CarSpawn : MonoBehaviour {
 	bool onTheMove = false;
 	GameObject clone;
 	string name;
+	float worldSpeed;
 
 	// Use this for initialization
 	void Start () {
@@ -20,6 +21,7 @@ public class CarSpawn : MonoBehaviour {
 		player = GameObject.Find ("Player");
 		end = new Vector3 (this.gameObject.transform.position.x,this.gameObject.transform.position.y,-16f);
 		iTween.Init (this.gameObject);
+		worldSpeed = GameLogic.Instance.getLevelSpeed();
 
 	}
 	
@@ -28,7 +30,7 @@ public class CarSpawn : MonoBehaviour {
 
 
 		if (!this.moves () && !onTheMove) {
-			this.speed = Random.Range (1, 8);
+			levelSpeed();
 			iTween.MoveTo (this.gameObject, iTween.Hash ("z", -16, "easetype", "linear", "time", speed));
 			this.onTheMove = true;
 		}
@@ -81,6 +83,19 @@ public class CarSpawn : MonoBehaviour {
 		{
 			GameObject.Find("Player").GetComponent<Player_Road_Scene>().resetPlayer();
 		}
+	}
+
+	void levelSpeed(){
+
+		if(worldSpeed < 1.4f)
+			this.speed = Random.Range (2, 7);
+
+		if(worldSpeed > 1.4f && worldSpeed < 1.9f)
+			this.speed = Random.Range (2, 6);
+
+		if(worldSpeed > 1.9f)
+			this.speed = Random.Range (1, 4);
+
 	}
 
 }

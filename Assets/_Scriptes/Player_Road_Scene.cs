@@ -13,7 +13,7 @@ public class Player_Road_Scene : MonoBehaviour {
 	void Start () {
 
 		start = this.transform.position;
-		end = new Vector3 (19.5f, start.y,start.z);
+		end = new Vector3 (18f, start.y,start.z);
 		newPos = start;
 	
 	}
