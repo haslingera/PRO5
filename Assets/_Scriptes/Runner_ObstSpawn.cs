@@ -38,18 +38,15 @@ public class Runner_ObstSpawn : MonoBehaviour {
 		Destroy (this.gameObject);
 	}
 
-	void OnCollisionEnter(Collision col)
-	{
-		if (col.gameObject.name == "Player")
-		{
-			//endGame or subtract Life
-		}
-	}
-
 	void setSpeed(){
 
-		GameObject.Find ("Obstacle").GetComponent<StationaryMovement> ().constantSpeedX = -0.2f;
+		float temp = GameLogic.Instance.getLevelSpeed ();
+		temp = temp * -1;
+		temp += 0.9f;
+		GameObject.Find ("Obstacle").GetComponent<StationaryMovement> ().constantSpeedX = temp;
 
 	}
+
+
 
 }

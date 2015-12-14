@@ -13,6 +13,7 @@ public class FlappySchrei : MonoBehaviour {
 
 	void Awake() {
 		AudioAnalyzer.Instance.Init ();
+		gameSpeed = GameObject.Find("LevelLogic").GetComponent<LevelLogic>().numberOfBeats/8.0f;
 	}
 
 	void Start () {

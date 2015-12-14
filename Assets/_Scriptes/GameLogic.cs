@@ -24,17 +24,27 @@ public class GameLogic : MonoBehaviour {
 	}
 
 	void Start() {
-
+		AudioPlayer.Instance.Init ();
+		this.metronomClip = Resources.Load ("clap") as AudioClip;
 	}
 
 	void Update() {
 		// if level is started, decrease level time
-		if (this.didStartLevel) {
-			this.actualLevelTime -= Time.deltaTime;
-
+		if (this.didStartLevel && !this.isGameOver) {
 			// if level time is below 0, then set that this level is lost
+			this.actualLevelTime -= Time.deltaTime;
+			Debug.Log ("actual Level Time: " + actualLevelTime);
 			if (this.actualLevelTime < 0) {
 				this.didFailLevel ();
+			}
+
+			// update metronom timer for metronomsound
+			this.metronomTimer += Time.deltaTime;
+			if (this.metronomTimer > (60.0f / ((float) this.currentBPM))) {
+				this.metronomTimer -= (60.0f / ((float) this.currentBPM));
+
+				// play metronom sound
+				AudioPlayer.Instance.playSoundEffect (this.metronomClip);
 			}
 		}
 	}
@@ -51,21 +61,29 @@ public class GameLogic : MonoBehaviour {
 	//    Actual Class Data
 	// -------------------------
 
+	private bool isInDemoMode = false;
+
 	//private float defaultLevelTime = 5.0f; // Default Time in Seconds
 	private float actualLevelTime;
 
-	private const int defaultBPM = 80;
+	private const int defaultBPM = 60;
 	private const int defaultLevelNumberOfBeats = 8;
 	private int currentBPM = defaultBPM;
 	private int currentLevelNumberOfBeats = 8;
 
+	private float metronomTimer = 0.0f;
+	private AudioClip metronomClip;
+
 	private bool didStartLevel = false;
+	private bool isGameOver = false;
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
 	private string[] levels = new string[] {"Destroy Schrei", "Flappy Schrei", "Fliegenesser"};
 	private string actualLevel = "";
 
 	public void startNewSinglePlayerGame() {
+		this.isInDemoMode = false;
+		this.isGameOver = false;
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = defaultBPM;
@@ -73,6 +91,21 @@ public class GameLogic : MonoBehaviour {
 		this.actualLevelTime = 60.0f / defaultBPM * defaultLevelNumberOfBeats;
 
 		this.loadNextLevel ();
+	}
+
+	public void startNewDemoGame(int numberOfBeats) {
+		this.isInDemoMode = true;
+		this.isGameOver = false;
+		this.numberOfLives = 0;
+		this.numberOfLevelsCompleted = 0;
+		this.currentBPM = defaultBPM;
+		this.currentLevelNumberOfBeats = numberOfBeats;
+		this.actualLevelTime = 60.0f / defaultBPM * this.currentLevelNumberOfBeats;
+
+		this.didStartLevel = true;
+
+		// start demo sound
+		AudioPlayer.Instance.playBackgroundSoundEffect ();
 	}
 
 	public void didFinishLevel() {
@@ -97,7 +130,7 @@ public class GameLogic : MonoBehaviour {
 		}
 	}
 
-	public void loadNextLevel() {
+	private void loadNextLevel() {
 		// set didStartLevel to false
 		this.didStartLevel = false;
 
@@ -121,6 +154,8 @@ public class GameLogic : MonoBehaviour {
 	// ------------------------
 
 	private void gameOver() {
+		this.isGameOver = true;
+		Debug.Log ("game Over!!!!");
 		Application.LoadLevel ("GameOver");
 	}
 
@@ -136,6 +171,10 @@ public class GameLogic : MonoBehaviour {
 
 	public int getNumberOfLevelsCompleted() {
 		return this.numberOfLevelsCompleted;
+	}
+
+	public float getLevelSpeed() {
+		return ((float) this.currentBPM) / ((float) defaultBPM);
 	}
 
 	public void setLevelNumberOfBeats(int numberOfBeats) {
