@@ -14,7 +14,8 @@ public class AudioPlayer : MonoBehaviour {
 
 	private Queue<AudioClip> audioQueue;
 	private AudioSource audioSource;
-	private AudioSource backgroundAudioSource;
+	private AudioSource tickTockAudioSource;
+	private AudioSource tickTockEndAudioSource;
 	private float timeSinceLastPlay; // in seconds
 	private float timeOfLastPlayedClip; // in seconds
  
@@ -30,10 +31,16 @@ public class AudioPlayer : MonoBehaviour {
 		DontDestroyOnLoad(this.transform.gameObject);
 
 		this.audioSource = this.gameObject.AddComponent<AudioSource> ();
-		this.backgroundAudioSource = this.gameObject.AddComponent<AudioSource> ();
-		AudioClip iSawTheSignClip = Resources.Load ("iSawTheSign_short") as AudioClip;
-		this.backgroundAudioSource.clip = iSawTheSignClip;
-		this.backgroundAudioSource.pitch = 1.5f;
+
+		this.tickTockAudioSource = this.gameObject.AddComponent<AudioSource> ();
+		this.tickTockEndAudioSource = this.gameObject.AddComponent<AudioSource> ();
+
+		AudioClip tickTockClip = Resources.Load ("TickTock") as AudioClip;
+		AudioClip tickTockEndClip = Resources.Load ("TickTockEnd") as AudioClip;
+
+		this.tickTockAudioSource.clip = tickTockClip;
+		this.tickTockEndAudioSource.clip = tickTockEndClip;
+
 		audioQueue = new Queue<AudioClip>();
 	}
 
@@ -43,9 +50,31 @@ public class AudioPlayer : MonoBehaviour {
 
 	public void Init() { /* do nothing */ }
 
-	public void startBackgroundAudio() {
-		backgroundAudioSource.Play ();
+	public void startTickTockAudio(float delay) {
+		this.tickTockAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
+		this.tickTockAudioSource.Play ();
+		this.tickTockAudioSource.loop = true;
+
+		this.tickTockEndAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
+		this.tickTockEndAudioSource.PlayDelayed (delay);
+		this.tickTockEndAudioSource.loop = false;
 	}
+
+	public void stopLoopingTickTock() {
+		this.tickTockAudioSource.loop = false;
+	}
+
+
+
+
+
+
+
+
+	// --------------------------
+	// Traditional AudioManager Code
+	// --------------------------
+
 
 	public void queueAudioClip(AudioClip audioClip) {
 		this.queueAudioClip (audioClip, 0.0f);
@@ -94,11 +123,6 @@ public class AudioPlayer : MonoBehaviour {
 		audioSource.PlayOneShot (audioClip);
 	}
 
-	public void playBackgroundSoundEffect() {
-		this.backgroundAudioSource.Play ();
-	}
-
-
 	private void playNextClipInQueue() {
 		Debug.Log ("Playing next shot out of queue: ");
 
@@ -109,6 +133,14 @@ public class AudioPlayer : MonoBehaviour {
 		// play the audio clip
 		audioSource.PlayOneShot (audioQueue.Dequeue ());
 	}
+
+
+
+
+	// ----------------------
+	// Global Volume Control
+	// ----------------------
+
 
 	public void ChangeSoundVolume(float soundVolume){ //between 0 and 1
 		//change volume of sound effects (speech)
@@ -122,7 +154,7 @@ public class AudioPlayer : MonoBehaviour {
 
 	public void ChangeMusicVolume(float musicVolume){ // between 0 and 1
 		//change volume of background music
-		backgroundAudioSource.volume = musicVolume;
+		tickTockAudioSource.volume = musicVolume;
 		PlayerPrefs.SetFloat("MusicVolume", (float) musicVolume);
 		// Best tutorial:
 		// http://answers.unity3d.com/questions/306684/how-to-change-volume-on-many-audio-objects-with-sp.html

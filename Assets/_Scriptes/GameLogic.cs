@@ -33,9 +33,17 @@ public class GameLogic : MonoBehaviour {
 		if (this.didStartLevel && !this.isGameOver) {
 			// if level time is below 0, then set that this level is lost
 			this.actualLevelTime -= Time.deltaTime;
-			Debug.Log ("actual Level Time: " + actualLevelTime);
+			//Debug.Log ("actual Level Time: " + actualLevelTime);
 			if (this.actualLevelTime < 0) {
 				this.didFailLevel ();
+			}
+
+			// calculate how many beats are left (for debugging)
+			float beatsLeft = this.actualLevelTime / (60.0f / this.currentBPM);
+			Debug.Log ("Beats Left: " + beatsLeft);
+
+			if (beatsLeft < 5.0f) {
+				AudioPlayer.Instance.stopLoopingTickTock();
 			}
 
 			// update metronom timer for metronomsound
@@ -44,7 +52,7 @@ public class GameLogic : MonoBehaviour {
 				this.metronomTimer -= (60.0f / ((float) this.currentBPM));
 
 				// play metronom sound
-				AudioPlayer.Instance.playSoundEffect (this.metronomClip);
+				//AudioPlayer.Instance.playSoundEffect (this.metronomClip);
 			}
 		}
 	}
@@ -66,7 +74,7 @@ public class GameLogic : MonoBehaviour {
 	//private float defaultLevelTime = 5.0f; // Default Time in Seconds
 	private float actualLevelTime;
 
-	private const int defaultBPM = 60;
+	private const int defaultBPM = 80;
 	private const int defaultLevelNumberOfBeats = 8;
 	private int currentBPM = defaultBPM;
 	private int currentLevelNumberOfBeats = 8;
@@ -99,13 +107,15 @@ public class GameLogic : MonoBehaviour {
 		this.numberOfLives = 0;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = defaultBPM;
-		this.currentLevelNumberOfBeats = numberOfBeats;
-		this.actualLevelTime = 60.0f / defaultBPM * this.currentLevelNumberOfBeats;
+		this.currentLevelNumberOfBeats = numberOfBeats-1;
+		this.actualLevelTime = 60.0f / currentBPM * this.currentLevelNumberOfBeats;
 
 		this.didStartLevel = true;
 
 		// start demo sound
-		AudioPlayer.Instance.playBackgroundSoundEffect ();
+		// calculate delay for ticktackEndClip: delay = (numberOfBeats - 3) * timeABeatLasts // why '-3'? --> the "gong" sound is the last sound, that's why it is not -4
+		float delay = (this.currentLevelNumberOfBeats - 3) * (60.0f / this.currentBPM);
+		AudioPlayer.Instance.startTickTockAudio (delay);
 	}
 
 	public void didFinishLevel() {
