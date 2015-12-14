@@ -24,17 +24,35 @@ public class GameLogic : MonoBehaviour {
 	}
 
 	void Start() {
-
+		AudioPlayer.Instance.Init ();
+		this.metronomClip = Resources.Load ("clap") as AudioClip;
 	}
 
 	void Update() {
 		// if level is started, decrease level time
-		if (this.didStartLevel) {
-			this.actualLevelTime -= Time.deltaTime;
-
+		if (this.didStartLevel && !this.isGameOver) {
 			// if level time is below 0, then set that this level is lost
+			this.actualLevelTime -= Time.deltaTime;
+			//Debug.Log ("actual Level Time: " + actualLevelTime);
 			if (this.actualLevelTime < 0) {
 				this.didFailLevel ();
+			}
+
+			// calculate how many beats are left (for debugging)
+			float beatsLeft = this.actualLevelTime / (60.0f / this.currentBPM);
+			Debug.Log ("Beats Left: " + beatsLeft);
+
+			if (beatsLeft < 5.0f) {
+				AudioPlayer.Instance.stopLoopingTickTock();
+			}
+
+			// update metronom timer for metronomsound
+			this.metronomTimer += Time.deltaTime;
+			if (this.metronomTimer > (60.0f / ((float) this.currentBPM))) {
+				this.metronomTimer -= (60.0f / ((float) this.currentBPM));
+
+				// play metronom sound
+				//AudioPlayer.Instance.playSoundEffect (this.metronomClip);
 			}
 		}
 	}
@@ -56,12 +74,16 @@ public class GameLogic : MonoBehaviour {
 	//private float defaultLevelTime = 5.0f; // Default Time in Seconds
 	private float actualLevelTime;
 
-	private const int defaultBPM = 60;
+	private const int defaultBPM = 80;
 	private const int defaultLevelNumberOfBeats = 8;
 	private int currentBPM = defaultBPM;
 	private int currentLevelNumberOfBeats = 8;
 
+	private float metronomTimer = 0.0f;
+	private AudioClip metronomClip;
+
 	private bool didStartLevel = false;
+	private bool isGameOver = false;
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
 	private string[] levels = new string[] {"Destroy Schrei", "Flappy Schrei", "Fliegenesser"};
@@ -69,6 +91,7 @@ public class GameLogic : MonoBehaviour {
 
 	public void startNewSinglePlayerGame() {
 		this.isInDemoMode = false;
+		this.isGameOver = false;
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = defaultBPM;
@@ -80,14 +103,19 @@ public class GameLogic : MonoBehaviour {
 
 	public void startNewDemoGame(int numberOfBeats) {
 		this.isInDemoMode = true;
-
+		this.isGameOver = false;
 		this.numberOfLives = 0;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = defaultBPM;
-		this.currentLevelNumberOfBeats = numberOfBeats;
-		this.actualLevelTime = 60.0f / defaultBPM * this.currentLevelNumberOfBeats;
+		this.currentLevelNumberOfBeats = numberOfBeats-1;
+		this.actualLevelTime = 60.0f / currentBPM * this.currentLevelNumberOfBeats;
 
 		this.didStartLevel = true;
+
+		// start demo sound
+		// calculate delay for ticktackEndClip: delay = (numberOfBeats - 3) * timeABeatLasts // why '-3'? --> the "gong" sound is the last sound, that's why it is not -4
+		float delay = (this.currentLevelNumberOfBeats - 3) * (60.0f / this.currentBPM);
+		AudioPlayer.Instance.startTickTockAudio (delay);
 	}
 
 	public void didFinishLevel() {
@@ -112,7 +140,7 @@ public class GameLogic : MonoBehaviour {
 		}
 	}
 
-	public void loadNextLevel() {
+	private void loadNextLevel() {
 		// set didStartLevel to false
 		this.didStartLevel = false;
 
@@ -136,6 +164,8 @@ public class GameLogic : MonoBehaviour {
 	// ------------------------
 
 	private void gameOver() {
+		this.isGameOver = true;
+		Debug.Log ("game Over!!!!");
 		Application.LoadLevel ("GameOver");
 	}
 

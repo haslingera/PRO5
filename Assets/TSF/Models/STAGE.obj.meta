@@ -3,7 +3,11 @@ guid: c21ade05d7eb14f54a3d2793f3fa47dd
 timeCreated: 1448353290
 licenseType: Free
 ModelImporter:
+<<<<<<< HEAD
   serializedVersion: 18
+=======
+  serializedVersion: 19
+>>>>>>> 13b75bc32ae9a9a6bbc9b6a6c4cc46477260b0b1
   fileIDToRecycleName:
     100000: pCylinder1
     100002: //RootNode
@@ -25,6 +29,10 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+<<<<<<< HEAD
+=======
+    resampleRotations: 1
+>>>>>>> 13b75bc32ae9a9a6bbc9b6a6c4cc46477260b0b1
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 
@@ -32,9 +40,15 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     animationCompression: 1
+<<<<<<< HEAD
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
+=======
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+>>>>>>> 13b75bc32ae9a9a6bbc9b6a6c4cc46477260b0b1
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations: []
@@ -58,20 +72,34 @@ ModelImporter:
     useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
+<<<<<<< HEAD
     splitTangentsAcrossUV: 1
     normalImportMode: 1
     tangentImportMode: 1
+=======
+    normalImportMode: 1
+    tangentImportMode: 4
+>>>>>>> 13b75bc32ae9a9a6bbc9b6a6c4cc46477260b0b1
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
     skeleton: []
+<<<<<<< HEAD
     armTwist: .5
     foreArmTwist: .5
     upperLegTwist: .5
     legTwist: .5
     armStretch: .0500000007
     legStretch: .0500000007
+=======
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+>>>>>>> 13b75bc32ae9a9a6bbc9b6a6c4cc46477260b0b1
     feetSpacing: 0
     rootMotionBoneName: 
     hasTranslationDoF: 0

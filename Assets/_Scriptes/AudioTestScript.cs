@@ -11,7 +11,7 @@ public class AudioTestScript : MonoBehaviour {
 		//AudioAnalyzer.Instance.Init ();
 		//time = 0.0f;
 
-		GameLogic.Instance.startNewSinglePlayerGame ();
+		GameLogic.Instance.startNewDemoGame (8);
 	}
 	
 	// Update is called once per frame
