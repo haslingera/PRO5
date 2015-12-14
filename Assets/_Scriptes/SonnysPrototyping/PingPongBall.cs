@@ -9,18 +9,20 @@ public class PingPongBall : MonoBehaviour {
 
 	void Start () {
 		movement = GetComponent<StationaryMovement> ();
+		movement.constantSpeedX *= GameLogic.Instance.getLevelSpeed ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (allowed1 && AudioAnalyzer.Instance.getMicLoudness() > 0.1f) {
-			movement.constantSpeedX += 0.1f;
 			movement.revertMovement();
 			allowed1 = false;
 		} else if (allowed2 && AudioAnalyzer.Instance.getMicLoudness() > 0.1f) {
-			movement.constantSpeedX += 0.1f;
 			movement.revertMovement();
 			allowed2 = false;
+		}
+		if (transform.position.y < 0.0f) {
+			GameLogic.Instance.didFailLevel ();
 		}
 	}
 
