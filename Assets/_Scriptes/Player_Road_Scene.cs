@@ -13,7 +13,7 @@ public class Player_Road_Scene : MonoBehaviour {
 	void Start () {
 
 		start = this.transform.position;
-		end = new Vector3 (18f, start.y,start.z);
+		end = new Vector3 (22f, start.y,start.z);
 		newPos = start;
 	
 	}
@@ -44,11 +44,10 @@ public class Player_Road_Scene : MonoBehaviour {
 		AudioAnalyzer.Instance.Init ();
 	}
 
-	public void  resetPlayer(){
+    public IEnumerator resetPlayer(){
 
-		//this.transform.position = start;
-		//newPos = start;
-		GameLogic.Instance.didFailLevel ();
+        yield return new WaitForSeconds(1);
+        GameLogic.Instance.didFailLevel ();
 
 	}
 }
