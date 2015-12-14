@@ -25,7 +25,6 @@ public class GameLogic : MonoBehaviour {
 
 	void Start() {
 		AudioPlayer.Instance.Init ();
-		this.metronomClip = Resources.Load ("clap") as AudioClip;
 	}
 
 	void Update() {
@@ -47,19 +46,22 @@ public class GameLogic : MonoBehaviour {
 			}
 
 			// update metronom timer for metronomsound
-			this.metronomTimer += Time.deltaTime;
+			/*this.metronomTimer += Time.deltaTime;
 			if (this.metronomTimer > (60.0f / ((float) this.currentBPM))) {
 				this.metronomTimer -= (60.0f / ((float) this.currentBPM));
 
 				// play metronom sound
 				//AudioPlayer.Instance.playSoundEffect (this.metronomClip);
-			}
+			}*/
 		}
 	}
 
 	void OnLevelWasLoaded(int level) {
 		Debug.Log ("level loaded: " + level);
 		this.didStartLevel = true;
+
+		float delay = (this.currentLevelNumberOfBeats - 3) * (60.0f / this.currentBPM);
+		AudioPlayer.Instance.startTickTockAudio (delay);
 	}
 
 
@@ -81,13 +83,12 @@ public class GameLogic : MonoBehaviour {
 	private int currentLevelNumberOfBeats = 8;
 
 	private float metronomTimer = 0.0f;
-	private AudioClip metronomClip;
 
 	private bool didStartLevel = false;
 	private bool isGameOver = false;
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
-	private string[] levels = new string[] {"Destroy Schrei", "Flappy Schrei", "Fliegenesser"};
+	private string[] levels = new string[] {"Tod-Szene-Spiel", "Road_Scene", "", "TreeSawing", "JumpAndDuck"};
 	private string actualLevel = "";
 
 	public void startNewSinglePlayerGame() {
@@ -96,8 +97,8 @@ public class GameLogic : MonoBehaviour {
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = defaultBPM;
-		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats;
-		this.actualLevelTime = 60.0f / defaultBPM * defaultLevelNumberOfBeats;
+		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats-1;
+		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
 		this.currentLevelMaxTime = this.actualLevelTime;
 
 		this.loadNextLevel ();
@@ -158,6 +159,7 @@ public class GameLogic : MonoBehaviour {
 		} while(this.levels[randomNumber % this.levels.Length] == this.actualLevel);
 
 		this.actualLevel = this.levels[randomNumber % this.levels.Length];
+
 		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
 	}
 

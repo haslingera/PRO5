@@ -13,7 +13,7 @@ public class MenuScript : MonoBehaviour {
 	
 	}
 
-	public void startGame() {
-		
+	public void onStartGame() {
+		GameLogic.Instance.startNewSinglePlayerGame ();
 	}
 }
