@@ -18,8 +18,6 @@ public class Saw : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		Debug.Log (AudioAnalyzer.Instance.getPitch ());
-		//Debug.Log (AudioAnalyzer.Instance.getPitch ());
 		if (!sawing && AudioAnalyzer.Instance.getPitch() > 10) {
 			StartCoroutine(sawDaThing());
 		}
@@ -28,12 +26,12 @@ public class Saw : MonoBehaviour {
 	IEnumerator sawDaThing() {	
 		if (transform.position.x != pointB.x && AudioAnalyzer.Instance.getPitch () > 200) {
 			sawing = true;
-			movement.moveToPoint(new Vector3 (pointB.x, transform.position.y-0.2f, transform.position.z), 0f, 1f);
-			yield return new WaitForSeconds (1.0f);
+			movement.moveToPoint(new Vector3 (pointB.x, transform.position.y-0.14f, transform.position.z), 0f, 1f/GameLogic.Instance.getLevelSpeed());
+			yield return new WaitForSeconds (1.0f/GameLogic.Instance.getLevelSpeed());
 		} else if (transform.position.x != pointA.x && AudioAnalyzer.Instance.getPitch () < 200 && AudioAnalyzer.Instance.getPitch () > 10) {
 			sawing = true;
-			movement.moveToPoint(new Vector3 (pointA.x, transform.position.y-0.2f, transform.position.z), 0f, 1f);
-			yield return new WaitForSeconds (1.0f);
+			movement.moveToPoint(new Vector3 (pointA.x, transform.position.y-0.14f, transform.position.z), 0f, 1f/GameLogic.Instance.getLevelSpeed());
+			yield return new WaitForSeconds (1.0f/GameLogic.Instance.getLevelSpeed());
 		}
 		sawing = false;
 	}
@@ -42,6 +40,7 @@ public class Saw : MonoBehaviour {
 		if (other.gameObject.CompareTag ("Tree")) {
 			other.gameObject.GetComponent<Rigidbody>().useGravity = true;
 			other.gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
+			GameLogic.Instance.didFinishLevel ();
 		}
 	}
 
