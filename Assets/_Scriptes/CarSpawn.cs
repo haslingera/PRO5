@@ -28,12 +28,11 @@ public class CarSpawn : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-
-		if (!this.moves () && !onTheMove) {
+        if (!this.moves() && !onTheMove) {
 			levelSpeed();
 			iTween.MoveTo (this.gameObject, iTween.Hash ("z", -16, "easetype", "linear", "time", speed));
-			this.onTheMove = true;
-		}
+            this.onTheMove = true;
+        }
 
 		else if((int)this.gameObject.transform.position.z == Random.Range(-12,-4)){
 			spawnCar();
@@ -71,7 +70,8 @@ public class CarSpawn : MonoBehaviour {
 	}
 
 	bool moves(){
-		if (this.gameObject.transform.position == start)
+        Debug.Log(this.transform.position + " + " + start);
+        if (this.transform.position == start)
 			return false;
 		else
 			return true;
@@ -81,7 +81,8 @@ public class CarSpawn : MonoBehaviour {
 	{
 		if (col.gameObject.name == "Player")
 		{
-			GameObject.Find("Player").GetComponent<Player_Road_Scene>().resetPlayer();
+            GameObject.Find("Player").GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            StartCoroutine(GameObject.Find("Player").GetComponent<Player_Road_Scene>().resetPlayer());
 		}
 	}
 
