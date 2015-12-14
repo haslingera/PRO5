@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 92d555e106cbd30458c3d6c49ad3d64c
-timeCreated: 1450093891
+timeCreated: 1450094628
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -29,6 +29,8 @@ ModelImporter:
     100042: ufo_commandCell
     100044: ufo_energy
     100046: ufo_glass
+    100048: ufo_light_l
+    100050: ufo_light_r
     400000: circle
     400002: pSphere10
     400004: pSphere11
@@ -53,6 +55,8 @@ ModelImporter:
     400042: ufo_commandCell
     400044: ufo_energy
     400046: ufo_glass
+    400048: ufo_light_l
+    400050: ufo_light_r
     2300000: pSphere10
     2300002: pSphere11
     2300004: pSphere12
@@ -76,6 +80,8 @@ ModelImporter:
     2300040: ufo_commandCell
     2300042: ufo_energy
     2300044: ufo_glass
+    2300046: ufo_light_l
+    2300048: ufo_light_r
     3300000: pSphere10
     3300002: pSphere11
     3300004: pSphere12
@@ -99,6 +105,8 @@ ModelImporter:
     3300040: ufo_commandCell
     3300042: ufo_energy
     3300044: ufo_glass
+    3300046: ufo_light_l
+    3300048: ufo_light_r
     4300000: ufo_body
     4300002: pSphere2
     4300004: pSphere3
@@ -122,6 +130,8 @@ ModelImporter:
     4300040: ufo_commandCell
     4300042: ufo_glass
     4300044: ufo_energy
+    4300046: ufo_light_l
+    4300048: ufo_light_r
     9500000: //RootNode
   materials:
     importMaterials: 1
