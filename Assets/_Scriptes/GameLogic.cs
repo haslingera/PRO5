@@ -30,38 +30,47 @@ public class GameLogic : MonoBehaviour {
 	void Update() {
 		// if level is started, decrease level time
 		if (this.didStartLevel && !this.isGameOver) {
-			// if level time is below 0, then set that this level is lost
-			this.actualLevelTime -= Time.deltaTime;
-			//Debug.Log ("actual Level Time: " + actualLevelTime);
-			if (this.actualLevelTime < 0) {
-				this.didFailLevel ();
+
+			// first check if preparation time is done, then cound down the actual level time
+			if (this.remainingLevelPreparationTime > 0) {
+
+				// still in preparation mode, count down
+				this.remainingLevelPreparationTime -= Time.deltaTime;
+			
+			} else {
+				// preparation done, do actual code
+				this.levelIsReadyToStart = true;
+
+				// if level time is below 0, then set that this level is lost
+				this.actualLevelTime -= Time.deltaTime;
+				//Debug.Log ("actual Level Time: " + actualLevelTime);
+				if (this.actualLevelTime < 0) {
+					Debug.Log ("time run out");
+					this.didFailLevel ();
+				}
+
+				// calculate how many beats are left (for debugging)
+				float beatsLeft = this.actualLevelTime / (60.0f / this.currentBPM);
+				//Debug.Log ("Beats Left: " + beatsLeft);
+
+				if (beatsLeft < 5.0f) {
+					AudioPlayer.Instance.stopLoopingTickTock ();
+				}
 			}
-
-			// calculate how many beats are left (for debugging)
-			float beatsLeft = this.actualLevelTime / (60.0f / this.currentBPM);
-			Debug.Log ("Beats Left: " + beatsLeft);
-
-			if (beatsLeft < 5.0f) {
-				AudioPlayer.Instance.stopLoopingTickTock();
-			}
-
-			// update metronom timer for metronomsound
-			/*this.metronomTimer += Time.deltaTime;
-			if (this.metronomTimer > (60.0f / ((float) this.currentBPM))) {
-				this.metronomTimer -= (60.0f / ((float) this.currentBPM));
-
-				// play metronom sound
-				//AudioPlayer.Instance.playSoundEffect (this.metronomClip);
-			}*/
 		}
 	}
 
 	void OnLevelWasLoaded(int level) {
 		Debug.Log ("level loaded: " + level);
-		this.didStartLevel = true;
 
-		float delay = (this.currentLevelNumberOfBeats - 3) * (60.0f / this.currentBPM);
-		AudioPlayer.Instance.startTickTockAudio (delay);
+		if (!this.isGameOver) {
+			// tell audioplayer to start new ticktock audio
+			AudioPlayer.Instance.startTickTockAudio (this.currentBPM, this.currentLevelNumberOfBeats);
+
+			// do some prep
+			this.remainingLevelPreparationTime = (60.0f / this.currentBPM) * 8;
+			this.didStartLevel = true;
+		}
 	}
 
 
@@ -71,33 +80,32 @@ public class GameLogic : MonoBehaviour {
 	//    Actual Class Data
 	// -------------------------
 
-	private bool isInDemoMode = false;
-
 	//private float defaultLevelTime = 5.0f; // Default Time in Seconds
 	private float actualLevelTime;
 	private float currentLevelMaxTime;
+
+	private float remainingLevelPreparationTime;
+	private bool levelIsReadyToStart;
 
 	private const int defaultBPM = 80;
 	private const int defaultLevelNumberOfBeats = 8;
 	private int currentBPM = defaultBPM;
 	private int currentLevelNumberOfBeats = 8;
 
-	private float metronomTimer = 0.0f;
-
 	private bool didStartLevel = false;
 	private bool isGameOver = false;
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
-	private string[] levels = new string[] {"Tod-Szene-Spiel", "Road_Scene", "", "TreeSawing", "JumpAndDuck"};
+	private string[] levels = new string[] {"TreeSawing"};
 	private string actualLevel = "";
 
 	public void startNewSinglePlayerGame() {
-		this.isInDemoMode = false;
 		this.isGameOver = false;
+		this.levelIsReadyToStart = false;
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = defaultBPM;
-		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats-1;
+		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats;
 		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
 		this.currentLevelMaxTime = this.actualLevelTime;
 
@@ -105,12 +113,12 @@ public class GameLogic : MonoBehaviour {
 	}
 
 	public void startNewDemoGame(int numberOfBeats) {
-		this.isInDemoMode = true;
 		this.isGameOver = false;
-		this.numberOfLives = 0;
+		this.levelIsReadyToStart = false;
+		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = defaultBPM;
-		this.currentLevelNumberOfBeats = numberOfBeats-1;
+		this.currentLevelNumberOfBeats = numberOfBeats;
 		this.actualLevelTime = 60.0f / currentBPM * this.currentLevelNumberOfBeats;
 		this.currentLevelMaxTime = this.actualLevelTime;
 
@@ -119,7 +127,7 @@ public class GameLogic : MonoBehaviour {
 		// start demo sound
 		// calculate delay for ticktackEndClip: delay = (numberOfBeats - 3) * timeABeatLasts // why '-3'? --> the "gong" sound is the last sound, that's why it is not -4
 		float delay = (this.currentLevelNumberOfBeats - 3) * (60.0f / this.currentBPM);
-		AudioPlayer.Instance.startTickTockAudio (delay);
+		AudioPlayer.Instance.startTickTockAudio (this.currentBPM, this.currentLevelNumberOfBeats);
 	}
 
 	public void didFinishLevel() {
@@ -132,6 +140,7 @@ public class GameLogic : MonoBehaviour {
 	}
 
 	public void didFailLevel() {
+		Debug.Log ("did Fail Level");
 		this.numberOfLives--;
 
 		// if game over, go to game over scene
@@ -147,6 +156,9 @@ public class GameLogic : MonoBehaviour {
 	private void loadNextLevel() {
 		// set didStartLevel to false
 		this.didStartLevel = false;
+		this.levelIsReadyToStart = false;
+
+		this.currentBPM += 20;
 
 		// set time for new level
 		this.actualLevelTime = 60.0f / this.currentBPM * defaultLevelNumberOfBeats;
@@ -154,9 +166,9 @@ public class GameLogic : MonoBehaviour {
 
 		// load random next level
 		int randomNumber;
-		do {
+		//do {
 			randomNumber = Random.Range(0, this.levels.Length * 5);
-		} while(this.levels[randomNumber % this.levels.Length] == this.actualLevel);
+		//} while(this.levels[randomNumber % this.levels.Length] == this.actualLevel);
 
 		this.actualLevel = this.levels[randomNumber % this.levels.Length];
 
@@ -196,11 +208,15 @@ public class GameLogic : MonoBehaviour {
 	public void setLevelNumberOfBeats(int numberOfBeats) {
 		this.currentLevelNumberOfBeats = numberOfBeats;
 		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
+		this.currentLevelMaxTime = this.actualLevelTime;
 	}
 
 	// deprecated
-	public void setLevelTime(float levelTime) {
+	/*public void setLevelTime(float levelTime) {
 		this.actualLevelTime = levelTime;
+	}*/
+	public bool getLevelIsReadyToStart() {
+		return this.levelIsReadyToStart;
 	}
 		
 	public float getRemainingLevelTime() {

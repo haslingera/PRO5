@@ -7,7 +7,7 @@ public class LevelLogic : MonoBehaviour {
 
 	void Awake() {
 		GameLogic.Instance.setLevelNumberOfBeats (this.numberOfBeats);
-		GameLogic.Instance.startNewDemoGame (this.numberOfBeats);
+		//GameLogic.Instance.startNewDemoGame (this.numberOfBeats);
 	}
 
 	// Use this for initialization

@@ -16,6 +16,7 @@ public class AudioPlayer : MonoBehaviour {
 	private AudioSource audioSource;
 	private AudioSource tickTockAudioSource;
 	private AudioSource tickTockEndAudioSource;
+	private AudioSource melodyAudioSource;
 	private float timeSinceLastPlay; // in seconds
 	private float timeOfLastPlayedClip; // in seconds
  
@@ -34,12 +35,15 @@ public class AudioPlayer : MonoBehaviour {
 
 		this.tickTockAudioSource = this.gameObject.AddComponent<AudioSource> ();
 		this.tickTockEndAudioSource = this.gameObject.AddComponent<AudioSource> ();
+		this.melodyAudioSource = this.gameObject.AddComponent<AudioSource> ();
 
 		AudioClip tickTockClip = Resources.Load ("TickTock") as AudioClip;
 		AudioClip tickTockEndClip = Resources.Load ("TickTockEnd") as AudioClip;
+		AudioClip melodyClip = Resources.Load ("Melody") as AudioClip;
 
 		this.tickTockAudioSource.clip = tickTockClip;
 		this.tickTockEndAudioSource.clip = tickTockEndClip;
+		this.melodyAudioSource.clip = melodyClip;
 
 		audioQueue = new Queue<AudioClip>();
 	}
@@ -50,18 +54,29 @@ public class AudioPlayer : MonoBehaviour {
 
 	public void Init() { /* do nothing */ }
 
-	public void startTickTockAudio(float delay) {
-		this.tickTockAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
-		this.tickTockAudioSource.Play ();
-		this.tickTockAudioSource.loop = true;
-
-		this.tickTockEndAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
-		this.tickTockEndAudioSource.PlayDelayed (delay);
+	public void startTickTockAudio(int bpm, int numberOfBeats) {
+		this.melodyAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
+		this.melodyAudioSource.PlayDelayed (0);
 		this.tickTockEndAudioSource.loop = false;
+
+		Invoke ("playTickTockAudioSourceDelayed", 8 * (60.0f / bpm));
+		Invoke ("playTickTockEndAudioSourceDelayed", ((8 + numberOfBeats - 4) * (60.0f / bpm)));
 	}
 
 	public void stopLoopingTickTock() {
 		this.tickTockAudioSource.loop = false;
+	}
+
+	public void playTickTockAudioSourceDelayed() {
+		this.tickTockAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
+		this.tickTockAudioSource.Play();
+		this.tickTockAudioSource.loop = true;
+	}
+
+	public void playTickTockEndAudioSourceDelayed() {
+		this.tickTockEndAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
+		this.tickTockEndAudioSource.Play();
+		this.tickTockEndAudioSource.loop = false;
 	}
 
 
