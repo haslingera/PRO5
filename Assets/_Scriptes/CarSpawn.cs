@@ -81,6 +81,7 @@ public class CarSpawn : MonoBehaviour {
 	{
 		if (col.gameObject.name == "Player")
 		{
+            GameObject.Find("Player").GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
             StartCoroutine(GameObject.Find("Player").GetComponent<Player_Road_Scene>().resetPlayer());
 		}
 	}
