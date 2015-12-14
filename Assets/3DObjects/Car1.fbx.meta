@@ -1,27 +1,52 @@
 fileFormatVersion: 2
-guid: c21ade05d7eb14f54a3d2793f3fa47dd
-timeCreated: 1448353290
+guid: d239fbf6a3936434fac17bde28933669
+timeCreated: 1450058054
 licenseType: Free
 ModelImporter:
-<<<<<<< HEAD
-  serializedVersion: 18
-=======
   serializedVersion: 19
->>>>>>> 13b75bc32ae9a9a6bbc9b6a6c4cc46477260b0b1
   fileIDToRecycleName:
-    100000: pCylinder1
-    100002: //RootNode
-    100004: ramp
-    400000: pCylinder1
+    100000: back_wheels
+    100002: car
+    100004: //RootNode
+    100006: wheel_l
+    100008: wheel_l_l
+    100010: wheel_l_r
+    100012: wheel_r
+    100014: wheel_r_l
+    100016: wheel_r_r
+    400000: back_wheels
     400002: //RootNode
-    400004: ramp
-    2300000: pCylinder1
-    2300002: ramp
-    3300000: pCylinder1
-    3300002: ramp
-    4300000: pCylinder1
-    4300002: ramp
+    400004: car
+    400006: wheel_l
+    400008: wheel_l_l
+    400010: wheel_l_r
+    400012: wheel_r
+    400014: wheel_r_l
+    400016: wheel_r_r
+    2300000: back_wheels
+    2300002: wheel_l
+    2300004: wheel_l_l
+    2300006: wheel_l_r
+    2300008: wheel_r
+    2300010: wheel_r_l
+    2300012: wheel_r_r
+    3300000: back_wheels
+    3300002: wheel_l
+    3300004: wheel_l_l
+    3300006: wheel_l_r
+    3300008: wheel_r
+    3300010: wheel_r_l
+    3300012: wheel_r_r
+    4300000: wheel_l_r
+    4300002: wheel_r_r
+    4300004: wheel_r_l
+    4300006: wheel_l_l
+    4300008: car
+    4300010: wheel_l
+    4300012: wheel_r
+    4300014: back_wheels
     9500000: //RootNode
+    13700000: car
   materials:
     importMaterials: 1
     materialName: 0
@@ -29,10 +54,7 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-<<<<<<< HEAD
-=======
     resampleRotations: 1
->>>>>>> 13b75bc32ae9a9a6bbc9b6a6c4cc46477260b0b1
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 
@@ -40,22 +62,16 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     animationCompression: 1
-<<<<<<< HEAD
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
-=======
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
->>>>>>> 13b75bc32ae9a9a6bbc9b6a6c4cc46477260b0b1
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations: []
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 50
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -69,42 +85,27 @@ ModelImporter:
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
-    useFileScale: 0
+    useFileScale: 1
   tangentSpace:
     normalSmoothAngle: 60
-<<<<<<< HEAD
-    splitTangentsAcrossUV: 1
-    normalImportMode: 1
-    tangentImportMode: 1
-=======
-    normalImportMode: 1
-    tangentImportMode: 4
->>>>>>> 13b75bc32ae9a9a6bbc9b6a6c4cc46477260b0b1
+    normalImportMode: 0
+    tangentImportMode: 3
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
     skeleton: []
-<<<<<<< HEAD
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
-=======
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
     legTwist: 0.5
     armStretch: 0.05
     legStretch: 0.05
->>>>>>> 13b75bc32ae9a9a6bbc9b6a6c4cc46477260b0b1
     feetSpacing: 0
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
