@@ -33,7 +33,7 @@ public class GorillaSchrei : MonoBehaviour {
 				}
 			} else if (!result && passedTime - rythm [count] < 1.3f && passedTime - rythm [count] > 1.0f) {
 				GetComponent<Renderer> ().material = materials [3];
-			} else if (passedTime - rythm [count] > 1.3f) {
+				GameLogic.Instance.didFailLevel ();
 			}
 		}
 	}
