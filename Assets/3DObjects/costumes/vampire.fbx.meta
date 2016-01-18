@@ -1,46 +1,15 @@
 fileFormatVersion: 2
-guid: 7cd2a636da11152438b4f8e243f78e5d
-timeCreated: 1452138672
+guid: 1b62c757fe205e640b8b40fcf6b4c535
+timeCreated: 1453111187
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
-    100002: baby_hair
-    100004: hair_l
-    100006: hair_m
-    100008: hair_r
-    100010: left_part
-    100012: middle_part
-    100014: ribbon
-    100016: right_part
     400000: //RootNode
-    400002: baby_hair
-    400004: hair_l
-    400006: hair_m
-    400008: hair_r
-    400010: left_part
-    400012: middle_part
-    400014: ribbon
-    400016: right_part
-    2300000: hair_l
-    2300002: hair_m
-    2300004: hair_r
-    2300006: left_part
-    2300008: middle_part
-    2300010: right_part
-    3300000: hair_l
-    3300002: hair_m
-    3300004: hair_r
-    3300006: left_part
-    3300008: middle_part
-    3300010: right_part
-    4300000: middle_part
-    4300002: right_part
-    4300004: left_part
-    4300006: hair_r
-    4300008: hair_m
-    4300010: hair_l
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: reaper_costume1
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -66,7 +35,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 100
+    globalScale: 95
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
