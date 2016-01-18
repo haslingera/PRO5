@@ -16,7 +16,31 @@ public class Saw : MonoBehaviour {
 	void Start() {
 		movement = GetComponent<StationaryMovement> ();
 	}
+	/*
+	void OnEnable() {
+		GameLogic.Instance.OnLevelReadyToStart += levelStartEvent;
+		GameLogic.Instance.OnLevelTimeRanOutFail += levelDidFinishFailEvent;
+		GameLogic.Instance.OnLevelTimeRanOutSuccess += levelDidFinishSuccessEvent;
+	}
 
+	void OnDisable() {
+		GameLogic.Instance.OnLevelReadyToStart -= levelStartEvent;
+		GameLogic.Instance.OnLevelTimeRanOutFail -= levelDidFinishFailEvent;
+		GameLogic.Instance.OnLevelTimeRanOutSuccess -= levelDidFinishSuccessEvent;
+	}
+
+	void levelStartEvent() {
+		Debug.Log ("Event: levelStart");
+	}
+
+	void levelDidFinishFailEvent() {
+		Debug.Log ("Event: Level did Finish Fail");
+	}
+
+	void levelDidFinishSuccessEvent() {
+		Debug.Log ("Event: Level did Finish Success");
+	}
+	*/
 	void FixedUpdate(){
 		if (!sawing && AudioAnalyzer.Instance.getPitch() > 10) {
 			StartCoroutine(sawDaThing());
