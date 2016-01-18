@@ -44,7 +44,32 @@ public class GameLogic : MonoBehaviour {
 				// if level time is below 0, then set that this level is lost
 				this.actualLevelTime -= Time.deltaTime;
 				//Debug.Log ("actual Level Time: " + actualLevelTime);
+
 				if (this.actualLevelTime < 0) {
+					if (this.isSucceeded) {
+						Debug.Log ("+++++++++");
+						// level succeeded
+						this.didStartLevel = false;
+
+						// increase numberOfLevelsCompleted and load next level
+						this.numberOfLevelsCompleted++;
+						this.loadNextLevel ();
+
+					} else {
+						Debug.Log ("----------");
+						// level failed
+						this.numberOfLives--;
+
+						// if game over, go to game over scene
+						if (this.numberOfLives < 0) {
+							this.gameOver ();
+
+							// load next level
+						} else {
+							this.loadNextLevel();
+						}
+					}
+
 					Debug.Log ("time run out");
 					this.didFailLevel ();
 				}
@@ -94,6 +119,8 @@ public class GameLogic : MonoBehaviour {
 
 	private bool didStartLevel = false;
 	private bool isGameOver = false;
+	private bool isSurviveLevel;
+	private bool isSucceeded;
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
 	private string[] levels = new string[] {"TreeSawing"};
@@ -131,26 +158,13 @@ public class GameLogic : MonoBehaviour {
 	}
 
 	public void didFinishLevel() {
-		// set didStartLevel to false
-		this.didStartLevel = false;
-
-		// increase numberOfLevelsCompleted and load next level
-		this.numberOfLevelsCompleted++;
-		this.loadNextLevel ();
+		this.isSucceeded = true;
+		Debug.Log ("Did Finish Level");
 	}
 
 	public void didFailLevel() {
-		Debug.Log ("did Fail Level");
-		this.numberOfLives--;
-
-		// if game over, go to game over scene
-		if (this.numberOfLives < 0) {
-			this.gameOver ();
-
-		// load next level
-		} else {
-			this.loadNextLevel();
-		}
+		this.isSucceeded = false;
+		Debug.Log ("Did Fail Level");
 	}
 
 	private void loadNextLevel() {
@@ -171,7 +185,7 @@ public class GameLogic : MonoBehaviour {
 		//} while(this.levels[randomNumber % this.levels.Length] == this.actualLevel);
 
 		this.actualLevel = this.levels[randomNumber % this.levels.Length];
-
+		this.setIsSurviveLevel (true); // default will be survive level
 		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
 	}
 
@@ -193,6 +207,11 @@ public class GameLogic : MonoBehaviour {
 	//  Getter and Setter Methods
 	// ---------------------------
 
+	public void setIsSurviveLevel(bool isSurviveLevel) {
+		this.isSurviveLevel = isSurviveLevel;
+		this.isSucceeded = isSurviveLevel;
+	}
+
 	public int getNumberOfLives() {
 		return this.numberOfLives;
 	}
@@ -210,11 +229,7 @@ public class GameLogic : MonoBehaviour {
 		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
 		this.currentLevelMaxTime = this.actualLevelTime;
 	}
-
-	// deprecated
-	/*public void setLevelTime(float levelTime) {
-		this.actualLevelTime = levelTime;
-	}*/
+		
 	public bool getLevelIsReadyToStart() {
 		return this.levelIsReadyToStart;
 	}
@@ -226,4 +241,12 @@ public class GameLogic : MonoBehaviour {
 	public float getLevelTime() {
 		return this.currentLevelMaxTime;
 	}
+
+
+
+	// deprecated
+	/*public void setLevelTime(float levelTime) {
+		this.actualLevelTime = levelTime;
+	}*/
+
 }
