@@ -4,7 +4,7 @@ using System.Collections;
 public class LevelLogic : MonoBehaviour {
 
 	public int numberOfBeats = 8;
-	public float isSurviveLevel = false;
+	public bool isSurviveLevel = false;
 
 	void Awake() {
 		GameLogic.Instance.setLevelNumberOfBeats (this.numberOfBeats);
