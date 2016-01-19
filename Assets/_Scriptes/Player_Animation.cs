@@ -23,8 +23,8 @@ public class Player_Animation : MonoBehaviour {
 		skinnedMeshRenderer = GameObject.Find ("Neutral").GetComponent<SkinnedMeshRenderer> ();
 		skinnedMesh = GameObject.Find ("Neutral").GetComponent<SkinnedMeshRenderer> ().sharedMesh;
 		
-		skinnedMeshRendererEyes = GameObject.Find ("eyes_default").GetComponent<SkinnedMeshRenderer> ();
-		skinnedMeshEyes = GameObject.Find ("eyes_default").GetComponent<SkinnedMeshRenderer> ().sharedMesh;
+		skinnedMeshRendererEyes = GameObject.Find ("Eyes").GetComponent<SkinnedMeshRenderer> ();
+		skinnedMeshEyes = GameObject.Find ("Eyes").GetComponent<SkinnedMeshRenderer> ().sharedMesh;
 		
 	}
 	
@@ -35,6 +35,7 @@ public class Player_Animation : MonoBehaviour {
 
 		if (talkDirtyToMe) {
 			float tempDB = getDB();
+
 			skinnedMeshRenderer.SetBlendShapeWeight (0, tempDB);
 			skinnedMeshRendererEyes.SetBlendShapeWeight(8, tempDB);
 		}
