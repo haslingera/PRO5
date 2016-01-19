@@ -3,8 +3,7 @@ using System.Collections;
 
 public class Player_Animation : MonoBehaviour {
 
-	public int lives = 2;
-	//int blendShapeCount;
+	int counter = 0;
 	SkinnedMeshRenderer skinnedMeshRenderer;
 	Mesh skinnedMesh;
 	SkinnedMeshRenderer skinnedMeshRendererEyes;
@@ -17,6 +16,7 @@ public class Player_Animation : MonoBehaviour {
     public bool neutral = false;
     public bool highRes = false;
     bool blinken = false;
+    int blinker = 45;
 	
 	// Use this for initialization
 	void Start () {
@@ -30,12 +30,10 @@ public class Player_Animation : MonoBehaviour {
 
             skinnedMeshRendererEyes = GameObject.Find("Eyes").GetComponent<SkinnedMeshRenderer>();
             skinnedMeshEyes = GameObject.Find("Eyes").GetComponent<SkinnedMeshRenderer>().sharedMesh;
-            blinken = true;
         }
 
         if (highRes)
         {
-            blinken = false;
             skinnedMeshRenderer = GameObject.Find("Player").GetComponent<SkinnedMeshRenderer>();
             skinnedMesh = GameObject.Find("Player").GetComponent<SkinnedMeshRenderer>().sharedMesh;
 
@@ -45,15 +43,21 @@ public class Player_Animation : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-        if(blinken)
-		    Blink ();
+
+        if (neutral)
+        {
+            Blink();
+        }
+        else
+        {
+            Blink2();
+        }
 
 		if (talkDirtyToMe) {
 			float tempDB = getDB();
 
 			skinnedMeshRenderer.SetBlendShapeWeight (0, tempDB);
-            if(blinken)
+            if(neutral)
 			    skinnedMeshRendererEyes.SetBlendShapeWeight(8, tempDB);
 		}
 		
@@ -62,7 +66,7 @@ public class Player_Animation : MonoBehaviour {
 			float tempFQ = AudioAnalyzer.Instance.getPitch();
 			if(tempFQ != -1){
 				skinnedMeshRenderer.SetBlendShapeWeight (0, tempFQ/8);
-                if(blinken)
+                if(neutral)
 				    skinnedMeshRendererEyes.SetBlendShapeWeight(6, tempFQ/8);
 			}
 			else
@@ -103,6 +107,36 @@ public class Player_Animation : MonoBehaviour {
 	void Awake(){
 		AudioAnalyzer.Instance.Init ();
 	}
-	
+
+    void Blink2() {
+
+        GameObject temp = GameObject.Find("eyes_default");
+
+        if(counter == 0)
+        {
+            blinker = (int)Random.Range(1, 50);
+        }
+
+        if (blinker == 45)
+        {
+
+            if (counter < 20)
+            {
+                temp.transform.localScale -= new Vector3(0f, 0.05f, 0f);
+                counter++;
+            }
+            else {
+                temp.transform.localScale += new Vector3(0f, 0.05f, 0f);
+                counter++;
+            }
+
+            if (counter == 40)
+            {
+                counter = 0;
+            }
+
+        }
+    }
+
 }
 
