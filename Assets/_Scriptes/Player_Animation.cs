@@ -14,30 +14,47 @@ public class Player_Animation : MonoBehaviour {
 	public bool talkFrequ = false;
 	int count = 1;
 	int blink;
+    public bool neutral = false;
+    public bool highRes = false;
+    bool blinken = false;
 	
 	// Use this for initialization
 	void Start () {
 		
 		blink = Random.Range (70,200);
-		
-		skinnedMeshRenderer = GameObject.Find ("Neutral").GetComponent<SkinnedMeshRenderer> ();
-		skinnedMesh = GameObject.Find ("Neutral").GetComponent<SkinnedMeshRenderer> ().sharedMesh;
-		
-		skinnedMeshRendererEyes = GameObject.Find ("Eyes").GetComponent<SkinnedMeshRenderer> ();
-		skinnedMeshEyes = GameObject.Find ("Eyes").GetComponent<SkinnedMeshRenderer> ().sharedMesh;
-		
-	}
+
+        if (neutral)
+        {
+            skinnedMeshRenderer = GameObject.Find("Neutral").GetComponent<SkinnedMeshRenderer>();
+            skinnedMesh = GameObject.Find("Neutral").GetComponent<SkinnedMeshRenderer>().sharedMesh;
+
+            skinnedMeshRendererEyes = GameObject.Find("Eyes").GetComponent<SkinnedMeshRenderer>();
+            skinnedMeshEyes = GameObject.Find("Eyes").GetComponent<SkinnedMeshRenderer>().sharedMesh;
+            blinken = true;
+        }
+
+        if (highRes)
+        {
+            blinken = false;
+            skinnedMeshRenderer = GameObject.Find("Player").GetComponent<SkinnedMeshRenderer>();
+            skinnedMesh = GameObject.Find("Player").GetComponent<SkinnedMeshRenderer>().sharedMesh;
+
+        }
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
 		
-		Blink ();
+        if(blinken)
+		    Blink ();
 
 		if (talkDirtyToMe) {
 			float tempDB = getDB();
 
 			skinnedMeshRenderer.SetBlendShapeWeight (0, tempDB);
-			skinnedMeshRendererEyes.SetBlendShapeWeight(8, tempDB);
+            if(blinken)
+			    skinnedMeshRendererEyes.SetBlendShapeWeight(8, tempDB);
 		}
 		
 		if (talkFrequ) {
@@ -45,7 +62,8 @@ public class Player_Animation : MonoBehaviour {
 			float tempFQ = AudioAnalyzer.Instance.getPitch();
 			if(tempFQ != -1){
 				skinnedMeshRenderer.SetBlendShapeWeight (0, tempFQ/8);
-				skinnedMeshRendererEyes.SetBlendShapeWeight(6, tempFQ/8);
+                if(blinken)
+				    skinnedMeshRendererEyes.SetBlendShapeWeight(6, tempFQ/8);
 			}
 			else
 				skinnedMeshRenderer.SetBlendShapeWeight(0,0f);
