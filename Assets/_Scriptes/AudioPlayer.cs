@@ -63,6 +63,12 @@ public class AudioPlayer : MonoBehaviour {
 		Invoke ("playTickTockEndAudioSourceDelayed", ((8 + numberOfBeats - 4) * (60.0f / bpm)));
 	}
 
+	public void reScheduleTickTockEndWithDelay(float delay) {
+		Debug.Log ("reSchedule, delay: " + delay);
+		CancelInvoke ("playTickTockEndAudioSourceDelayed");
+		Invoke ("playTickTockEndAudioSourceDelayed", delay);
+	}
+
 	public void stopLoopingTickTock() {
 		this.tickTockAudioSource.loop = false;
 	}

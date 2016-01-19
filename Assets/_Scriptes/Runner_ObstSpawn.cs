@@ -4,18 +4,18 @@ using System.Collections;
 public class Runner_ObstSpawn : MonoBehaviour {
 
 	private float[] height = new float[2];
-	private int end = -52;
+	private int end = -70;
 	private int spawnNew = -45;
 	private Vector3 start = new Vector3(-29f,0.13f,-7.4f);
 	GameObject clone;
 	private bool spawned = false;
+	private float defaultSpeed = -0.1f;
 
 	// Use this for initialization
 	void Start () {
 		height[0] = 0.13f;
 		height[1] = 2.1f;
 		setSpeed ();
-
 	}
 	
 	// Update is called once per frame
@@ -27,11 +27,18 @@ public class Runner_ObstSpawn : MonoBehaviour {
 
 		if ((int)transform.position.x == spawnNew && !spawned) {
 			start.y = height[Random.Range(0,2)];
-			clone = Instantiate (Resources.Load ("Obstacle"), start, transform.rotation) as GameObject;
+            if (start.y == 2.1f)
+            {
+                start.y = 4.264082e-17f;
+                clone = Instantiate(Resources.Load("Obstacle_big"), start, this.transform.rotation) as GameObject;
+                //clone.transform.localScale.Set(this.transform.localScale.x, 3.6f, this.transform.localScale.z);
+            }
+            else {
+                clone = Instantiate(Resources.Load("Obstacle"), start, this.transform.rotation) as GameObject;
+            }
 			clone.name = this.name;
 			spawned = true;
 		}
-	
 	}
 
 	void destroyObst(){
@@ -39,14 +46,9 @@ public class Runner_ObstSpawn : MonoBehaviour {
 	}
 
 	void setSpeed(){
-
-		float temp = GameLogic.Instance.getLevelSpeed ();
-		temp = temp * -1;
-		temp += 0.9f;
-		GameObject.Find ("Obstacle").GetComponent<StationaryMovement> ().constantSpeedX = temp;
-
+		// set speed for obstacles based on level speed
+		float levelSpeed = GameLogic.Instance.getLevelSpeed ();
+		StationaryMovement stationaryMovement = GameObject.Find ("Obstacle").GetComponent<StationaryMovement> ();
+		stationaryMovement.constantSpeedX = this.defaultSpeed * levelSpeed;
 	}
-
-
-
 }

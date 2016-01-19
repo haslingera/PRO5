@@ -41,24 +41,36 @@ public class GameLogic : MonoBehaviour {
 				// preparation done, do actual code
 				this.levelIsReadyToStart = true;
 
+				// send out events that level is ready to start
+				if (this.didTriggerReadyToStartEvent == false) {
+					if (OnLevelReadyToStart != null) {
+						OnLevelReadyToStart ();
+						this.didTriggerReadyToStartEvent = true;
+					}
+				}
+
 				// if level time is below 0, then set that this level is lost
 				this.actualLevelTime -= Time.deltaTime;
 				//Debug.Log ("actual Level Time: " + actualLevelTime);
 
 				if (this.actualLevelTime < 0) {
 					if (this.isSucceeded) {
-						Debug.Log ("+++++++++");
 						// level succeeded
 						this.didStartLevel = false;
+
+						// send out events
+						if (this.OnLevelTimeRanOutSuccess != null) this.OnLevelTimeRanOutSuccess();
 
 						// increase numberOfLevelsCompleted and load next level
 						this.numberOfLevelsCompleted++;
 						this.loadNextLevel ();
 
 					} else {
-						Debug.Log ("----------");
 						// level failed
 						this.numberOfLives--;
+
+						// send out events
+						if (this.OnLevelTimeRanOutFail != null) this.OnLevelTimeRanOutFail();
 
 						// if game over, go to game over scene
 						if (this.numberOfLives < 0) {
@@ -69,9 +81,23 @@ public class GameLogic : MonoBehaviour {
 							this.loadNextLevel();
 						}
 					}
+				}
 
-					Debug.Log ("time run out");
-					this.didFailLevel ();
+				// check if the level is "over", meaning that a survivor level has failed, or a task-level has finished
+				if ((this.isSurviveLevel && !this.isSucceeded) ||
+				    (!this.isSurviveLevel && this.isSucceeded)) {
+
+					if (this.didTriggerRescheduleTickTockEnd == false) {
+						// if there's more than 4 beats left, set the time to exactly one "takt" less (subtract 4 beats)
+						float timePerBeat = 60.0f / this.currentBPM;
+						while (timePerBeat * 8 < this.actualLevelTime) {
+							// more than 4 beats left, subtract 4 beats from actualLevelTime
+							this.actualLevelTime -= timePerBeat * 4;
+						}
+
+						AudioPlayer.Instance.reScheduleTickTockEndWithDelay (this.actualLevelTime - (timePerBeat * 4));
+						this.didTriggerRescheduleTickTockEnd = true;
+					}
 				}
 
 				// calculate how many beats are left (for debugging)
@@ -105,12 +131,24 @@ public class GameLogic : MonoBehaviour {
 	//    Actual Class Data
 	// -------------------------
 
+	public delegate void OnLevelReadyToStartAction ();
+	public event OnLevelReadyToStartAction OnLevelReadyToStart;
+
+	public delegate void OnLevelTimeRanOutFailAction ();
+	public event OnLevelTimeRanOutFailAction OnLevelTimeRanOutFail;
+
+	public delegate void OnLevelTimeRanOutSuccessAction ();
+	public event OnLevelTimeRanOutSuccessAction OnLevelTimeRanOutSuccess;
+
+
 	//private float defaultLevelTime = 5.0f; // Default Time in Seconds
 	private float actualLevelTime;
 	private float currentLevelMaxTime;
 
 	private float remainingLevelPreparationTime;
 	private bool levelIsReadyToStart;
+	private bool didTriggerReadyToStartEvent;
+	private bool didTriggerRescheduleTickTockEnd;
 
 	private const int defaultBPM = 80;
 	private const int defaultLevelNumberOfBeats = 8;
@@ -123,12 +161,14 @@ public class GameLogic : MonoBehaviour {
 	private bool isSucceeded;
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
-	private string[] levels = new string[] {"TreeSawing"};
+	private string[] levels = new string[] {"JumpAndDuck"};
 	private string actualLevel = "";
 
 	public void startNewSinglePlayerGame() {
 		this.isGameOver = false;
 		this.levelIsReadyToStart = false;
+		this.didTriggerReadyToStartEvent = false;
+		this.didTriggerRescheduleTickTockEnd = false;
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = defaultBPM;
@@ -142,6 +182,8 @@ public class GameLogic : MonoBehaviour {
 	public void startNewDemoGame(int numberOfBeats) {
 		this.isGameOver = false;
 		this.levelIsReadyToStart = false;
+		this.didTriggerReadyToStartEvent = false;
+		this.didTriggerRescheduleTickTockEnd = false;
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = defaultBPM;
@@ -150,6 +192,9 @@ public class GameLogic : MonoBehaviour {
 		this.currentLevelMaxTime = this.actualLevelTime;
 
 		this.didStartLevel = true;
+
+		this.isSurviveLevel = true;
+		this.isSucceeded = true;
 
 		// start demo sound
 		// calculate delay for ticktackEndClip: delay = (numberOfBeats - 3) * timeABeatLasts // why '-3'? --> the "gong" sound is the last sound, that's why it is not -4
@@ -171,6 +216,8 @@ public class GameLogic : MonoBehaviour {
 		// set didStartLevel to false
 		this.didStartLevel = false;
 		this.levelIsReadyToStart = false;
+		this.didTriggerReadyToStartEvent = false;
+		this.didTriggerRescheduleTickTockEnd = false;
 
 		this.currentBPM += 20;
 

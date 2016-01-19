@@ -8,6 +8,7 @@ public class Saw : MonoBehaviour {
 	public Vector3 pointA;
 	public Vector3 pointB;
 
+	private bool didStart = false;
 
 	void Awake() {
 		AudioAnalyzer.Instance.Init ();
@@ -17,9 +18,25 @@ public class Saw : MonoBehaviour {
 		movement = GetComponent<StationaryMovement> ();
 	}
 
+	void OnEnable() {
+		GameLogic.Instance.OnLevelReadyToStart += levelStartEvent;
+	}
+
+	void OnDisable() {
+		GameLogic.Instance.OnLevelReadyToStart -= levelStartEvent;
+	}
+
+	void levelStartEvent() {
+		this.didStart = true;
+	}
+
+
 	void FixedUpdate(){
-		if (!sawing && AudioAnalyzer.Instance.getPitch() > 10) {
-			StartCoroutine(sawDaThing());
+		// only allow voice control when game officially started
+		if (this.didStart) {
+			if (!sawing && AudioAnalyzer.Instance.getPitch () > 10) {
+				StartCoroutine (sawDaThing ());
+			}
 		}
 	}
 

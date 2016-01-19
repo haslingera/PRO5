@@ -77,14 +77,9 @@ public class SpawnEnemy : MonoBehaviour {
     {
         if (col.gameObject.name == "Player")
         {
-			if(GameObject.Find ("Player").GetComponent<Player_Animation>().lives > 0){
-				attack();
-				GameObject.Find ("Player").GetComponent<Player_Animation>().lives -= 1;
-				this.count = 0;
-			}
-			else{
-				endGame();
-			}
+			
+		    endGame();
+			
         }
     }
 
@@ -111,7 +106,7 @@ public class SpawnEnemy : MonoBehaviour {
 	}
 
 	void endGame(){
-		Destroy (GameObject.Find ("Player"));
+        GameLogic.Instance.didFailLevel();
 	}
 
 	void Awake(){

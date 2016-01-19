@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class StationaryMovement : MonoBehaviour {
-	
+
 	public float constantSpeedX;
 	public float constantSpeedY;
 	public float constantSpeedZ;
@@ -20,26 +20,46 @@ public class StationaryMovement : MonoBehaviour {
 	private float journeyLength;
 	private float direction = 1;
 
+	private bool levelDidStart;
+
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody>();
+		this.levelDidStart = false; // TODO: set to false when level is ready to distribution
 		moveToPoint (transform.position, moveTo, this.speed, this.time);
+	}
+
+	// Register Broadcast "OnLevelReadyToStart" event
+	void OnEnable() {
+		GameLogic.Instance.OnLevelReadyToStart += levelReadyToStart;
+	}
+
+	// Unregister Broadcast "OnLevelReadyToStart" event
+	void OnDisable() {
+		GameLogic.Instance.OnLevelReadyToStart -= levelReadyToStart;
+	}
+
+	// receives OnLevelReadyToStart events
+	private void levelReadyToStart() {
+		this.levelDidStart = true;
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (!movementToPoint) {			
-			transform.position += new Vector3 (constantSpeedX, constantSpeedY, constantSpeedZ) * direction;
-		} else if (journeyLength > 0) {
-			float distCovered = 0;
-			if(timeMovement && time > 0) {
-				distCovered = (Time.time - startTime) * (journeyLength/time);
-				float fracJourney = distCovered / journeyLength;
-				transform.position = Vector3.Lerp (moveFrom, moveTo, fracJourney);
-			}else if (speed > 0){
-				distCovered = (Time.time - startTime) * speed;
-				float fracJourney = distCovered / journeyLength;
-				transform.position = Vector3.Lerp (moveFrom, moveTo, fracJourney);
+		if (this.levelDidStart) {
+			if (!movementToPoint) {			
+				transform.position += new Vector3 (constantSpeedX, constantSpeedY, constantSpeedZ) * direction;
+			} else if (journeyLength > 0) {
+				float distCovered = 0;
+				if (timeMovement && time > 0) {
+					distCovered = (Time.time - startTime) * (journeyLength / time);
+					float fracJourney = distCovered / journeyLength;
+					transform.position = Vector3.Lerp (moveFrom, moveTo, fracJourney);
+				} else if (speed > 0) {
+					distCovered = (Time.time - startTime) * speed;
+					float fracJourney = distCovered / journeyLength;
+					transform.position = Vector3.Lerp (moveFrom, moveTo, fracJourney);
+				}
 			}
 		}
 	}
