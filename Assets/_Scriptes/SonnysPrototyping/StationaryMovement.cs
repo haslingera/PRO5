@@ -25,8 +25,7 @@ public class StationaryMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody>();
-		this.levelDidStart = true; // TODO: set to false when level is ready to distribution
-		moveToPoint (transform.position, moveTo, this.speed, this.time);
+		this.levelDidStart = GameLogic.Instance.getLevelIsReadyToStart (); // for testing set this variable to true
 	}
 
 	// Register Broadcast "OnLevelReadyToStart" event
@@ -42,6 +41,7 @@ public class StationaryMovement : MonoBehaviour {
 	// receives OnLevelReadyToStart events
 	private void levelReadyToStart() {
 		this.levelDidStart = true;
+		moveToPoint (transform.position, moveTo, this.speed, this.time);
 	}
 	
 	// Update is called once per frame

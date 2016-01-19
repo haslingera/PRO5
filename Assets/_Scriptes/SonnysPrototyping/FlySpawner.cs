@@ -12,15 +12,34 @@ public class FlySpawner : MonoBehaviour {
 	private bool isSpawning = false;
 	private float gameSpeed = 1f;
 
+	private bool levelDidStart;
+
 	void Start () {
 		gameSpeed = GameObject.Find("LevelLogic").GetComponent<LevelLogic>().numberOfBeats/8.0f;
+
+		this.levelDidStart = false; // set this to false when game is ready for distribution
+		this.levelDidStart = GameLogic.Instance.getLevelIsReadyToStart();
+	}
+
+	void OnEnable() {
+		GameLogic.Instance.OnLevelReadyToStart += levelReadyToStart;
+	}
+
+	void OnDisable() {
+		GameLogic.Instance.OnLevelReadyToStart -= levelReadyToStart;
+	}
+
+	private void levelReadyToStart() {
+		this.levelDidStart = true;
 	}
 
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (!isSpawning) {
-			isSpawning = true;
-			StartCoroutine(SpawnObject(Random.Range(minTime/gameSpeed, maxTime/gameSpeed)));
+		if (this.levelDidStart) {
+			if (!isSpawning) {
+				isSpawning = true;
+				StartCoroutine (SpawnObject (Random.Range (minTime / gameSpeed, maxTime / gameSpeed)));
+			}
 		}
 	}
 
