@@ -14,15 +14,18 @@ public class PingPongBall : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (transform.position.y < 0.0f) {
-			GameLogic.Instance.didFailLevel ();
-		}
+
 	}
 
 	void OnCollisionEnter(Collision other) {
 		if (other.gameObject.CompareTag ("TennisPlayer1") || other.gameObject.CompareTag ("TennisPlayer2")) {
 			movement.revertMovement ();
-			Debug.Log ("now");
+		}
+	}
+
+	void OnTriggerEnter(Collider other) {
+		if (other.CompareTag ("LevelLost")) {
+			GameLogic.Instance.didFailLevel ();
 		}
 	}
 }
