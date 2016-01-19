@@ -25,7 +25,7 @@ public class StationaryMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody>();
-		this.levelDidStart = false; // TODO: set to false when level is ready to distribution
+		this.levelDidStart = true; // TODO: set to false when level is ready to distribution
 		moveToPoint (transform.position, moveTo, this.speed, this.time);
 	}
 
