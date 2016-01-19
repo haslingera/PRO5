@@ -14,32 +14,15 @@ public class PingPongBall : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (allowed1 && AudioAnalyzer.Instance.getMicLoudness() > 0.1f) {
-			movement.revertMovement();
-			allowed1 = false;
-		} else if (allowed2 && AudioAnalyzer.Instance.getMicLoudness() > 0.1f) {
-			movement.revertMovement();
-			allowed2 = false;
-		}
 		if (transform.position.y < 0.0f) {
 			GameLogic.Instance.didFailLevel ();
 		}
 	}
 
-	void OnTriggerEnter(Collider other) {
-		if (other.CompareTag ("TennisPlayer1")) {
-			allowed1 = true;
-		} else if (other.CompareTag ("TennisPlayer2")) {
-			allowed2 = true;
+	void OnCollisionEnter(Collision other) {
+		if (other.gameObject.CompareTag ("TennisPlayer1") || other.gameObject.CompareTag ("TennisPlayer2")) {
+			movement.revertMovement ();
+			Debug.Log ("now");
 		}
 	}
-
-	void OnTriggerExit(Collider other) {
-		if (other.CompareTag ("TennisPlayer1")) {
-			allowed1 = false;
-		} else if (other.CompareTag ("TennisPlayer2")) {
-			allowed2 = false;
-		}
-	}
-
 }
