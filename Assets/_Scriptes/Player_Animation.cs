@@ -17,6 +17,7 @@ public class Player_Animation : MonoBehaviour {
     public bool highRes = false;
     bool blinken = false;
     int blinker = 45;
+    public float blinkSpeed = 0.0f;
 	
 	// Use this for initialization
 	void Start () {
@@ -122,11 +123,11 @@ public class Player_Animation : MonoBehaviour {
 
             if (counter < 20)
             {
-                temp.transform.localScale -= new Vector3(0f, 0.05f, 0f);
+                temp.transform.localScale -= new Vector3(0f, blinkSpeed, 0f);
                 counter++;
             }
             else {
-                temp.transform.localScale += new Vector3(0f, 0.05f, 0f);
+                temp.transform.localScale += new Vector3(0f, blinkSpeed, 0f);
                 counter++;
             }
 
