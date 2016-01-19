@@ -70,7 +70,7 @@ public class CarSpawn : MonoBehaviour {
 	}
 
 	bool moves(){
-        Debug.Log(this.transform.position + " + " + start);
+        //Debug.Log(this.transform.position + " + " + start);
         if (this.transform.position == start)
 			return false;
 		else
