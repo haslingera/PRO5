@@ -9,13 +9,13 @@ public class Runner_ObstSpawn : MonoBehaviour {
 	private Vector3 start = new Vector3(-29f,0.13f,-7.4f);
 	GameObject clone;
 	private bool spawned = false;
+	private float defaultSpeed = -0.1f;
 
 	// Use this for initialization
 	void Start () {
 		height[0] = 0.13f;
 		height[1] = 2.1f;
 		setSpeed ();
-
 	}
 	
 	// Update is called once per frame
@@ -39,7 +39,6 @@ public class Runner_ObstSpawn : MonoBehaviour {
 			clone.name = this.name;
 			spawned = true;
 		}
-	
 	}
 
 	void destroyObst(){
@@ -47,14 +46,9 @@ public class Runner_ObstSpawn : MonoBehaviour {
 	}
 
 	void setSpeed(){
-
-		float temp = GameLogic.Instance.getLevelSpeed ();
-		temp = temp * -1;
-		temp += 0.9f;
-		GameObject.Find ("Obstacle").GetComponent<StationaryMovement> ().constantSpeedX = temp;
-
+		// set speed for obstacles based on level speed
+		float levelSpeed = GameLogic.Instance.getLevelSpeed ();
+		StationaryMovement stationaryMovement = GameObject.Find ("Obstacle").GetComponent<StationaryMovement> ();
+		stationaryMovement.constantSpeedX = this.defaultSpeed * levelSpeed;
 	}
-
-
-
 }

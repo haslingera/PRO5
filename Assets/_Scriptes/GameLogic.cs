@@ -90,8 +90,6 @@ public class GameLogic : MonoBehaviour {
 					if (this.didTriggerRescheduleTickTockEnd == false) {
 						// if there's more than 4 beats left, set the time to exactly one "takt" less (subtract 4 beats)
 						float timePerBeat = 60.0f / this.currentBPM;
-						Debug.Log ("timePerBeat*4: " + timePerBeat * 4);
-						Debug.Log ("actualLevelTime: " + this.actualLevelTime);
 						while (timePerBeat * 8 < this.actualLevelTime) {
 							// more than 4 beats left, subtract 4 beats from actualLevelTime
 							this.actualLevelTime -= timePerBeat * 4;
@@ -163,7 +161,7 @@ public class GameLogic : MonoBehaviour {
 	private bool isSucceeded;
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
-	private string[] levels = new string[] {"TreeSawing"};
+	private string[] levels = new string[] {"JumpAndDuck"};
 	private string actualLevel = "";
 
 	public void startNewSinglePlayerGame() {
