@@ -30,22 +30,18 @@ public class Player_Animation : MonoBehaviour {
         if (neutral)
         {
             skinnedMeshRenderer = GameObject.Find("Neutral").GetComponent<SkinnedMeshRenderer>();
-            //skinnedMesh = GameObject.Find("Neutral").GetComponent<SkinnedMeshRenderer>().sharedMesh;
 
             skinnedMeshRendererEyes = GameObject.Find("Eyes").GetComponent<SkinnedMeshRenderer>();
-            //skinnedMeshEyes = GameObject.Find("Eyes").GetComponent<SkinnedMeshRenderer>().sharedMesh;
 
             if (tongue)
             {
                 skinnedMeshRendererTongue = GameObject.Find("Tounge_default1").GetComponent<SkinnedMeshRenderer>();
-                //skinnedMeshTongue = GameObject.Find("Tounge_default1").GetComponent<SkinnedMeshRenderer>().sharedMesh;
             }
         }
 
         if (highRes)
         {
-            skinnedMeshRenderer = GameObject.Find("Player").GetComponent<SkinnedMeshRenderer>();
-            //skinnedMesh = GameObject.Find("Player").GetComponent<SkinnedMeshRenderer>().sharedMesh;
+            skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
 
         }
 
