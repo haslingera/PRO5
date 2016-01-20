@@ -33,6 +33,9 @@ public class SchreckSchreiPlayer : MonoBehaviour {
 				if (hit.collider.CompareTag("pupil") && hit.distance < 2.5f) {
 					StationaryMovement pupil = hit.collider.gameObject.GetComponent<StationaryMovement>();
 					pupil.stopMovement();
+					GameLogic.Instance.didFinishLevel ();
+					Player_Animation ani = hit.collider.gameObject.GetComponent<Player_Animation> ();
+					ani.talkDirtyToMe = true;
 
 					GameLogic.Instance.didFinishLevel ();
 				} else if (hit.collider.CompareTag("pupil")) {
