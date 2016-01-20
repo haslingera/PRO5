@@ -78,7 +78,7 @@ public class PlattformBehavior : MonoBehaviour {
     {
 		Vector3 tow = this.transform.position;
 
-		if(Player.transform.position.x == tow.x) //|| Player.transform.position.x >= tow.x-1 && Player.transform.position.x <= tow.x + 1)
+		if(Player.transform.position.x == tow.x)//Player.transform.position.x >= tow.x-1 && Player.transform.position.x <= tow.x + 1)
         {
             //Debug.Log("On"+name);
             return true;

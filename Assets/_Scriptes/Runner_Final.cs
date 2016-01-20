@@ -71,7 +71,7 @@ public class Runner_Final : MonoBehaviour {
 	private void jump() {
 		if (!already) {
 			//transform.Translate (Vector3.up * 100 * Time.deltaTime, Space.World);
-			rigbi.velocity += new Vector3(0f,5f,0f);
+			rigbi.velocity += new Vector3(0f,6f,0f);
 			already = true;
 			startTimer = Time.time;
 		}

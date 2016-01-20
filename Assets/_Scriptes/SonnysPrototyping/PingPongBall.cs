@@ -27,5 +27,9 @@ public class PingPongBall : MonoBehaviour {
 		if (other.CompareTag ("LevelLost")) {
 			GameLogic.Instance.didFailLevel ();
 		}
+
+		if (other.gameObject.CompareTag ("TennisPlayer1") || other.gameObject.CompareTag ("TennisPlayer2")) {
+			movement.revertMovement ();
+		}
 	}
 }
