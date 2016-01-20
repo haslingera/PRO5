@@ -51,7 +51,7 @@ public class PlattformBehaviorAbsolute : MonoBehaviour {
             first++;
             if (onPlayer())
             {
-				//Debug.Log("Hallo");
+				Debug.Log("Hallo");
                 moveTower();
             }
             else if (!onPlayer() && visited)
@@ -85,7 +85,7 @@ public class PlattformBehaviorAbsolute : MonoBehaviour {
     {
         Vector3 tower = this.transform.position;
 
-		if(Player.transform.position.x == tower.x)//Player.transform.position.x >= tower.x-1 && Player.transform.position.x <= tower.x + 1)
+		if(Player.transform.position.x == tower.x || Player.transform.position.x >= tower.x-1 && Player.transform.position.x <= tower.x + 1)
         {
             //Debug.Log("On");
             return true;

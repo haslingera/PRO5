@@ -20,7 +20,7 @@ public class Player_Animation : MonoBehaviour {
     public bool highRes = false;
     bool blinken = false;
     int blinker = 45;
-    public float blinkSpeed = 0.0f;
+    public float blinkSpeed = 0.05f;
 	
 	// Use this for initialization
 	void Start () {
