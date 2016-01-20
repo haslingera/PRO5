@@ -19,6 +19,9 @@ public class AudioPlayer : MonoBehaviour {
 	private AudioSource melodyAudioSource;
 	private float timeSinceLastPlay; // in seconds
 	private float timeOfLastPlayedClip; // in seconds
+
+	public delegate void OnTickTockStartedAction();
+	public event OnTickTockStartedAction OnTickTockStarted;
  
 	// Singleton Methods
 	// Static singleton property
@@ -54,13 +57,14 @@ public class AudioPlayer : MonoBehaviour {
 
 	public void Init() { /* do nothing */ }
 
-	public void startTickTockAudio(int bpm, int numberOfBeats) {
+	public void startIntroAudio(int bpm) {
 		this.melodyAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
 		this.melodyAudioSource.PlayDelayed (0);
 		this.tickTockEndAudioSource.loop = false;
 
 		Invoke ("playTickTockAudioSourceDelayed", 8 * (60.0f / bpm));
-		Invoke ("playTickTockEndAudioSourceDelayed", ((8 + numberOfBeats - 4) * (60.0f / bpm)));
+		Invoke ("sendTickTockStartedEvent", 8 * (60.0f / bpm));
+		//Invoke ("playTickTockEndAudioSourceDelayed", ((8 + numberOfBeats - 4) * (60.0f / bpm)));
 	}
 
 	public void reScheduleTickTockEndWithDelay(float delay) {
@@ -83,6 +87,18 @@ public class AudioPlayer : MonoBehaviour {
 		this.tickTockEndAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
 		this.tickTockEndAudioSource.Play();
 		this.tickTockEndAudioSource.loop = false;
+	}
+
+	private void sendTickTockStartedEvent() {
+		Debug.Log ("Seinding Tick Tock Started Event");
+		// send broadcast event that tick tock phase has started
+		if (this.OnTickTockStarted != null) {
+			this.OnTickTockStarted ();
+		}
+
+		// by now the gamelogic should know how many beats the level lasts, use this information to call the playTickTockEndAudioSourceDelayed
+		Invoke("playTickTockEndAudioSourceDelayed", (GameLogic.Instance.getCurrentLevelNumberOfBeats() - 4) * (60.0f / GameLogic.Instance.getCurrentBPM()));
+		Invoke ("stopLoopingTickTock", (GameLogic.Instance.getCurrentLevelNumberOfBeats() - 5) * (60.0f / GameLogic.Instance.getCurrentBPM ()));
 	}
 
 

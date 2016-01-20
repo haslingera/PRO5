@@ -31,11 +31,15 @@ public class StationaryMovement : MonoBehaviour {
 	// Register Broadcast "OnLevelReadyToStart" event
 	void OnEnable() {
 		GameLogic.Instance.OnLevelReadyToStart += levelReadyToStart;
-	}
+		//GameLogic.Instance.OnShowLevelInstructions += showLevelInstructions;
+		GameLogic.Instance.OnHideLevelInstructions += hideLevelInstructions;
+	} 
 
 	// Unregister Broadcast "OnLevelReadyToStart" event
 	void OnDisable() {
 		GameLogic.Instance.OnLevelReadyToStart -= levelReadyToStart;
+		//GameLogic.Instance.OnShowLevelInstructions -= showLevelInstructions;
+		GameLogic.Instance.OnHideLevelInstructions -= hideLevelInstructions;
 	}
 
 	// receives OnLevelReadyToStart events
@@ -43,7 +47,15 @@ public class StationaryMovement : MonoBehaviour {
 		this.levelDidStart = true;
 		moveToPoint (transform.position, moveTo, this.speed, this.time);
 	}
-	
+
+	/*private void showLevelInstructions() {
+		Debug.Log ("show Level Instructions");
+	}*/
+
+	private void hideLevelInstructions() {
+		Debug.Log ("hide Level Instructions");
+	}
+
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (this.levelDidStart) {

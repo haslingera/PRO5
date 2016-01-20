@@ -16,4 +16,32 @@ public class MenuScript : MonoBehaviour {
 	public void onStartGame() {
 		GameLogic.Instance.startNewSinglePlayerGame ();
 	}
+
+	public void onTreeSawing() {
+		GameLogic.Instance.startGameWithLevel ("TreeSawing");
+	}
+
+	public void onTennis() {
+		GameLogic.Instance.startGameWithLevel ("Tennis");
+	}
+
+	public void onFlappyScream() {
+		GameLogic.Instance.startGameWithLevel ("FlappyScream");
+	}
+
+	public void onRoad_Scene() {
+		GameLogic.Instance.startGameWithLevel ("Road_Scene");
+	}
+
+	public void onPlattform_Szene() {
+		GameLogic.Instance.startGameWithLevel ("Plattform_Szene");
+	}
+
+	public void onTod_Szene_Spiel() {
+		GameLogic.Instance.startGameWithLevel ("Tod-Szene-Spiel");
+	}
+
+	public void onJumpAndDuck() {
+		GameLogic.Instance.startGameWithLevel ("JumpAndDuck");
+	}
 }
