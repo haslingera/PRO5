@@ -161,7 +161,7 @@ public class GameLogic : MonoBehaviour {
 	private bool isSucceeded;
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
-	private string[] levels = new string[] {"FlappyScream"};
+	private string[] levels = new string[] {"PedestrianScare"};
 	private string actualLevel = "";
 
 	public void startNewSinglePlayerGame() {
