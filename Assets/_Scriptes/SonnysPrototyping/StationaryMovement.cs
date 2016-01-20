@@ -25,7 +25,7 @@ public class StationaryMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody>();
-		this.levelDidStart = GameLogic.Instance.getLevelIsReadyToStart (); // for testing set this variable to true
+        this.levelDidStart = GameLogic.Instance.getLevelIsReadyToStart (); // for testing set this variable to true
 	}
 
 	// Register Broadcast "OnLevelReadyToStart" event
