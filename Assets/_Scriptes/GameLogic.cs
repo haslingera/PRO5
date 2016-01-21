@@ -304,6 +304,42 @@ public class GameLogic : MonoBehaviour {
 		// register for broadcast event and waits until the audio player tells that the tick tock sound started, then the countdown will start.
 		AudioPlayer.Instance.OnTickTockStarted += tickTockStarted;
 	}
+
+	public void restart() {
+		this.showMainMenu = false;
+		this.isGameOver = false;
+		this.levelIsReadyToStart = false;
+		this.didTriggerReadyToStartEvent = false;
+		this.didTriggerRescheduleTickTockEnd = false;
+		this.didTriggerHideLevelInstructions = false;
+		this.isInTickTockMode = false;
+		this.didLoadLevel = true;
+		this.isFailed = false;
+		this.isSucceeded = false;
+		this.isLevelActive = false;
+
+		this.numberOfLives = 3;
+		this.numberOfLevelsCompleted = 0;
+		this.currentBPM = defaultBPM;
+		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats;
+		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
+		this.currentLevelMaxTime = this.actualLevelTime;
+
+		// tell audioplayer to start new ticktock audio
+		AudioPlayer.Instance.startIntroAudio (this.currentBPM);
+
+		// load a random first level
+		int randomNumber = Random.Range(0, this.levels.Length * 5);
+
+		this.actualLevel = this.levels[randomNumber % this.levels.Length];
+		this.setIsSurviveLevel (true); // default will be survive level
+		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
+
+		// send out broadcast to show level information
+		if (this.OnShowLevelInstructions != null) {
+			this.OnShowLevelInstructions ();
+		}
+	}
 		
 
 	public void startGameWithLevel(string level) {
