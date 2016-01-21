@@ -5,7 +5,7 @@ public class MenuScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		
 	}
 	
 	// Update is called once per frame
@@ -14,7 +14,7 @@ public class MenuScript : MonoBehaviour {
 	}
 
 	public void onStartGame() {
-		GameLogic.Instance.startNewSinglePlayerGame ();
+		GameLogic.Instance.startNewDemoGame ();
 	}
 
 	public void onTreeSawing() {
@@ -43,5 +43,10 @@ public class MenuScript : MonoBehaviour {
 
 	public void onJumpAndDuck() {
 		GameLogic.Instance.startGameWithLevel ("JumpAndDuck");
+	}
+
+	public void onMainMenu() {
+		// load a new scene, but do not start the new game yet
+		GameLogic.Instance.loadFirstLevelOnHold();
 	}
 }

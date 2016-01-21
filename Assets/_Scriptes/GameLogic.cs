@@ -68,13 +68,13 @@ public class GameLogic : MonoBehaviour {
 						Invoke("sendOnStartTransitionEvent", 0);
 
 						// TODO: maybe should not be a fixed time later on, but rather a callback from the animation class
-						Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 2);
+						Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 3.5f); 
 
 						// send show instructions after 2 more beats
-						Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 2);
+						Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 3.5f);
 
 						// send hide instructions after 6 more beats
-						Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 6);
+						Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 7.5f);
 
 					} else {
 						Debug.Log ("did Fail");
@@ -85,8 +85,10 @@ public class GameLogic : MonoBehaviour {
 						if (this.numberOfLives < 0) {
 							this.isGameOver = true;
 
-							// show game over screen
-							this.gameOver ();
+							// show lives
+							if (this.OnShowLives != null)
+								this.OnShowLives ();
+							
 							return;
 						} 
 
@@ -102,13 +104,13 @@ public class GameLogic : MonoBehaviour {
 						Invoke ("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 4);
 
 						// TODO: maybe should not be a fixed time later on, but rather a callback from the animation class
-						Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 6);
+						Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 7.5f);
 
 						// send show instructions after 2 more beats
-						Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 6);
+						Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 7.5f);
 
 						// send hide instructions after 6 more beats
-						Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 10);
+						Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 11.5f);
 					}
 			
 					// prepare next level
@@ -262,14 +264,17 @@ public class GameLogic : MonoBehaviour {
 	private string actualLevel = "";
 	private string nextLevel;
 
+	private bool showMainMenu = false;
+
 	public void startNewSinglePlayerGame() {
+		this.showMainMenu = false;
 		this.isGameOver = false;
 		this.levelIsReadyToStart = false;
 		this.didTriggerReadyToStartEvent = false;
 		this.didTriggerRescheduleTickTockEnd = false;
 		this.didTriggerHideLevelInstructions = false;
 		this.isInTickTockMode = false;
-		this.didLoadLevel = false;
+		this.didLoadLevel = true;
 		this.isFailed = false;
 		this.isSucceeded = false;
 		this.isLevelActive = false;
@@ -285,11 +290,11 @@ public class GameLogic : MonoBehaviour {
 		AudioPlayer.Instance.startIntroAudio (this.currentBPM);
 
 		// load a random first level
-		int randomNumber = Random.Range(0, this.levels.Length * 5);
+		/*int randomNumber = Random.Range(0, this.levels.Length * 5);
 
 		this.actualLevel = this.levels[randomNumber % this.levels.Length];
 		this.setIsSurviveLevel (true); // default will be survive level
-		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
+		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);*/
 
 		// send out broadcast to show level information
 		if (this.OnShowLevelInstructions != null) {
@@ -299,6 +304,7 @@ public class GameLogic : MonoBehaviour {
 		// register for broadcast event and waits until the audio player tells that the tick tock sound started, then the countdown will start.
 		AudioPlayer.Instance.OnTickTockStarted += tickTockStarted;
 	}
+		
 
 	public void startGameWithLevel(string level) {
 		this.levels = new string[] {level};
@@ -340,29 +346,56 @@ public class GameLogic : MonoBehaviour {
 		AudioPlayer.Instance.OnTickTockStarted += tickTockStarted;
 	}
 
-	public void startNewDemoGame(int numberOfBeats) {
-		Debug.Log ("Demo Game");
+	public void startNewDemoGame() {
+		this.showMainMenu = false;
 		this.isGameOver = false;
 		this.levelIsReadyToStart = false;
 		this.didTriggerReadyToStartEvent = false;
 		this.didTriggerRescheduleTickTockEnd = false;
 		this.didTriggerHideLevelInstructions = false;
+		this.isInTickTockMode = false;
+		this.didLoadLevel = true;
+		this.isFailed = false;
+		this.isSucceeded = false;
+		this.isLevelActive = false;
 
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = defaultBPM;
-		this.currentLevelNumberOfBeats = numberOfBeats;
-		this.actualLevelTime = 60.0f / currentBPM * this.currentLevelNumberOfBeats;
+		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats;
+		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
 		this.currentLevelMaxTime = this.actualLevelTime;
 
-		this.didLoadLevel = true;
-		this.isSurviveLevel = true;
-		this.isSucceeded = false;
-
-		// start demo sound
-		// calculate delay for ticktackEndClip: delay = (numberOfBeats - 3) * timeABeatLasts // why '-3'? --> the "gong" sound is the last sound, that's why it is not -4
-		float delay = (this.currentLevelNumberOfBeats - 3) * (60.0f / this.currentBPM);
+		// tell audioplayer to start new ticktock audio
 		AudioPlayer.Instance.startIntroAudio (this.currentBPM);
+
+		// load a random first level
+		int randomNumber = Random.Range(0, this.levels.Length * 5);
+
+		this.actualLevel = this.levels[randomNumber % this.levels.Length];
+		this.setIsSurviveLevel (true); // default will be survive level
+		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
+
+		// send out broadcast to show level information
+		if (this.OnShowLevelInstructions != null) {
+			this.OnShowLevelInstructions ();
+		}
+
+		// register for broadcast event and waits until the audio player tells that the tick tock sound started, then the countdown will start.
+		AudioPlayer.Instance.OnTickTockStarted += tickTockStarted;
+	}
+
+	public void loadFirstLevelOnHold() {
+		this.showMainMenu = true;
+		this.isGameOver = true;
+		this.didLoadLevel = false;
+
+		// load a random first level
+		int randomNumber = Random.Range(0, this.levels.Length * 5);
+
+		this.actualLevel = this.levels[randomNumber % this.levels.Length];
+		this.setIsSurviveLevel (true); // default will be survive level
+		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
 	}
 
 	private void loadNextLevel() {
