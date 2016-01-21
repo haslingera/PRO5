@@ -8,36 +8,62 @@ public class Player_Road_Scene : MonoBehaviour {
 	Vector3 end;
 	bool move = false;
 	Vector3 newPos;
+    bool levelDidStart = false;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 
 		start = this.transform.position;
 		end = new Vector3 (22f, start.y,start.z);
 		newPos = start;
 	
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
-		db = AudioAnalyzer.Instance.getMicLoudness();
+    void OnEnable()
+    {
+        GameLogic.Instance.OnLevelReadyToStart += levelReadyToStart;
+    }
 
-		if (!move) {
-			if (db > 15f) {
-				newPos.x += 0.2f;
-				this.transform.position = newPos;
-				move = true;
-			}
-		} else {
-			if (db >15f) {
-				move = false;
-			}
-		}
+    // Unregister Broadcast "OnLevelReadyToStart" event
+    void OnDisable()
+    {
+        GameLogic.Instance.OnLevelReadyToStart -= levelReadyToStart;
+    }
 
-		if(this.transform.position.x > end.x){
-			GameLogic.Instance.didFinishLevel();
-		}
+    // receives OnLevelReadyToStart events
+    private void levelReadyToStart()
+    {
+        this.levelDidStart = true;
+    }
+
+    // Update is called once per frame
+    void Update () {
+
+        if (levelDidStart)
+        {
+            db = AudioAnalyzer.Instance.getMicLoudness();
+
+            if (!move)
+            {
+                if (db > 15f)
+                {
+                    newPos.x += 0.2f;
+                    this.transform.position = newPos;
+                    move = true;
+                }
+            }
+            else {
+                if (db > 15f)
+                {
+                    move = false;
+                }
+            }
+
+            if (this.transform.position.x > end.x)
+            {
+                GameLogic.Instance.didFinishLevel();
+            }
+        }
 	}
 
 	void Awake(){
