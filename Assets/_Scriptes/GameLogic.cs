@@ -43,6 +43,22 @@ public class GameLogic : MonoBehaviour {
 				// decrease level time
 				this.actualLevelTime -= Time.deltaTime;
 
+				// check if the level is "over", meaning that a survivor level has failed, or a task-level has finished
+				if (this.isFailed) {
+					if (this.didTriggerRescheduleTickTockEnd == false) {
+						// if there's more than 4 beats left, set the time to exactly one "takt" less (subtract 4 beats)
+						float timePerBeat = 60.0f / this.currentBPM;
+						while (timePerBeat * 8 < this.actualLevelTime) {
+							// more than 4 beats left, subtract 4 beats from actualLevelTime
+							this.actualLevelTime -= timePerBeat * 4;
+						}
+
+						AudioPlayer.Instance.reScheduleTickTockEndWithDelay (this.actualLevelTime - (timePerBeat * 4));
+						AudioPlayer.Instance.stopLoopingTickTock ();
+						this.didTriggerRescheduleTickTockEnd = true;
+					}
+				}
+
 				if (this.actualLevelTime < 0) {
 
 					this.isInTickTockMode = false;
