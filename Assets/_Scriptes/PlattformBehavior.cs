@@ -15,6 +15,7 @@ public class PlattformBehavior : MonoBehaviour {
     bool choosen = false;
     bool visited = false;
 	GameObject Player;
+    bool levelDidStart = false;
 
     // Use this for initialization
     void Start() {
@@ -25,37 +26,57 @@ public class PlattformBehavior : MonoBehaviour {
 
     }
 
+    void OnEnable()
+    {
+        GameLogic.Instance.OnLevelReadyToStart += levelReadyToStart;
+    }
+
+    // Unregister Broadcast "OnLevelReadyToStart" event
+    void OnDisable()
+    {
+        GameLogic.Instance.OnLevelReadyToStart -= levelReadyToStart;
+    }
+
+    // receives OnLevelReadyToStart events
+    private void levelReadyToStart()
+    {
+        this.levelDidStart = true;
+    }
+
     // Update is called once per frame
     void Update() {
 
-		DB = AudioAnalyzer.Instance.getPitch();//GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().MicLoudness;
-		//frequ = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().getPitch ();
-		//Debug.Log (DB);
-
-        isVisited();
-
-		if (first == 1 && !GameObject.Find("Plattform1").GetComponent<PlattformBehavior>().onPlayer())
+        if (levelDidStart)
         {
-            startGame();
-        }
-        else
-        {
-            first++;
-            if (onPlayer())
+            DB = AudioAnalyzer.Instance.getPitch();//GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().MicLoudness;
+                                                   //frequ = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().getPitch ();
+                                                   //Debug.Log (DB);
+
+            isVisited();
+
+            if (first == 1 && !GameObject.Find("Plattform1").GetComponent<PlattformBehavior>().onPlayer())
             {
-				//Debug.Log("Hallo");
-                moveTower();
-            }
-			else if (!onPlayer() && visited)
-            {
-                Stop(8f);
+                startGame();
             }
             else
             {
-                if (!onPlayer() && !choosen)
+                first++;
+                if (onPlayer())
                 {
-					//Debug.Log ("Random"+name);
-                    //moveRandomTower();
+                    //Debug.Log("Hallo");
+                    moveTower();
+                }
+                else if (!onPlayer() && visited)
+                {
+                    Stop(8f);
+                }
+                else
+                {
+                    if (!onPlayer() && !choosen)
+                    {
+                        //Debug.Log ("Random"+name);
+                        //moveRandomTower();
+                    }
                 }
             }
         }
