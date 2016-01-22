@@ -200,7 +200,7 @@ public class GameLogic : MonoBehaviour {
 	private string actualLevel = "";
 	private string nextLevel;
 
-	public bool showMainMenu = false;
+	private bool showMainMenu = false;
 
 	public void startNewSinglePlayerGame() {
 		this.showMainMenu = false;
@@ -466,5 +466,9 @@ public class GameLogic : MonoBehaviour {
 
 	public int getCurrentBPM() {
 		return this.currentBPM;
+	}
+
+	public bool getShowMainMenu() {
+		return this.showMainMenu;
 	}
 }
