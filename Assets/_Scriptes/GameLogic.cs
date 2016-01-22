@@ -134,92 +134,11 @@ public class GameLogic : MonoBehaviour {
 				}
 
 			}
-					
-
-
-			// if level time is below 0, then set that this level is lost
-			
-			//Debug.Log ("actual Level Time: " + actualLevelTime);
-
-			/*if (this.actualLevelTime < 0) {
-				if (this.isSucceeded) {
-					// level succeeded
-					this.didLoadLevel = false;
-
-					// send out events
-					if (this.OnLevelTimeRanOutSuccess != null) this.OnLevelTimeRanOutSuccess();
-
-					// increase numberOfLevelsCompleted and load next level
-					this.numberOfLevelsCompleted++;
-
-					// send out broadcast event that transition to next level should start
-					if (this.OnShowTransitionToNextLevel != null) {
-						this.OnShowTransitionToNextLevel ();
-
-					} else {
-						// if no broadcast receiver is registered, break the application (pause it, so that programmer will see that an error has occured)
-						Debug.LogError("No receiver for OnShowTransitionToNextLevel registered.");
-						Debug.Break ();
-					}
-
-				} else {
-					// level failed
-					this.numberOfLives--;
-
-					// send out events
-					if (this.OnLevelTimeRanOutFail != null) this.OnLevelTimeRanOutFail();
-
-					// if game over, go to game over scene
-					if (this.numberOfLives < 0) {
-						this.gameOver ();
-
-						// load next level
-					} else {
-
-						// send out broadcast event to show lives
-						if (this.OnShowLives != null) {
-							this.OnShowLives ();
-							// TODO: Invoke a method that will later broadcast "OnShowTransitionToNextLevel"
-						}
-					}
-				}
-			}
-
-			// check if the level is "over", meaning that a survivor level has failed, or a task-level has finished
-			if ((this.isSurviveLevel && !this.isSucceeded) ||
-			    (!this.isSurviveLevel && this.isSucceeded)) {
-
-				if (this.didTriggerRescheduleTickTockEnd == false) {
-					// if there's more than 4 beats left, set the time to exactly one "takt" less (subtract 4 beats)
-					float timePerBeat = 60.0f / this.currentBPM;
-					while (timePerBeat * 8 < this.actualLevelTime) {
-						// more than 4 beats left, subtract 4 beats from actualLevelTime
-						this.actualLevelTime -= timePerBeat * 4;
-					}
-
-					AudioPlayer.Instance.reScheduleTickTockEndWithDelay (this.actualLevelTime - (timePerBeat * 4));
-					this.didTriggerRescheduleTickTockEnd = true;
-				}
-			}
-
-			// calculate how many beats are left (for debugging)
-			float beatsLeft = this.actualLevelTime / (60.0f / this.currentBPM);
-			//Debug.Log ("Beats Left: " + beatsLeft);
-
-			if (beatsLeft < 5.0f) {
-				AudioPlayer.Instance.stopLoopingTickTock ();
-			}
-			*/
 		}
 	}
 
 	void OnLevelWasLoaded(int level) {
 		this.didLoadLevel = true;
-		/*if (!this.isGameOver) {
-			// do some prep
-			this.remainingLevelPreparationTime = (60.0f / this.currentBPM) * 8;
-			this.didLoadLevel = true;
-		}*/
 	}
 
 
@@ -255,13 +174,9 @@ public class GameLogic : MonoBehaviour {
 	private float actualLevelTime;
 	private float currentLevelMaxTime;
 
-	private float remainingLevelPreparationTime;
-	private bool levelIsReadyToStart;
 	private bool didTriggerReadyToStartEvent;
 	private bool didTriggerRescheduleTickTockEnd;
-	private bool didTriggerHideLevelInstructions;
 	private bool isInTickTockMode;
-	private bool isLevelActive;
 
 	private const int defaultBPM = 80;
 	private const int defaultLevelNumberOfBeats = 16;
@@ -269,31 +184,28 @@ public class GameLogic : MonoBehaviour {
 	private int currentLevelNumberOfBeats = 8;
 
 	private bool didLoadLevel = false;
+	private bool isSurviveLevel;
+	private bool isGameOver = false;
 	private bool isSucceeded;
 	private bool isFailed;
 
-	private bool isGameOver = false;
-	private bool isSurviveLevel;
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
 	private string[] levels = new string[] {"TreeSawing", "Tennis", "FlappyScream", "Road_Scene", "Plattform_Szene", "Tod-Szene-Spiel", "JumpAndDuck"};
 	private string actualLevel = "";
 	private string nextLevel;
 
-	private bool showMainMenu = false;
+	public bool showMainMenu = false;
 
 	public void startNewSinglePlayerGame() {
 		this.showMainMenu = false;
 		this.isGameOver = false;
-		this.levelIsReadyToStart = false;
 		this.didTriggerReadyToStartEvent = false;
 		this.didTriggerRescheduleTickTockEnd = false;
-		this.didTriggerHideLevelInstructions = false;
 		this.isInTickTockMode = false;
 		this.didLoadLevel = true;
 		this.isFailed = false;
 		this.isSucceeded = false;
-		this.isLevelActive = false;
 
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
@@ -324,15 +236,12 @@ public class GameLogic : MonoBehaviour {
 	public void restart() {
 		this.showMainMenu = false;
 		this.isGameOver = false;
-		this.levelIsReadyToStart = false;
 		this.didTriggerReadyToStartEvent = false;
 		this.didTriggerRescheduleTickTockEnd = false;
-		this.didTriggerHideLevelInstructions = false;
 		this.isInTickTockMode = false;
 		this.didLoadLevel = true;
 		this.isFailed = false;
 		this.isSucceeded = false;
-		this.isLevelActive = false;
 
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
@@ -362,15 +271,12 @@ public class GameLogic : MonoBehaviour {
 		this.levels = new string[] {level};
 
 		this.isGameOver = false;
-		this.levelIsReadyToStart = false;
 		this.didTriggerReadyToStartEvent = false;
 		this.didTriggerRescheduleTickTockEnd = false;
-		this.didTriggerHideLevelInstructions = false;
 		this.isInTickTockMode = false;
 		this.didLoadLevel = false;
 		this.isFailed = false;
 		this.isSucceeded = false;
-		this.isLevelActive = false;
 
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
@@ -381,9 +287,6 @@ public class GameLogic : MonoBehaviour {
 
 		// tell audioplayer to start new ticktock audio
 		AudioPlayer.Instance.startIntroAudio (this.currentBPM);
-
-		// load a random first level
-		int randomNumber = Random.Range(0, this.levels.Length * 5);
 
 		this.actualLevel = level;
 		this.setIsSurviveLevel (true); // default will be survive level
@@ -401,15 +304,12 @@ public class GameLogic : MonoBehaviour {
 	public void startNewDemoGame() {
 		this.showMainMenu = false;
 		this.isGameOver = false;
-		this.levelIsReadyToStart = false;
 		this.didTriggerReadyToStartEvent = false;
 		this.didTriggerRescheduleTickTockEnd = false;
-		this.didTriggerHideLevelInstructions = false;
 		this.isInTickTockMode = false;
 		this.didLoadLevel = true;
 		this.isFailed = false;
 		this.isSucceeded = false;
-		this.isLevelActive = false;
 
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
@@ -451,38 +351,14 @@ public class GameLogic : MonoBehaviour {
 	}
 
 	private void loadNextLevel() {
-		// set didStartLevel to false
-		/*this.didLoadLevel = false;
-		this.levelIsReadyToStart = false;
-		this.didTriggerReadyToStartEvent = false;
-		this.didTriggerRescheduleTickTockEnd = false;
-		this.didTriggerHideLevelInstructions = false;
-
-		this.currentBPM += 20;
-
-		// set time for new level
-		this.actualLevelTime = 60.0f / this.currentBPM * defaultLevelNumberOfBeats;
-		this.currentLevelMaxTime = this.actualLevelTime;
-
-		// load random next level
-		int randomNumber;
-		//do {
-			randomNumber = Random.Range(0, this.levels.Length * 5);
-		//} while(this.levels[randomNumber % this.levels.Length] == this.actualLevel);
-
-		this.actualLevel = this.levels[randomNumber % this.levels.Length];
-		this.setIsSurviveLevel (true); // default will be survive level
-		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);*/
-
+		// load the next level
 		Application.LoadLevel (this.nextLevel);
 	}
 
 	private void prepareNextLevel() {
 		this.didLoadLevel = false;
-		this.levelIsReadyToStart = false;
 		this.didTriggerReadyToStartEvent = false;
 		this.didTriggerRescheduleTickTockEnd = false;
-		this.didTriggerHideLevelInstructions = false;
 		this.isFailed = false;
 		this.isSucceeded = false;
 		this.isInTickTockMode = false;
