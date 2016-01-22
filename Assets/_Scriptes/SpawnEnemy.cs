@@ -23,6 +23,7 @@ public class SpawnEnemy : MonoBehaviour {
     void Start () {
 
 		this.levelDidStart = GameLogic.Instance.getLevelIsReadyToStart ();
+		this.speed = this.speed * GameLogic.Instance.getLevelSpeed ();
 
 		count = 0;
 		spawnPoint = new Vector3[5];
