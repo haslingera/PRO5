@@ -25,9 +25,10 @@ public class StationaryMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody>();
-		this.levelDidStart = false;//GameLogic.Instance.getLevelIsReadyToStart (); // for testing set this variable to true
+		this.levelDidStart = GameLogic.Instance.getLevelIsReadyToStart();//GameLogic.Instance.getLevelIsReadyToStart (); // for testing set this variable to true
 
 		GameLogic.Instance.OnShowLevelInstructions += showLevelInstructions;
+		moveToPoint (transform.position, moveTo, this.speed, this.time);
 	}
 
 	public void showLevelInstructions() {
@@ -56,7 +57,6 @@ public class StationaryMovement : MonoBehaviour {
 	// receives OnLevelReadyToStart events
 	private void levelReadyToStart() {
 		this.levelDidStart = true;
-		moveToPoint (transform.position, moveTo, this.speed, this.time);
 	}
 
 	/*private void showLevelInstructions() {
