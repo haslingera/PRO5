@@ -22,6 +22,8 @@ public class SpawnEnemy : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
+		this.levelDidStart = GameLogic.Instance.getLevelIsReadyToStart ();
+
 		count = 0;
 		spawnPoint = new Vector3[5];
 		spawnPoint [0] = new Vector3 (21.9f,3f,-18f);
