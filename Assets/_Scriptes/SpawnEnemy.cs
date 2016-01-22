@@ -17,6 +17,7 @@ public class SpawnEnemy : MonoBehaviour {
 	private Plane[] planes;
 	private Vector3[] spawnPoint;
 	public int limit = 300;
+    bool levelDidStart = false;
 
     // Use this for initialization
     void Start () {
@@ -43,34 +44,58 @@ public class SpawnEnemy : MonoBehaviour {
             this.transform.position = position;
         }
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
-		float tempDB = AudioAnalyzer.Instance.getMicLoudness();
+    void OnEnable()
+    {
+        GameLogic.Instance.OnLevelReadyToStart += levelReadyToStart;
+    }
 
-		distance = Vector3.Distance (playerPosition, transform.position);
+    // Unregister Broadcast "OnLevelReadyToStart" event
+    void OnDisable()
+    {
+        GameLogic.Instance.OnLevelReadyToStart -= levelReadyToStart;
+    }
 
-		if (GeometryUtility.TestPlanesAABB (planes, objColl.bounds))
-			visible = true;
-		else {
-			visible = false;
-			count++;
-		}
+    // receives OnLevelReadyToStart events
+    private void levelReadyToStart()
+    {
+        this.levelDidStart = true;
+    }
 
-		//Debug.Log (tempDB);
+    // Update is called once per frame
+    void Update () {
 
-		if (count > limit) {
-			attack();
-			count = 0;
-		} else {
-			if (tempDB > -5) {
-				moveAway();
-			} else {
-				this.speed += 0.1f;
-				this.transform.position = Vector3.MoveTowards (this.transform.position, playerPosition, speed * Time.deltaTime);
-			}
-		}
+        if (levelDidStart)
+        {
+            float tempDB = AudioAnalyzer.Instance.getMicLoudness();
+
+            distance = Vector3.Distance(playerPosition, transform.position);
+
+            if (GeometryUtility.TestPlanesAABB(planes, objColl.bounds))
+                visible = true;
+            else {
+                visible = false;
+                count++;
+            }
+
+            //Debug.Log (tempDB);
+
+            if (count > limit)
+            {
+                attack();
+                count = 0;
+            }
+            else {
+                if (tempDB > -5)
+                {
+                    moveAway();
+                }
+                else {
+                    this.speed += 0.1f;
+                    this.transform.position = Vector3.MoveTowards(this.transform.position, playerPosition, speed * Time.deltaTime);
+                }
+            }
+        }
 	}
 
     void OnCollisionEnter(Collision col)

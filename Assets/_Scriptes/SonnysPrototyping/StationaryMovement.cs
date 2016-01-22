@@ -25,17 +25,29 @@ public class StationaryMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody>();
-		this.levelDidStart = true;//GameLogic.Instance.getLevelIsReadyToStart (); // for testing set this variable to true
+		this.levelDidStart = false;//GameLogic.Instance.getLevelIsReadyToStart (); // for testing set this variable to true
+
+		GameLogic.Instance.OnShowLevelInstructions += showLevelInstructions;
+	}
+
+	public void showLevelInstructions() {
+		
 	}
 
 	// Register Broadcast "OnLevelReadyToStart" event
 	void OnEnable() {
 		GameLogic.Instance.OnLevelReadyToStart += levelReadyToStart;
-	}
+		//GameLogic.Instance.OnShowLevelInstructions += showLevelInstructions;
+		GameLogic.Instance.OnHideLevelInstructions += hideLevelInstructions;
+
+		GameLogic.Instance.getLevelSpeed ();
+	} 
 
 	// Unregister Broadcast "OnLevelReadyToStart" event
 	void OnDisable() {
 		GameLogic.Instance.OnLevelReadyToStart -= levelReadyToStart;
+		//GameLogic.Instance.OnShowLevelInstructions -= showLevelInstructions;
+		GameLogic.Instance.OnHideLevelInstructions -= hideLevelInstructions;
 	}
 
 	// receives OnLevelReadyToStart events
@@ -43,7 +55,15 @@ public class StationaryMovement : MonoBehaviour {
 		this.levelDidStart = true;
 		moveToPoint (transform.position, moveTo, this.speed, this.time);
 	}
-	
+
+	/*private void showLevelInstructions() {
+		Debug.Log ("show Level Instructions");
+	}*/
+
+	private void hideLevelInstructions() {
+		Debug.Log ("hide Level Instructions");
+	}
+
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (this.levelDidStart) {

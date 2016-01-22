@@ -11,9 +11,10 @@ public class CarSpawn : MonoBehaviour {
 	GameObject clone;
 	string name;
 	float worldSpeed;
+    bool levelDidStart = false;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 
 		iTween.Stop (this.gameObject);
 		start = this.gameObject.transform.position;
@@ -24,22 +25,45 @@ public class CarSpawn : MonoBehaviour {
 		worldSpeed = GameLogic.Instance.getLevelSpeed();
 
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
-        if (!this.moves() && !onTheMove) {
-			levelSpeed();
-			iTween.MoveTo (this.gameObject, iTween.Hash ("z", -16, "easetype", "linear", "time", speed));
-            this.onTheMove = true;
+    void OnEnable()
+    {
+        GameLogic.Instance.OnLevelReadyToStart += levelReadyToStart;
+    }
+
+    // Unregister Broadcast "OnLevelReadyToStart" event
+    void OnDisable()
+    {
+        GameLogic.Instance.OnLevelReadyToStart -= levelReadyToStart;
+    }
+
+    // receives OnLevelReadyToStart events
+    private void levelReadyToStart()
+    {
+        this.levelDidStart = true;
+    }
+
+    // Update is called once per frame
+    void Update () {
+
+        if (levelDidStart)
+        {
+            if (!this.moves() && !onTheMove)
+            {
+                levelSpeed();
+                iTween.MoveTo(this.gameObject, iTween.Hash("z", -16, "easetype", "linear", "time", speed));
+                this.onTheMove = true;
+            }
+
+            else if ((int)this.gameObject.transform.position.z == Random.Range(-12, -4))
+            {
+                spawnCar();
+            }
+            else if (this.gameObject.transform.position.z == -16)
+            {
+                destroyCar();
+            }
         }
-
-		else if((int)this.gameObject.transform.position.z == Random.Range(-12,-4)){
-			spawnCar();
-		}
-		else if(this.gameObject.transform.position.z == -16){
-			destroyCar();
-		}
 	}
 
 	void spawnCar(){
