@@ -10,6 +10,9 @@ public class Tennis_racket : MonoBehaviour {
 	private bool swinging;
 	private float time;
 	private bool timeTaking;
+	private float swingForwardAnimationTime;
+	private float swingBackAnimationTime;
+	private float animationStartTime;
 	//BoxCollider boxi;
 	//Quaternion.Euler (0, 80, 300)
 
@@ -19,6 +22,11 @@ public class Tennis_racket : MonoBehaviour {
 		target = Quaternion.Euler (rota);
 		swinging = false;
 		timeTaking = true;
+
+		this.swingForwardAnimationTime = 0.70f / GameLogic.Instance.getLevelSpeed ();
+		this.swingBackAnimationTime = 0.25f / GameLogic.Instance.getLevelSpeed ();
+
+		this.stayTime = this.stayTime / GameLogic.Instance.getLevelSpeed ();
 		//boxi = GetComponent<BoxCollider> ();
 		//boxi.enabled = false;
 	}
@@ -29,20 +37,22 @@ public class Tennis_racket : MonoBehaviour {
 			swinging = true;
 			time = Time.time;
 			timeTaking = false;
+			this.animationStartTime = Time.time;
 		}
 
 		if (swinging) {
-			transform.rotation = Quaternion.Lerp (transform.rotation, target, 0.70F);
+			transform.rotation = Quaternion.Lerp (transform.rotation, target, (Time.time - this.animationStartTime) / this.swingForwardAnimationTime);//0.70F);
 		} else if ((Time.time - time) > stayTime){
-			transform.rotation = Quaternion.Lerp (transform.rotation, start, 0.25F);
+			transform.rotation = Quaternion.Lerp (transform.rotation, start, (Time.time - this.animationStartTime) / this.swingBackAnimationTime);//0.25F);
 		}
 
 		/*if (transform.rotation == target) {
 			boxi.enabled = true;
 		}*/
 
-		if (transform.rotation == target && (Time.time - time) > stayTime) {
+		if (transform.rotation == target && (Time.time - time) > (stayTime) && swinging == true) {
 			swinging = false;
+			this.animationStartTime = Time.time;
 		}
 
 		if (transform.rotation == start) {

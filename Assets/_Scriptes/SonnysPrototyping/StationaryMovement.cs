@@ -40,7 +40,10 @@ public class StationaryMovement : MonoBehaviour {
 		//GameLogic.Instance.OnShowLevelInstructions += showLevelInstructions;
 		GameLogic.Instance.OnHideLevelInstructions += hideLevelInstructions;
 
-		GameLogic.Instance.getLevelSpeed ();
+		this.speed = this.speed * GameLogic.Instance.getLevelSpeed ();
+		this.constantSpeedX *= GameLogic.Instance.getLevelSpeed ();
+		this.constantSpeedY *= GameLogic.Instance.getLevelSpeed ();
+		this.constantSpeedZ *= GameLogic.Instance.getLevelSpeed ();
 	} 
 
 	// Unregister Broadcast "OnLevelReadyToStart" event

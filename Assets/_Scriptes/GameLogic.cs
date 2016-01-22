@@ -46,16 +46,21 @@ public class GameLogic : MonoBehaviour {
 				// check if the level is "over", meaning that a survivor level has failed, or a task-level has finished
 				if (this.isFailed) {
 					if (this.didTriggerRescheduleTickTockEnd == false) {
+						this.didTriggerRescheduleTickTockEnd = true;
+
 						// if there's more than 4 beats left, set the time to exactly one "takt" less (subtract 4 beats)
 						float timePerBeat = 60.0f / this.currentBPM;
+						bool shouldReschedule = false;
 						while (timePerBeat * 8 < this.actualLevelTime) {
 							// more than 4 beats left, subtract 4 beats from actualLevelTime
 							this.actualLevelTime -= timePerBeat * 4;
+							shouldReschedule = true;
 						}
 
-						AudioPlayer.Instance.reScheduleTickTockEndWithDelay (this.actualLevelTime - (timePerBeat * 4));
-						AudioPlayer.Instance.stopLoopingTickTock ();
-						this.didTriggerRescheduleTickTockEnd = true;
+						if (shouldReschedule) {
+							AudioPlayer.Instance.reScheduleTickTockEndWithDelay (this.actualLevelTime - (timePerBeat * 4));
+							AudioPlayer.Instance.stopLoopingTickTock ();
+						}
 					}
 				}
 
@@ -280,7 +285,7 @@ public class GameLogic : MonoBehaviour {
 
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
-		this.currentBPM = defaultBPM;
+		this.currentBPM = 80;
 		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats;
 		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
 		this.currentLevelMaxTime = this.actualLevelTime;
@@ -408,13 +413,17 @@ public class GameLogic : MonoBehaviour {
 	// ---------------------------
 
 	public void didFinishLevel() {
-		Debug.Log ("isSucceeded()");
-		this.isSucceeded = true;
+		if (this.isInTickTockMode) {
+			Debug.Log ("isSucceeded()");
+			this.isSucceeded = true;
+		}
 	}
 
 	public void didFailLevel() {
-		Debug.Log ("isFailed()");
-		this.isFailed = true;
+		if (this.isInTickTockMode) {
+			Debug.Log ("isFailed()");
+			this.isFailed = true;
+		}
 	}
 
 	public void setIsSurviveLevel(bool isSurviveLevel) {
