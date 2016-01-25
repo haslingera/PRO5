@@ -17,6 +17,7 @@ public class AudioPlayer : MonoBehaviour {
 	private AudioSource tickTockAudioSource;
 	private AudioSource tickTockEndAudioSource;
 	private AudioSource melodyAudioSource;
+	private AudioSource loseAudioSource;
 	private float timeSinceLastPlay; // in seconds
 	private float timeOfLastPlayedClip; // in seconds
 
@@ -39,14 +40,17 @@ public class AudioPlayer : MonoBehaviour {
 		this.tickTockAudioSource = this.gameObject.AddComponent<AudioSource> ();
 		this.tickTockEndAudioSource = this.gameObject.AddComponent<AudioSource> ();
 		this.melodyAudioSource = this.gameObject.AddComponent<AudioSource> ();
+		this.loseAudioSource = this.gameObject.AddComponent<AudioSource> ();
 
 		AudioClip tickTockClip = Resources.Load ("TickTock") as AudioClip;
 		AudioClip tickTockEndClip = Resources.Load ("TickTockEnd") as AudioClip;
 		AudioClip melodyClip = Resources.Load ("Melody") as AudioClip;
+		AudioClip loseClip = Resources.Load ("lose") as AudioClip;
 
 		this.tickTockAudioSource.clip = tickTockClip;
 		this.tickTockEndAudioSource.clip = tickTockEndClip;
 		this.melodyAudioSource.clip = melodyClip;
+		this.loseAudioSource.clip = loseClip;
 
 		audioQueue = new Queue<AudioClip>();
 	}
@@ -87,6 +91,12 @@ public class AudioPlayer : MonoBehaviour {
 		this.tickTockEndAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
 		this.tickTockEndAudioSource.Play();
 		this.tickTockEndAudioSource.loop = false;
+	}
+
+	public void playLoseSound() {
+		this.loseAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
+		this.loseAudioSource.loop = false;
+		this.loseAudioSource.Play ();
 	}
 
 	private void sendTickTockStartedEvent() {

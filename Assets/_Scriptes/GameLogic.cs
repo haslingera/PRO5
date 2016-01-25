@@ -64,17 +64,14 @@ public class GameLogic : MonoBehaviour {
 					}
 				}
 
-				if (this.actualLevelTime < 0) {
+				if (this.actualLevelTime < (60.0f / this.currentBPM)) {
 
 					this.isInTickTockMode = false;
 
 					// time's over. check if level succeeded or not
 					bool win = this.isSurviveLevel;
-					Debug.Log ("win 1: " + win);
 					if (this.isFailed) win = false;
-					Debug.Log ("win 2: " + win);
 					if (this.isSucceeded) win = true;
-					Debug.Log ("win 3: " + win);
 
 					if (win) {
 						Debug.Log ("did Win");
@@ -86,16 +83,16 @@ public class GameLogic : MonoBehaviour {
 							this.OnLevelTimeRanOutSuccess ();
 
 						// start transition to next scene
-						Invoke("sendOnStartTransitionEvent", 0);
+						Invoke("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 1.0f);
 
 						// TODO: maybe should not be a fixed time later on, but rather a callback from the animation class
-						Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 3.5f); 
+						Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 4.5f); 
 
 						// send show instructions after 2 more beats
-						Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 3.5f);
+						Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 4.5f);
 
 						// send hide instructions after 6 more beats
-						Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 7.5f);
+						Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 8.5f);
 
 					} else {
 						Debug.Log ("did Fail");
@@ -121,17 +118,20 @@ public class GameLogic : MonoBehaviour {
 						if (this.OnShowLives != null)
 							this.OnShowLives ();
 
+						// after 1 beat play the lose sound
+						Invoke("playLoseSound", (60.0f / this.currentBPM) * 1.0f);
+
 						// after 8 beats hide the lives and start transition to next level
-						Invoke ("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 4);
+						Invoke ("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 5.0f);
 
 						// TODO: maybe should not be a fixed time later on, but rather a callback from the animation class
-						Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 7.5f);
+						Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 8.5f);
 
 						// send show instructions after 2 more beats
-						Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 7.5f);
+						Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 8.5f);
 
 						// send hide instructions after 6 more beats
-						Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 11.5f);
+						Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 12.5f);
 					}
 			
 					// prepare next level
@@ -361,6 +361,10 @@ public class GameLogic : MonoBehaviour {
 	}
 
 	private void prepareNextLevel() {
+		// increase bpm
+		int plusBeats = (this.numberOfLevelsCompleted / 2) * 16;
+		this.currentBPM = defaultBPM + plusBeats;
+
 		this.didLoadLevel = false;
 		this.didTriggerReadyToStartEvent = false;
 		this.didTriggerRescheduleTickTockEnd = false;
@@ -394,6 +398,11 @@ public class GameLogic : MonoBehaviour {
 
 	private void sendOnHideLevelInstructionsEvent() {
 		if (this.OnHideLevelInstructions != null) this.OnHideLevelInstructions ();
+	}
+
+	private void playLoseSound() {
+		// play lose sound
+		AudioPlayer.Instance.playLoseSound();
 	}
 
 
