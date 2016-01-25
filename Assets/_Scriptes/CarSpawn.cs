@@ -12,6 +12,7 @@ public class CarSpawn : MonoBehaviour {
 	string name;
 	float worldSpeed;
     bool levelDidStart = false;
+    bool stop = false;
 
     // Use this for initialization
     void Start () {
@@ -48,21 +49,24 @@ public class CarSpawn : MonoBehaviour {
 
         if (levelDidStart)
         {
-            if (!this.moves() && !onTheMove)
+            if (!stop)
             {
-                levelSpeed();
-				Debug.Log ("car speed: " + speed);
-                iTween.MoveTo(this.gameObject, iTween.Hash("z", -16, "easetype", "linear", "time", speed));
-                this.onTheMove = true;
-            }
+                if (!this.moves() && !onTheMove)
+                {
+                    levelSpeed();
+                    //Debug.Log ("car speed: " + speed);
+                    iTween.MoveTo(this.gameObject, iTween.Hash("z", -16, "easetype", "linear", "time", speed));
+                    this.onTheMove = true;
+                }
 
-            else if ((int)this.gameObject.transform.position.z == Random.Range(-12, -4))
-            {
-                spawnCar();
-            }
-            else if (this.gameObject.transform.position.z == -16)
-            {
-                destroyCar();
+                else if ((int)this.gameObject.transform.position.z == Random.Range(-12, -4))
+                {
+                    spawnCar();
+                }
+                else if (this.gameObject.transform.position.z == -16)
+                {
+                    destroyCar();
+                }
             }
         }
 	}
@@ -106,8 +110,9 @@ public class CarSpawn : MonoBehaviour {
 	{
 		if (col.gameObject.name == "Player")
 		{
-            GameObject.Find("Player").GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-            StartCoroutine(GameObject.Find("Player").GetComponent<Player_Road_Scene>().resetPlayer());
+            player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            StartCoroutine(player.GetComponent<Player_Road_Scene>().resetPlayer());
+            stopMovement();
 		}
 	}
 
@@ -120,4 +125,9 @@ public class CarSpawn : MonoBehaviour {
 
 	}
 
+    void stopMovement() {
+        iTween.Stop(this.gameObject);
+        //iTween.MoveTo(this.gameObject, iTween.Hash("z", transform.position.z-3, "easetype", "linear", "time", speed));
+        this.stop = true;
+    }
 }
