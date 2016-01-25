@@ -9,7 +9,7 @@ public class Player_TodSzene : MonoBehaviour {
     bool levelDidStart = false;
     // Use this for initialization
     void Start () {
-
+		this.levelDidStart = GameLogic.Instance.getLevelIsReadyToStart ();
 	}
 
     void OnEnable()

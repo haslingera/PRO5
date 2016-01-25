@@ -71,7 +71,6 @@ public class SpawnEnemy : MonoBehaviour {
         if (levelDidStart)
         {
             float tempDB = AudioAnalyzer.Instance.getMicLoudness();
-
             distance = Vector3.Distance(playerPosition, transform.position);
 
             if (GeometryUtility.TestPlanesAABB(planes, objColl.bounds))
