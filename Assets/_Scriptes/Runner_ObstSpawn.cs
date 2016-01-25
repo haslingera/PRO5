@@ -10,12 +10,15 @@ public class Runner_ObstSpawn : MonoBehaviour {
 	GameObject clone;
 	private bool spawned = false;
 	private float defaultSpeed = -0.1f;
+    GameObject player;
+    bool stop = false;
 
 	// Use this for initialization
 	void Start () {
 		height[0] = 0.13f;
 		height[1] = 2.1f;
 		setSpeed ();
+        player = GameObject.Find("Player");
 	}
 	
 	// Update is called once per frame
@@ -24,21 +27,24 @@ public class Runner_ObstSpawn : MonoBehaviour {
 		if ((int)transform.position.x == end) {
 			destroyObst();
 		}
-
-		if ((int)transform.position.x == spawnNew && !spawned) {
-			start.y = height[Random.Range(0,2)];
-            if (start.y == 2.1f)
+        if (!stop)
+        {
+            if ((int)transform.position.x == spawnNew && !spawned)
             {
-                start.y = 4.264082e-17f;
-                clone = Instantiate(Resources.Load("Obstacle_big"), start, this.transform.rotation) as GameObject;
-                //clone.transform.localScale.Set(this.transform.localScale.x, 3.6f, this.transform.localScale.z);
+                start.y = height[Random.Range(0, 2)];
+                if (start.y == 2.1f)
+                {
+                    start.y = 4.264082e-17f;
+                    clone = Instantiate(Resources.Load("Obstacle_big"), start, this.transform.rotation) as GameObject;
+                    //clone.transform.localScale.Set(this.transform.localScale.x, 3.6f, this.transform.localScale.z);
+                }
+                else {
+                    clone = Instantiate(Resources.Load("Obstacle"), start, this.transform.rotation) as GameObject;
+                }
+                clone.name = this.name;
+                spawned = true;
             }
-            else {
-                clone = Instantiate(Resources.Load("Obstacle"), start, this.transform.rotation) as GameObject;
-            }
-			clone.name = this.name;
-			spawned = true;
-		}
+        }
 	}
 
 	void destroyObst(){
@@ -51,4 +57,15 @@ public class Runner_ObstSpawn : MonoBehaviour {
 		StationaryMovement stationaryMovement = GameObject.Find ("Obstacle").GetComponent<StationaryMovement> ();
 		stationaryMovement.constantSpeedX = this.defaultSpeed * levelSpeed;
 	}
+
+    void OnCollisionEnter(Collision col)
+    {
+        if (col.gameObject.name == "Player")
+        {
+            StartCoroutine(player.GetComponent<Runner_Final>().endGame());
+            stop = true;
+            GetComponent<StationaryMovement>().constantSpeedX = 0;
+        }
+    }
+
 }

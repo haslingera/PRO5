@@ -12,7 +12,7 @@ public class Runner_Final : MonoBehaviour {
 	private Vector3 start;
 	private bool onStart = true;
 	private bool levelDidStart;
-	
+
 	void Start () {
 		rigbi = GetComponent<Rigidbody> ();
 		scale = this.transform.localScale;
@@ -60,11 +60,13 @@ public class Runner_Final : MonoBehaviour {
 			if (!already) {
 				startTimer = Time.time;
 			}
-			if (!onStart && (int)start.x != (int)this.transform.position.x) {
+			/*if (!onStart && (int)start.x != (int)this.transform.position.x) {
 				StartCoroutine (endGame ());
 			}
-			if (this.transform.eulerAngles.x > 50 & this.transform.eulerAngles.x < 100)
-				Debug.Log (this.transform.eulerAngles.x);
+            if (this.transform.eulerAngles.x > 50 & this.transform.eulerAngles.x < 100)
+            {
+                //Debug.Log (this.transform.eulerAngles.x);
+            }*/
 		}
 	}
 	
@@ -92,8 +94,9 @@ public class Runner_Final : MonoBehaviour {
 		AudioAnalyzer.Instance.Init ();
 	}
 
-	IEnumerator endGame(){
+	public IEnumerator endGame(){
 		yield return new WaitForSeconds(1);
 		GameLogic.Instance.didFailLevel ();
 	}
+
 }
