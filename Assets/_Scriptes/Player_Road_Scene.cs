@@ -13,12 +13,10 @@ public class Player_Road_Scene : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-
 		start = this.transform.position;
 		end = new Vector3 (22f, start.y,start.z);
 		newPos = start;
 		this.levelSpeed = GameLogic.Instance.getLevelSpeed ();
-	
 	}
 
     void OnEnable()
