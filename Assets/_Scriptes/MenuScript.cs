@@ -34,7 +34,7 @@ public class MenuScript : MonoBehaviour {
 	}
 
 	public void onPlattform_Szene() {
-		GameLogic.Instance.startGameWithLevel ("Plattform_Szene");
+		GameLogic.Instance.startGameWithLevel ("Plattformen-Szene");
 	}
 
 	public void onTod_Szene_Spiel() {
@@ -48,5 +48,9 @@ public class MenuScript : MonoBehaviour {
 	public void onMainMenu() {
 		// load a new scene, but do not start the new game yet
 		GameLogic.Instance.loadFirstLevelOnHold();
+	}
+
+	public void onGlassDestroyer() {
+		GameLogic.Instance.startGameWithLevel ("GlassDestroying");
 	}
 }
