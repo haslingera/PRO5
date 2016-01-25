@@ -18,6 +18,7 @@ public class SpawnEnemy : MonoBehaviour {
 	private Vector3[] spawnPoint;
 	public int limit = 300;
     bool levelDidStart = false;
+    bool stop = false;
 
     // Use this for initialization
     void Start () {
@@ -82,19 +83,22 @@ public class SpawnEnemy : MonoBehaviour {
 
             //Debug.Log (tempDB);
 
-            if (count > limit)
+            if (!stop)
             {
-                attack();
-                count = 0;
-            }
-            else {
-                if (tempDB > -5)
+                if (count > limit)
                 {
-                    moveAway();
+                    attack();
+                    count = 0;
                 }
                 else {
-                    this.speed += 0.1f;
-                    this.transform.position = Vector3.MoveTowards(this.transform.position, playerPosition, speed * Time.deltaTime);
+                    if (tempDB > -5)
+                    {
+                        moveAway();
+                    }
+                    else {
+                        this.speed += 0.1f;
+                        this.transform.position = Vector3.MoveTowards(this.transform.position, playerPosition, speed * Time.deltaTime);
+                    }
                 }
             }
         }
@@ -104,9 +108,9 @@ public class SpawnEnemy : MonoBehaviour {
     {
         if (col.gameObject.name == "Player")
         {
-			
+            stop = true;
 		    endGame();
-			
+            GetComponent<Rigidbody>().mass = 100;
         }
     }
 
