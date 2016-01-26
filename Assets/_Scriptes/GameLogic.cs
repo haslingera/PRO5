@@ -233,6 +233,8 @@ public class GameLogic : MonoBehaviour {
 			this.OnShowLevelInstructions ();
 		}
 
+		Invoke("OnHideLevelInstructions", (60.0f / this.currentBPM) * 4.0f);
+
 		// register for broadcast event and waits until the audio player tells that the tick tock sound started, then the countdown will start.
 		AudioPlayer.Instance.OnTickTockStarted += tickTockStarted;
 	}
@@ -336,7 +338,7 @@ public class GameLogic : MonoBehaviour {
 		if (this.OnShowLevelInstructions != null) {
 			this.OnShowLevelInstructions ();
 		}
-
+			
 		// register for broadcast event and waits until the audio player tells that the tick tock sound started, then the countdown will start.
 		AudioPlayer.Instance.OnTickTockStarted += tickTockStarted;
 	}
