@@ -71,11 +71,11 @@ public class UIBehaviour : MonoBehaviour {
 	public void LevelStart() {
 
 		if (GameLogic.Instance.getShowMainMenu()) {
-			GameObject.Find ("StartButton").GetComponent<Button>().onClick.AddListener(() => { OnButtonGameClicked();});
+		//if (true) {
 			StartScreen();
 		} else {
 			//Set Camera And Zoom To Object
-			sceneCamera = GameObject.Find ("Main Camera").GetComponent<Camera> ();
+			sceneCamera = Camera.main.GetComponent<Camera> ();
 			zoomToObject = GameObject.FindGameObjectsWithTag ("ZoomTo") [0];
 			
 			//Set Camera To See All Things That Were Seen In 16:9
@@ -94,7 +94,7 @@ public class UIBehaviour : MonoBehaviour {
 			backgroundColor = zoomToObjectColor;
 			zoomToObjectColor = tempColor;
 			
-			GameObject.Find ("Main Camera").GetComponent<Camera> ().backgroundColor = backgroundColor;
+			Camera.main.GetComponent<Camera> ().backgroundColor = backgroundColor;
 			zoomToObject.GetComponent<Renderer> ().material.SetColor ("_Color", zoomToObjectColor);
 			
 			if (startSpeedSet) {
@@ -233,7 +233,7 @@ public class UIBehaviour : MonoBehaviour {
 	}
 
 	public void ShowLives() {
-		StartCoroutine (ShowLivesNumerator((float)(3.0 / GameLogic.Instance.getLevelSpeed()), GameLogic.Instance.getNumberOfLives()));
+		StartCoroutine (ShowLivesNumerator((float)(2.0 / GameLogic.Instance.getLevelSpeed()), GameLogic.Instance.getNumberOfLives()));
 	}
 
 	IEnumerator ShowLivesNumerator(float time, int lives) {
@@ -244,7 +244,7 @@ public class UIBehaviour : MonoBehaviour {
 		cameraNew.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
 		
 		Camera cameraMain = GameObject.Find ("Main Camera").GetComponent<Camera> () as Camera;
-		StartCoroutine(ScreenWipe.use.CrossFadePro (cameraNew, cameraMain, time));
+		StartCoroutine(ScreenWipe.use.CrossFadePro (cameraNew, cameraMain, time / 3.0f));
 
 		GameObject.Find ("livesOld").GetComponent<Text> ().text = lives + 1 + "";
 		GameObject.Find ("livesNew").GetComponent<Text> ().text = lives + "";
@@ -254,7 +254,7 @@ public class UIBehaviour : MonoBehaviour {
 		GameObject.Find ("livesOld").GetComponent<Text> ().enabled = true;
 		GameObject.Find ("livesNew").GetComponent<Text> ().enabled = true;
 
-		float newTime = time + 0.2f;
+		float newTime = time / 3.0f + 0.2f;
 
 		yield return new WaitForSeconds (newTime);
 
@@ -274,6 +274,11 @@ public class UIBehaviour : MonoBehaviour {
 			"onupdatetarget", this.gameObject, 
 			"onupdate", "MoveGuiElementOldLives"));
 
+		yield return new WaitForSeconds (time *  2.0f / 3.0f);
+
+		GameObject.Find ("livesOld").GetComponent<Text> ().enabled = false;
+		GameObject.Find ("livesNew").GetComponent<Text> ().enabled = false;
+
 	}
 
 	public void MoveGuiElementNewLives(float yPosition){
@@ -285,11 +290,14 @@ public class UIBehaviour : MonoBehaviour {
 	}
 
 	public void StartScreen () {
+
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
 
 		GameObject.Find ("StartButton").GetComponent<Image> ().enabled = true;
 		GameObject.Find ("StartBackground").GetComponent<Image> ().enabled = true;
 		GameObject.Find ("StartForeground").GetComponent<Image> ().enabled = true;
+
+		GameObject.Find ("StartButton").GetComponent<Button>().onClick.AddListener(() => { OnButtonGameClicked();});
 
 		int xPosition = (int)(GameObject.Find ("StartForeground").GetComponent<RectTransform> ().localPosition.x + Random.Range (-Screen.height / 20, Screen.height / 20));
 		int yPosition = (int)(GameObject.Find ("StartForeground").GetComponent<RectTransform> ().localPosition.y + Random.Range (-Screen.height / 20, Screen.height / 20));
@@ -311,6 +319,8 @@ public class UIBehaviour : MonoBehaviour {
 		GameObject.Find ("StartButton").GetComponent<Image> ().enabled = false;
 		GameObject.Find ("StartBackground").GetComponent<Image> ().enabled = false;
 		GameObject.Find ("StartForeground").GetComponent<Image> ().enabled = false;
+
+		Debug.Log("Click");
 
 		GameLogic.Instance.startNewSinglePlayerGame ();
 	}
