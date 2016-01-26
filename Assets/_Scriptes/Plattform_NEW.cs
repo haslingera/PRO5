@@ -10,7 +10,7 @@ public class Plattform_NEW : MonoBehaviour
     int counter = 0;
     int first = 1;
     bool onTheMove = false;
-    public bool moveThemRandom = false;
+    public bool moveThemRandom = true;
     GameObject Player;
     bool levelDidStart = false;
     GameObject[] platforms;
@@ -32,6 +32,13 @@ public class Plattform_NEW : MonoBehaviour
             platforms[i] = GameObject.Find("Plattform" + a.ToString());
             a++;
         }
+
+        for (int x = 1; x < platforms.Length-1; x++)
+        {
+            Vector3 temp = new Vector3(platforms[x].transform.position.x, Random.Range(-7F, 8F), platforms[x].transform.position.z);
+            platforms[x].transform.position = temp;
+        }
+
     }
 
     void OnEnable()
