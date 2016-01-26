@@ -12,6 +12,7 @@ public class Runner_Final : MonoBehaviour {
 	private Vector3 start;
 	private bool onStart = true;
 	private bool levelDidStart;
+    bool stop = false;
 
 	void Start () {
 		rigbi = GetComponent<Rigidbody> ();
@@ -35,39 +36,51 @@ public class Runner_Final : MonoBehaviour {
 	
 
 	void FixedUpdate () {
-		if (this.levelDidStart) {
-			if (onStart) {
-				this.transform.position = Vector3.MoveTowards (this.transform.position, start, 0.1f);
-				if (start.x == this.transform.position.x) {
-					onStart = false;
-				}
-			}
 
+        if (this.levelDidStart)
+        {
 
-			if (AudioAnalyzer.Instance.getPitch () < 300f && AudioAnalyzer.Instance.getPitch () > 0) {
-				duck ();
-			}
-
-			if (AudioAnalyzer.Instance.getPitch () > 500f) {
-				jump ();
-			}
-
-			if (Time.time - startTimer > 1f) {
-				already = false;
-				transform.localScale = scale;
-			}
-
-			if (!already) {
-				startTimer = Time.time;
-			}
-			/*if (!onStart && (int)start.x != (int)this.transform.position.x) {
-				StartCoroutine (endGame ());
-			}
-            if (this.transform.eulerAngles.x > 50 & this.transform.eulerAngles.x < 100)
+            if (!stop)
             {
-                //Debug.Log (this.transform.eulerAngles.x);
-            }*/
-		}
+                if (onStart)
+                {
+                    this.transform.position = Vector3.MoveTowards(this.transform.position, start, 0.1f);
+                    if (start.x == this.transform.position.x)
+                    {
+                        onStart = false;
+                    }
+                }
+
+
+                if (AudioAnalyzer.Instance.getPitch() < 300f && AudioAnalyzer.Instance.getPitch() > 0)
+                {
+                    duck();
+                }
+
+                if (AudioAnalyzer.Instance.getPitch() > 500f)
+                {
+                    jump();
+                }
+
+                if (Time.time - startTimer > 1f)
+                {
+                    already = false;
+                    transform.localScale = scale;
+                }
+
+                if (!already)
+                {
+                    startTimer = Time.time;
+                }
+                /*if (!onStart && (int)start.x != (int)this.transform.position.x) {
+				    StartCoroutine (endGame ());
+			    }
+                if (this.transform.eulerAngles.x > 50 & this.transform.eulerAngles.x < 100)
+                {
+                    //Debug.Log (this.transform.eulerAngles.x);
+                }*/
+            }
+        }
 	}
 	
 	private void jump() {
@@ -95,6 +108,7 @@ public class Runner_Final : MonoBehaviour {
 	}
 
 	public IEnumerator endGame(){
+        stop = true;
 		yield return new WaitForSeconds(1);
 		GameLogic.Instance.didFailLevel ();
 	}
