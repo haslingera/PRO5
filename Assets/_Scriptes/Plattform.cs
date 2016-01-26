@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlattformBehavior : MonoBehaviour {
+public class PlattformBehavior : MonoBehaviour
+{
 
     Vector3 startPosition;
     public float speed = 3;
@@ -14,16 +15,25 @@ public class PlattformBehavior : MonoBehaviour {
     int first = 1;
     bool choosen = false;
     bool visited = false;
-	GameObject Player;
+    GameObject Player;
     bool levelDidStart = false;
+    bool[,] platforms;
 
     // Use this for initialization
-    void Start() {
+    void Start()
+    {
 
         startPosition = transform.position;
-		Player = GameObject.Find ("Player");
-		AudioAnalyzer.Instance.Init ();
+        Player = GameObject.Find("Player");
+        AudioAnalyzer.Instance.Init();
 
+        platforms = new bool[10, 2];
+
+        for (int i = 0; i < platforms.Length; i++)
+        {
+            platforms[i, 0] = false;
+            platforms[i, 1] = false;
+        }
     }
 
     void OnEnable()
@@ -44,7 +54,8 @@ public class PlattformBehavior : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
 
         if (levelDidStart)
         {
@@ -52,56 +63,61 @@ public class PlattformBehavior : MonoBehaviour {
                                                    //frequ = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().getPitch ();
                                                    //Debug.Log (DB);
 
-            isVisited();
+            //isVisited();
 
-            if (first == 1 && !GameObject.Find("Plattform1").GetComponent<PlattformBehavior>().onPlayer())
+            if (first == 1 && !platforms[0, 0])
             {
                 startGame();
             }
             else
             {
                 first++;
-                if (onPlayer())
+                Debug.Log("Ja herinnen");
+                for (int i = 0; i < platforms.Length; i++)
                 {
-                    //Debug.Log("Hallo");
-                    moveTower();
-                }
-                else if (!onPlayer() && visited)
-                {
-                    Stop(8f);
-                }
-                else
-                {
-                    if (!onPlayer() && !choosen)
+                    if (!platforms[i,0] && platforms[i,1])
                     {
-                        //Debug.Log ("Random"+name);
-                        //moveRandomTower();
+                        //moveTower();
                     }
+                    /*else if (!onPlayer() && visited)
+                    {
+                        Stop(8f);
+                    }
+                    else
+                    {
+                        if (!onPlayer() && !choosen)
+                        {
+                            //Debug.Log ("Random"+name);
+                            //moveRandomTower();
+                        }
+                    }*/
                 }
             }
         }
-        
+
     }
 
+    /*
     void OnCollisionStay(Collision col)
     {
         if (col.gameObject.name == "Player")
         {
+            //Debug.Log("True");
             onObject = true;
         }
         else
         {
+            //Debug.Log("False");
             onObject = false;
         }
     }
 
     bool onPlayer()
     {
-		Vector3 tow = this.transform.position;
 
-		if(Player.transform.position.x == tow.x)//Player.transform.position.x >= tow.x-1 && Player.transform.position.x <= tow.x + 1)
+		if(Player.transform.position.x == this.transform.position.x )//|| Player.transform.position.x >= this.transform.position.x-0.3 && Player.transform.position.x <= this.transform.position.x + 0.3)
         {
-            //Debug.Log("On"+name);
+            //Debug.Log("On");
             return true;
         }
         else
@@ -111,6 +127,7 @@ public class PlattformBehavior : MonoBehaviour {
         }
     }
 
+     
     void moveTower()
     {
 		//Debug.Log("Hallo");
@@ -138,7 +155,7 @@ public class PlattformBehavior : MonoBehaviour {
 		}
             
     }
-
+    /*
     void moveRandomTower()
     {
 		if(!onPlayer()){
@@ -209,7 +226,7 @@ public class PlattformBehavior : MonoBehaviour {
 
         return "Plattform" + bar;
     }
-
+    /*
     private void freeze(GameObject tower)
     {
         //Debug.Log("Fahren");
@@ -243,16 +260,17 @@ public class PlattformBehavior : MonoBehaviour {
             this.visited = false;
         }
     }
-
-	private void  startGame()
+    */
+    private void startGame()
     {
         Vector3 tempPlayer = Player.transform.position;
-		Vector3 tempNewPos = new Vector3(GameObject.Find("Plattform1").transform.position.x, tempPlayer.y, GameObject.Find("Plattform1").transform.position.z);
+        Vector3 tempNewPos = new Vector3(GameObject.Find("Plattform1").transform.position.x, tempPlayer.y, GameObject.Find("Plattform1").transform.position.z);
 
-        freeze(GameObject.Find("Plattform1"));
-		Player.transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 1 * Time.deltaTime);
+        //freeze(GameObject.Find("Plattform1"));
+        Player.transform.position = Vector3.MoveTowards(tempPlayer, tempNewPos, 1 * Time.deltaTime);
+        platforms[0, 1] = true;
     }
-
+    /*
     private void endGame()
     {
         Stop(this.transform.position.y);
@@ -268,7 +286,8 @@ public class PlattformBehavior : MonoBehaviour {
         GameObject player = GameObject.Find("Player");
         Player.transform.position = Vector3.MoveTowards(player.transform.position, new Vector3(tower.x, player.transform.position.y+x, tower.z), 10 *Time.deltaTime);
     }
+
+
+    */
 }
-
-
 
