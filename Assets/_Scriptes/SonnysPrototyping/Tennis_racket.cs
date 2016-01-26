@@ -33,7 +33,7 @@ public class Tennis_racket : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (!swinging && AudioAnalyzer.Instance.getMicLoudness() > 10 && timeTaking) {
+		if (!swinging && AudioAnalyzer.Instance.getMicLoudness() > 30 && timeTaking) {
 			swinging = true;
 			time = Time.time;
 			timeTaking = false;

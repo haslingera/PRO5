@@ -65,7 +65,7 @@ public class Player_Animation : MonoBehaviour {
 
 		if (talkDirtyToMe) {
 			tempDB = getDB();
-            tmp = ConvertRange(0,100,30,48,(int)tempDB);
+            tmp = ConvertRange(0,100, 30,48,(int)tempDB);
             tmp2 = ConvertRange(0, 100, 11, 48, (int)tempDB);
             skinnedMeshRenderer.SetBlendShapeWeight (0, tempDB);
             if(neutral)
