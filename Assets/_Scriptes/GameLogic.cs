@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class GameLogic : MonoBehaviour {
 
@@ -233,6 +234,9 @@ public class GameLogic : MonoBehaviour {
 			this.OnShowLevelInstructions ();
 		}
 
+		// hide level instructions at later stage
+		Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 4.0f);
+
 		// register for broadcast event and waits until the audio player tells that the tick tock sound started, then the countdown will start.
 		AudioPlayer.Instance.OnTickTockStarted += tickTockStarted;
 	}
@@ -262,7 +266,7 @@ public class GameLogic : MonoBehaviour {
 
 		this.actualLevel = this.levels[randomNumber % this.levels.Length];
 		this.setIsSurviveLevel (true); // default will be survive level
-		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
+		SceneManager.LoadScene (this.levels[randomNumber % this.levels.Length], LoadSceneMode.Single);
 
 		// send out broadcast to show level information
 		if (this.OnShowLevelInstructions != null) {
@@ -294,7 +298,8 @@ public class GameLogic : MonoBehaviour {
 
 		this.actualLevel = level;
 		this.setIsSurviveLevel (true); // default will be survive level
-		Application.LoadLevel (level);
+		//Application.LoadLevel (level);
+		SceneManager.LoadScene (level, LoadSceneMode.Single);
 
 		// send out broadcast to show level information
 		if (this.OnShowLevelInstructions != null) {
@@ -330,7 +335,8 @@ public class GameLogic : MonoBehaviour {
 
 		this.actualLevel = this.levels[randomNumber % this.levels.Length];
 		this.setIsSurviveLevel (true); // default will be survive level
-		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
+		SceneManager.LoadScene (this.levels[randomNumber % this.levels.Length], LoadSceneMode.Single);
+
 
 		// send out broadcast to show level information
 		if (this.OnShowLevelInstructions != null) {
@@ -351,12 +357,12 @@ public class GameLogic : MonoBehaviour {
 
 		this.actualLevel = this.levels[randomNumber % this.levels.Length];
 		this.setIsSurviveLevel (true); // default will be survive level
-		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
+		SceneManager.LoadScene (this.levels[randomNumber % this.levels.Length], LoadSceneMode.Single);
 	}
 
 	private void loadNextLevel() {
 		// load the next level
-		Application.LoadLevel (this.nextLevel);
+		SceneManager.LoadScene (this.nextLevel, LoadSceneMode.Single);
 	}
 
 	private void prepareNextLevel() {
