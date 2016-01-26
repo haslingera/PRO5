@@ -52,4 +52,10 @@ public class FlappySchrei : MonoBehaviour {
 			}
 		}
 	}
+
+	void OnTriggerEnter(Collider other) {
+		if (other.GetComponent<Collider>().CompareTag ("Obstacle")) {
+			Destroy (gameObject);
+		}
+	}
 }
