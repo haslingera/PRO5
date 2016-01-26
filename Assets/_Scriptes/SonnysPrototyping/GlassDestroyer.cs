@@ -18,6 +18,11 @@ public class GlassDestroyer : MonoBehaviour {
 
 	void Start () {
 		movement = GetComponent<StationaryMovement> ();
+		totalScreamTime = 0;
+		screaming = false;
+		stopscream = false;
+		endTime = 0;
+		startTime = Time.time;
 	}
 
 	void Update () {
