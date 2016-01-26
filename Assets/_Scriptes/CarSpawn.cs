@@ -25,6 +25,7 @@ public class CarSpawn : MonoBehaviour {
 		iTween.Init (this.gameObject);
 		worldSpeed = GameLogic.Instance.getLevelSpeed();
 		levelDidStart = GameLogic.Instance.getLevelIsReadyToStart ();
+        Debug.Log(levelDidStart);
 	}
 
     void OnEnable()
@@ -75,7 +76,8 @@ public class CarSpawn : MonoBehaviour {
 
 		float dist = Vector3.Distance(this.gameObject.transform.position,this.start);
 
-		if (dist > 50) {
+		if (dist > 48) {
+            Debug.Log("Hallo");
 			clone = Instantiate (Resources.Load ("Car" + Random.Range (1, 4)), this.start, transform.rotation) as GameObject;
 			clone.name = name;
 		}
@@ -113,6 +115,7 @@ public class CarSpawn : MonoBehaviour {
             player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
             StartCoroutine(player.GetComponent<Player_Road_Scene>().resetPlayer());
             stopMovement();
+            Debug.Log("Stop");
 		}
 	}
 
