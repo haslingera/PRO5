@@ -7,10 +7,14 @@ public class Player_TodSzene : MonoBehaviour {
 	//public int lives = 2;
 	public bool  rotate = false;
     bool levelDidStart = false;
+    GameObject enem;
     // Use this for initialization
     void Start () {
 		this.levelDidStart = GameLogic.Instance.getLevelIsReadyToStart ();
-	}
+
+        enem = Instantiate(Resources.Load("Enemy" + Random.Range(1, 3)), new Vector3(21.9f, 3f, -18f), transform.rotation) as GameObject;
+        enem.name = "Enemy";
+    }
 
     void OnEnable()
     {
@@ -36,7 +40,6 @@ public class Player_TodSzene : MonoBehaviour {
         {
             if (rotate)
             {
-
                 var targetPos = GameObject.Find("Enemy").transform.position;
                 targetPos.y = this.transform.position.y; //set targetPos y equal to mine, so I only look at my own plane
                 var targetDir = Quaternion.LookRotation(targetPos - this.transform.position);
