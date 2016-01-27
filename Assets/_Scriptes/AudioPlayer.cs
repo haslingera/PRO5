@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.Timers;
+using System;
 
 public class AudioPlayer : MonoBehaviour {
 
@@ -26,9 +27,14 @@ public class AudioPlayer : MonoBehaviour {
 	public event OnTickTockStartedAction OnTickTockStarted;
 
 	// timers
-	private const float TIMER_OFF = -100.0f;
-	private System.DateTime tickTockDelayDT;
-	private float playTickTockAudioSourceDelayedTimer = TIMER_OFF;
+	private DateTime dateTimePlayTickTockAudioSourceDelayed;
+	private float delayPlayTickTockAudioSourceDelayed;
+
+	private DateTime dateTimeStopLoopingTickTock;
+	private float delayStopLoopingTickTock;
+
+	private DateTime dateTimePlayTickTockEnd;
+	private float delayPlayTickTockEnd;
 
  
 	// Singleton Methods
@@ -61,21 +67,44 @@ public class AudioPlayer : MonoBehaviour {
 
 		audioQueue = new Queue<AudioClip>();
 
-		this.tickTockDelayDT = System.DateTime.Now;
+		this.dateTimePlayTickTockAudioSourceDelayed = DateTime.Now;
+		this.delayPlayTickTockAudioSourceDelayed = -10.0f;
 
+		this.dateTimeStopLoopingTickTock = DateTime.Now;
+		this.delayStopLoopingTickTock = -10.0f;
+
+		this.dateTimePlayTickTockEnd = DateTime.Now;
+		this.delayPlayTickTockEnd = -10.0f;
 	}
 
 	protected void Update() {
 		timeSinceLastPlay += Time.deltaTime;
 
-		// decrease the timers
-		this.playTickTockAudioSourceDelayedTimer -= Time.deltaTime;
+		//this.dateTimeStopLoopingTickTock = DateTime.Now;
+		//this.dateTimePlayTickTockEnd = DateTime.Now;
 
+		// call playTickTockAudioSourceDelayed if timer is ready
+		TimeSpan timeSpanPlayTickTockAudioSourceDelayed = DateTime.Now - this.dateTimePlayTickTockAudioSourceDelayed;
+		if (this.delayPlayTickTockAudioSourceDelayed > 0.0f && timeSpanPlayTickTockAudioSourceDelayed.TotalSeconds > this.delayPlayTickTockAudioSourceDelayed) {
+			this.delayPlayTickTockAudioSourceDelayed = -10.0f;
+			this.playTickTockAudioSourceDelayed ();
+			this.sendTickTockStartedEvent ();
+		}
 
-		// check if timer should be triggered
-		if (this.playTickTockAudioSourceDelayedTimer < 0.0f && this.playTickTockAudioSourceDelayedTimer > TIMER_OFF) {
-			//this.playTickTockAudioSourceDelayed ();
-			this.playTickTockAudioSourceDelayedTimer = TIMER_OFF;
+		// call stopLoopingTickTock if timer is ready
+		TimeSpan timeSpanStopLoopingTickTock = DateTime.Now - this.dateTimeStopLoopingTickTock;
+		if (this.delayStopLoopingTickTock > 0.0f && timeSpanStopLoopingTickTock.TotalSeconds > this.delayStopLoopingTickTock) {
+			Debug.Log ("timeSpanStopLoopingTickTock: " + timeSpanStopLoopingTickTock.TotalSeconds);
+			this.delayStopLoopingTickTock = -10.0f;
+			this.stopLoopingTickTock ();
+		}
+
+		// call playTickTockEnd if timer is ready
+		TimeSpan timeSpanPlayTickTockEnd = DateTime.Now - this.dateTimePlayTickTockEnd;
+		if (this.delayPlayTickTockEnd > 0.0f && timeSpanPlayTickTockEnd.TotalSeconds > this.delayPlayTickTockEnd) {
+			Debug.Log ("timeSpanPlayTickTockEnd: " + timeSpanPlayTickTockEnd.TotalSeconds);
+			this.delayPlayTickTockEnd = -10.0f;
+			this.playTickTockEndAudioSourceDelayed ();
 		}
 	}
 
@@ -83,42 +112,31 @@ public class AudioPlayer : MonoBehaviour {
 
 	public void startIntroAudio(int bpm) {
 		this.melodyAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
-		this.melodyAudioSource.PlayDelayed (0);
+		this.melodyAudioSource.Play ();
 		this.tickTockEndAudioSource.loop = false;
 
-		//this.playTickTockAudioSourceDelayedTimer = 8 * (60.0f / bpm);
+		this.dateTimePlayTickTockAudioSourceDelayed = DateTime.Now;
+		this.delayPlayTickTockAudioSourceDelayed = (8 * (60.0f / bpm));
 
-		//Invoke ("playTickTockAudioSourceDelayed", 8 * (60.0f / bpm));
-
-
-
-		StartCoroutine(playTickTockAudioSourceDelayed(5.0f));
 		//this.playTickTockAudioSourceDelayed(8 * (60.0f / bpm));
-		Invoke ("sendTickTockStartedEvent", 8 * (60.0f / bpm));
-		//Invoke ("playTickTockEndAudioSourceDelayed", ((8 + numberOfBeats - 4) * (60.0f / bpm)));
+		//Invoke ("sendTickTockStartedEvent", 8 * (60.0f / bpm));
 	}
 
 	public void reScheduleTickTockEndWithDelay(float delay) {
 		Debug.Log ("reSchedule, delay: " + delay);
-		this.playTickTockAudioSourceDelayedTimer = delay;
-		CancelInvoke ("playTickTockEndAudioSourceDelayed");
-		Invoke ("playTickTockEndAudioSourceDelayed", delay);
+		//CancelInvoke ("playTickTockEndAudioSourceDelayed");
+		//Invoke ("playTickTockEndAudioSourceDelayed", delay);
+
+		// calculate time diff for date
+		this.delayPlayTickTockEnd =  (GameLogic.Instance.getCurrentLevelNumberOfBeats() - 4) * (60.0f / GameLogic.Instance.getCurrentBPM());
+		this.dateTimePlayTickTockEnd = DateTime.Now;
 	}
 
 	public void stopLoopingTickTock() {
 		this.tickTockAudioSource.loop = false;
 	}
 
-	public IEnumerator playTickTockAudioSourceDelayed(float delay) {
-		
-
-		yield return new WaitForSeconds (delay);
-
-		System.DateTime otherDT = System.DateTime.Now;
-
-		System.TimeSpan timespan = otherDT - this.tickTockDelayDT;
-		Debug.Log ("timespan: " + timespan.TotalMilliseconds);
-
+	public void playTickTockAudioSourceDelayed() {
 		this.tickTockAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
 		this.tickTockAudioSource.Play();
 		this.tickTockAudioSource.loop = true;
@@ -137,6 +155,9 @@ public class AudioPlayer : MonoBehaviour {
 	}
 
 	private void sendTickTockStartedEvent() {
+		this.dateTimePlayTickTockEnd = DateTime.Now;
+		this.dateTimeStopLoopingTickTock = DateTime.Now;
+
 		Debug.Log ("Seinding Tick Tock Started Event");
 		// send broadcast event that tick tock phase has started
 		if (this.OnTickTockStarted != null) {
@@ -144,8 +165,13 @@ public class AudioPlayer : MonoBehaviour {
 		}
 
 		// by now the gamelogic should know how many beats the level lasts, use this information to call the playTickTockEndAudioSourceDelayed
-		Invoke("playTickTockEndAudioSourceDelayed", (GameLogic.Instance.getCurrentLevelNumberOfBeats() - 4) * (60.0f / GameLogic.Instance.getCurrentBPM()));
-		Invoke ("stopLoopingTickTock", (GameLogic.Instance.getCurrentLevelNumberOfBeats() - 5) * (60.0f / GameLogic.Instance.getCurrentBPM ()));
+		//Invoke("playTickTockEndAudioSourceDelayed", (GameLogic.Instance.getCurrentLevelNumberOfBeats() - 4) * (60.0f / GameLogic.Instance.getCurrentBPM()));
+		this.delayPlayTickTockEnd =  (GameLogic.Instance.getCurrentLevelNumberOfBeats() - 4) * (60.0f / GameLogic.Instance.getCurrentBPM());
+		Debug.Log ("delayPlayTickTockEnd: " + this.delayPlayTickTockEnd);
+
+		this.delayStopLoopingTickTock = (GameLogic.Instance.getCurrentLevelNumberOfBeats () - 5) * (60.0f / GameLogic.Instance.getCurrentBPM ());
+		Debug.Log ("delayStopLoopingTickTock: " + this.delayStopLoopingTickTock);
+		//Invoke ("stopLoopingTickTock", (GameLogic.Instance.getCurrentLevelNumberOfBeats() - 5) * (60.0f / GameLogic.Instance.getCurrentBPM ()));
 	}
 
 

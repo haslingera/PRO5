@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class GameLogic : MonoBehaviour {
 
@@ -28,6 +29,50 @@ public class GameLogic : MonoBehaviour {
 	}
 
 	void Update() {
+
+		// hide level instructions if timer is ready
+		TimeSpan timeSpanHideLevelInstructions = DateTime.Now - this.dateTimeHideLevelInstructions;
+		if (this.delayHideLevelInstructions > 0.0f && timeSpanHideLevelInstructions.TotalSeconds > this.delayHideLevelInstructions) {
+			this.delayHideLevelInstructions = -10.0f; 
+			this.sendOnHideLevelInstructionsEvent ();
+		}
+
+		// show level instructions if timer is ready
+		TimeSpan timeSpanShowLevelInstructions = DateTime.Now - this.dateTimeShowLevelInstructions;
+		if (this.delayShowLevelInstructions > 0.0f && timeSpanShowLevelInstructions.TotalSeconds > this.delayShowLevelInstructions) {
+			this.delayShowLevelInstructions = -10.0f;
+			this.sendOnShowLevelInstructionsEvent ();
+		}
+
+		// load next level is timer is ready
+		TimeSpan timeSpanLoadNextLevel = DateTime.Now - this.dateTimeLoadNextLevel;
+		if (this.delayLoadNextLevel > 0.0f && timeSpanLoadNextLevel.TotalSeconds > this.delayLoadNextLevel) {
+			this.delayLoadNextLevel = -10.0f;
+			this.loadNextLevel ();
+		}
+
+		// start transition if timer is ready
+		TimeSpan timeSpanStartTransition = DateTime.Now - this.dateTimeStartTransition;
+		if (this.delayStartTransition > 0.0f && timeSpanStartTransition.TotalSeconds > this.delayStartTransition) {
+			this.delayStartTransition = -10.0f;
+			this.sendOnStartTransitionEvent ();
+		}
+
+		// show lives if timer is ready
+		TimeSpan timeSpanShowLives = DateTime.Now - this.dateTimeShowLives;
+		if (this.delayShowLives > 0.0f && timeSpanShowLives.TotalSeconds > this.delayShowLives) {
+			this.delayShowLives = -10.0f;
+			this.sendOnShowLivesEvent ();
+		}
+
+		// play lose sound if timer is ready
+		TimeSpan timeSpanPlayLose = DateTime.Now - this.dateTimePlayLose;
+		if (this.delayPlayLose > 0.0f && timeSpanPlayLose.TotalSeconds > this.delayPlayLose) {
+			this.delayPlayLose = -10.0f;
+			this.playLoseSound ();
+		}
+
+
 		// if level is started, decrease level time
 		if (this.didLoadLevel && !this.isGameOver) {
 
@@ -83,16 +128,24 @@ public class GameLogic : MonoBehaviour {
 							this.OnLevelTimeRanOutSuccess ();
 
 						// start transition to next scene
-						Invoke("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 1.0f);
+						this.dateTimeStartTransition = DateTime.Now;
+						this.delayStartTransition = (60.0f / this.currentBPM) * 1.0f;
+						//Invoke("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 1.0f);
 
 						// TODO: maybe should not be a fixed time later on, but rather a callback from the animation class
-						Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 4.5f); 
+						this.dateTimeLoadNextLevel = DateTime.Now;
+						this.delayLoadNextLevel = (60.0f / this.currentBPM) * 4.5f;
+						//Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 4.5f); 
 
 						// send show instructions after 2 more beats
-						Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 4.5f);
+						this.dateTimeShowLevelInstructions = DateTime.Now;
+						this.delayShowLevelInstructions = (60.0f / this.currentBPM) * 4.5f;
+						//Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 4.5f);
 
 						// send hide instructions after 6 more beats
-						Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 8.5f);
+						this.dateTimeHideLevelInstructions = DateTime.Now;
+						this.delayHideLevelInstructions = (60.0f / this.currentBPM) * 8.5f;
+						//Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 8.5f);
 
 					} else {
 						Debug.Log ("did Fail");
@@ -104,8 +157,12 @@ public class GameLogic : MonoBehaviour {
 							this.isGameOver = true;
 
 							// show lives
-							if (this.OnShowLives != null)
-								Invoke ("sendOnShowLivesEvent", (60.0f / this.currentBPM) * 1.0f);
+							if (this.OnShowLives != null) {
+								this.dateTimeShowLives = DateTime.Now;
+								this.delayShowLives = (60.0f / this.currentBPM) * 1.0f;
+								//Invoke ("sendOnShowLivesEvent", (60.0f / this.currentBPM) * 1.0f);
+							}
+								
 							
 							return;
 						} 
@@ -115,22 +172,34 @@ public class GameLogic : MonoBehaviour {
 							this.OnLevelTimeRanOutFail ();
 
 						// after 1 beat show the remaining lives
-						Invoke ("sendOnShowLivesEvent", (60.0f / this.currentBPM) * 1.0f);
+						this.dateTimeShowLives = DateTime.Now;
+						this.delayShowLives = (60.0f / this.currentBPM) * 1.0f;
+						//Invoke ("sendOnShowLivesEvent", (60.0f / this.currentBPM) * 1.0f);
 
 						// after 1 beat play the lose sound
-						Invoke("playLoseSound", (60.0f / this.currentBPM) * 1.0f);
+						this.dateTimePlayLose = DateTime.Now;
+						this.delayPlayLose = (60.0f / this.currentBPM) * 1.0f;
+						//Invoke("playLoseSound", (60.0f / this.currentBPM) * 1.0f);
 
 						// after 5 beats hide the lives and start transition to next level
-						Invoke ("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 5.0f);
+						this.dateTimeStartTransition = DateTime.Now;
+						this.delayStartTransition = (60.0f / this.currentBPM) * 5.0f;
+						//Invoke ("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 5.0f);
 
 						// TODO: maybe should not be a fixed time later on, but rather a callback from the animation class
-						Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 8.5f);
+						this.dateTimeLoadNextLevel = DateTime.Now;
+						this.delayLoadNextLevel = (60.0f / this.currentBPM) * 8.5f;
+						//Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 8.5f);
 
 						// send show instructions
-						Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 8.5f);
+						this.dateTimeShowLevelInstructions = DateTime.Now;
+						this.delayShowLevelInstructions = (60.0f / this.currentBPM) * 8.5f;
+						//Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 8.5f);
 
 						// send hide instructions after 4 more beats
-						Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 12.5f);
+						this.dateTimeHideLevelInstructions = DateTime.Now;
+						this.delayHideLevelInstructions = (60.0f / this.currentBPM) * 12.5f;
+						//Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 12.5f);
 					}
 			
 					// prepare next level
@@ -174,7 +243,31 @@ public class GameLogic : MonoBehaviour {
 	public event OnShowLivesAction OnShowLives;
 
 
+
+	// timing data
+
+	private DateTime dateTimeShowLevelInstructions;
+	private float delayShowLevelInstructions;
+
+	private DateTime dateTimeHideLevelInstructions;
+	private float delayHideLevelInstructions;
+
+	private DateTime dateTimeLoadNextLevel;
+	private float delayLoadNextLevel;
+
+	private DateTime dateTimeStartTransition;
+	private float delayStartTransition;
+
+	private DateTime dateTimeShowLives;
+	private float delayShowLives;
+
+	private DateTime dateTimePlayLose;
+	private float delayPlayLose;
+
+
+
 	//private float defaultLevelTime = 5.0f; // Default Time in Seconds
+
 	private float actualLevelTime;
 	private float currentLevelMaxTime;
 
@@ -196,12 +289,12 @@ public class GameLogic : MonoBehaviour {
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
 	private string[] levels = new string[] {"TreeSawing", "Tennis", "FlappyScream", "Road_Scene", "Plattformen-Szene", "Tod-Szene-Spiel", "JumpAndDuck", "GlassDestroying"};
-	private string actualLevel = "";
 	private string nextLevel;
 
 	private bool showMainMenu = false;
 
 	public void startNewSinglePlayerGame() {
+		this.setupTimers ();
 		this.showMainMenu = false;
 		this.isGameOver = false;
 		this.didTriggerReadyToStartEvent = false;
@@ -221,25 +314,22 @@ public class GameLogic : MonoBehaviour {
 		// tell audioplayer to start new ticktock audio
 		AudioPlayer.Instance.startIntroAudio (this.currentBPM);
 
-		// load a random first level
-		/*int randomNumber = Random.Range(0, this.levels.Length * 5);
-
-		this.actualLevel = this.levels[randomNumber % this.levels.Length];
-		this.setIsSurviveLevel (true); // default will be survive level
-		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);*/
 
 		// send out broadcast to show level information
 		if (this.OnShowLevelInstructions != null) {
 			this.OnShowLevelInstructions ();
 		}
 
-		Invoke("OnHideLevelInstructions", (60.0f / this.currentBPM) * 4.0f);
+		this.dateTimeHideLevelInstructions = DateTime.Now;
+		this.delayHideLevelInstructions = ((60.0f / this.currentBPM) * 4.0f);
+		//Invoke("OnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 4.0f);
 
 		// register for broadcast event and waits until the audio player tells that the tick tock sound started, then the countdown will start.
 		AudioPlayer.Instance.OnTickTockStarted += tickTockStarted;
 	}
 
 	public void restart() {
+		this.setupTimers ();
 		this.showMainMenu = false;
 		this.isGameOver = false;
 		this.didTriggerReadyToStartEvent = false;
@@ -260,9 +350,8 @@ public class GameLogic : MonoBehaviour {
 		AudioPlayer.Instance.startIntroAudio (this.currentBPM);
 
 		// load a random first level
-		int randomNumber = Random.Range(0, this.levels.Length * 5);
+		int randomNumber = UnityEngine.Random.Range(0, this.levels.Length * 5);
 
-		this.actualLevel = this.levels[randomNumber % this.levels.Length];
 		this.setIsSurviveLevel (true); // default will be survive level
 		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
 
@@ -275,6 +364,7 @@ public class GameLogic : MonoBehaviour {
 
 	public void startGameWithLevel(string level) {
 		this.levels = new string[] {level};
+		this.setupTimers ();
 
 		this.isGameOver = false;
 		this.didTriggerReadyToStartEvent = false;
@@ -294,7 +384,6 @@ public class GameLogic : MonoBehaviour {
 		// tell audioplayer to start new ticktock audio
 		AudioPlayer.Instance.startIntroAudio (this.currentBPM);
 
-		this.actualLevel = level;
 		this.setIsSurviveLevel (true); // default will be survive level
 		Application.LoadLevel (level);
 
@@ -328,9 +417,8 @@ public class GameLogic : MonoBehaviour {
 		AudioPlayer.Instance.startIntroAudio (this.currentBPM);
 
 		// load a random first level
-		int randomNumber = Random.Range(0, this.levels.Length * 5);
+		int randomNumber = UnityEngine.Random.Range(0, this.levels.Length * 5);
 
-		this.actualLevel = this.levels[randomNumber % this.levels.Length];
 		this.setIsSurviveLevel (true); // default will be survive level
 		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
 
@@ -349,9 +437,8 @@ public class GameLogic : MonoBehaviour {
 		this.didLoadLevel = false;
 
 		// load a random first level
-		int randomNumber = Random.Range(0, this.levels.Length * 5);
+		int randomNumber = UnityEngine.Random.Range(0, this.levels.Length * 5);
 
-		this.actualLevel = this.levels[randomNumber % this.levels.Length];
 		this.setIsSurviveLevel (true); // default will be survive level
 		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
 	}
@@ -378,7 +465,7 @@ public class GameLogic : MonoBehaviour {
 		this.currentLevelMaxTime = this.actualLevelTime;
 
 		// get the next level to load
-		int randomNumber = Random.Range(0, this.levels.Length * 5);
+		int randomNumber = UnityEngine.Random.Range(0, this.levels.Length * 5);
 		this.nextLevel = this.levels[randomNumber % this.levels.Length];
 	}
 
@@ -409,6 +496,25 @@ public class GameLogic : MonoBehaviour {
 		AudioPlayer.Instance.playLoseSound();
 	}
 
+	private void setupTimers() {
+		this.dateTimeHideLevelInstructions = DateTime.Now;
+		this.delayHideLevelInstructions = -10.0f;
+
+		this.dateTimeShowLevelInstructions = DateTime.Now;
+		this.delayShowLevelInstructions = -10.0f;
+
+		this.dateTimeLoadNextLevel = DateTime.Now;
+		this.delayLoadNextLevel = -10.0f;
+
+		this.dateTimeStartTransition = DateTime.Now;
+		this.delayStartTransition = -10.0f;
+
+		this.dateTimeShowLives = DateTime.Now;
+		this.delayShowLives = -10.0f;
+
+		this.dateTimePlayLose = DateTime.Now;
+		this.delayPlayLose = -10.0f;
+	}
 
 	// ------------------------
 	//       GameLogic
