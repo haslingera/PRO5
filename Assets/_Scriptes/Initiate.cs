@@ -12,7 +12,7 @@ public class Initiate : MonoBehaviour {
 		} else if (Application.loadedLevelName.Equals ("TreeSawing")) {
 			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-90f, 90f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
 		} else if (Application.loadedLevelName.Equals ("Plattformen-Szene")) {
-			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-16f, 90f, 10f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
+			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-90f, 90f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
 		} else {
 			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-90f, 90f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
 		}
@@ -34,7 +34,7 @@ public class Initiate : MonoBehaviour {
 		} else if (Application.loadedLevelName.Equals ("TreeSawing")) {
 			UIBehaviour.Instance.CameraEndRotation (new Vector3 (-90f, 90f, 0f)).CameraEndSize (0.01f).LevelEnd ();
 		} else if (Application.loadedLevelName.Equals ("Plattformen-Szene")) {
-			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-16f, 90f, 10f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
+			UIBehaviour.Instance.CameraEndRotation (new Vector3 (-90f, 90f, 0f)).CameraStartSize (0.01f).LevelEnd ();
 		} else {
 			UIBehaviour.Instance.CameraEndRotation (new Vector3 (0f, 0f, 0f)).CameraEndSize (0.01f).LevelEnd ();
 		}

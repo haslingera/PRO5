@@ -112,7 +112,7 @@ public class Plattform_NEW : MonoBehaviour
 
         if (counter == 9)
         {
-            if (platforms[counter].transform.position.y > 3.10 && platforms[counter].transform.position.y < 3.20 && counter == 9)
+            if (platforms[counter].transform.position.y > 1.60 && platforms[counter].transform.position.y < 1.70 && counter == 9)
             {
                 endGame();
             }
@@ -228,8 +228,8 @@ public class Plattform_NEW : MonoBehaviour
 
     private void endGame()
     {
-        Vector3 tempEnd = GameObject.Find("End").transform.position;
-        Vector3 tempNewPos = new Vector3(tempEnd.x, Player.transform.position.y,tempEnd.z);
+        //Vector3 tempEnd = GameObject.Find("End").transform.position;
+        Vector3 tempNewPos = new Vector3(8.5f, 9.78f, 9.78f);
         iTween.MoveTo(Player, tempNewPos, 2);
 
         if(Player.transform.position.x >= 7.5)

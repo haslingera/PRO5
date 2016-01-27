@@ -18,7 +18,7 @@ public class Runner_Final : MonoBehaviour {
 		rigbi = GetComponent<Rigidbody> ();
 		scale = this.transform.localScale;
 		start = new Vector3 (-44.51059f, -0.03087401f,-3.86591f);
-		this.levelDidStart = false; // TODO: set to false when level is ready for distribution
+		this.levelDidStart = false; 
 	}
 
 	void OnEnable() {

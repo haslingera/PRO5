@@ -9,7 +9,7 @@ public class Runner_ObstSpawn : MonoBehaviour {
 	private Vector3 start = new Vector3(-29f,0.13f,-7.4f);
 	GameObject clone;
 	private bool spawned = false;
-	private float defaultSpeed = -0.1f;
+	private float defaultSpeed = -0.11f;
     GameObject player;
     bool stop = false;
 
