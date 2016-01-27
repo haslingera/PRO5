@@ -7,7 +7,7 @@ public class SpawnEnemy : MonoBehaviour {
     Vector3 playerPosition;
     Vector3 startPosition;
     Vector3 position;
-    public float speed = 1;
+    float speed = 1;
 	float distance = 0;
 	float count;
 	bool visible = true;
@@ -37,7 +37,7 @@ public class SpawnEnemy : MonoBehaviour {
 		position = spawnPoint [Random.Range(0,spawnPoint.Length)];
         startPosition = this.transform.position;
 		playerPosition = GameObject.Find("Player").transform.position;
-		enem = GameObject.Find ("Enemy");
+        enem = GameObject.Find ("Enemy");
 
 		cam = Camera.main;
 		planes = GeometryUtility.CalculateFrustumPlanes(cam);
@@ -47,6 +47,8 @@ public class SpawnEnemy : MonoBehaviour {
         {
             this.transform.position = position;
         }
+
+        setSpeed();
 	}
 
     void OnEnable()
@@ -73,6 +75,7 @@ public class SpawnEnemy : MonoBehaviour {
         {
             float tempDB = AudioAnalyzer.Instance.getMicLoudness();
             distance = Vector3.Distance(playerPosition, transform.position);
+            rotateChar();
 
             if (GeometryUtility.TestPlanesAABB(planes, objColl.bounds))
                 visible = true;
@@ -82,6 +85,7 @@ public class SpawnEnemy : MonoBehaviour {
             }
 
             //Debug.Log (tempDB);
+            isWon();
 
             if (!stop)
             {
@@ -129,9 +133,9 @@ public class SpawnEnemy : MonoBehaviour {
 
 	void attack(){
 
-		this.transform.position = spawnPoint [Random.Range(0,spawnPoint.Length)];
-		GameObject clone = Instantiate (GameObject.Find ("Enemy"), position, transform.rotation) as GameObject;
-		Destroy (GameObject.Find ("Enemy"));
+        this.transform.position = spawnPoint [Random.Range(0,spawnPoint.Length)];
+		GameObject clone = Instantiate(Resources.Load("Enemy" + Random.Range(1, 3)), new Vector3(21.9f, 3f, -18f), transform.rotation) as GameObject;
+        Destroy (GameObject.Find ("Enemy"));
 		clone.name = "Enemy";
 
 	}
@@ -143,6 +147,26 @@ public class SpawnEnemy : MonoBehaviour {
 	void Awake(){
 		AudioAnalyzer.Instance.Init ();
 	}
+
+    void isWon()
+    {
+        stop = !GameLogic.Instance.getIsLevelActive();
+    }
+
+    void rotateChar()
+    {
+        var targetPos = playerPosition;
+        targetPos.y = this.transform.position.y; //set targetPos y equal to mine, so I only look at my own plane
+        var targetDir = Quaternion.LookRotation(targetPos-this.transform.position);
+        this.transform.rotation = Quaternion.Slerp(transform.rotation, targetDir, 6 * Time.deltaTime);
+    }
+
+    void setSpeed()
+    {
+        float temp = GameLogic.Instance.getLevelSpeed();
+
+        this.speed = temp;
+    }
 }
 
 

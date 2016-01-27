@@ -53,6 +53,7 @@ public class Player_Animation : MonoBehaviour {
         int tmp = 0;
         int tmp2 = 0;
         float tempDB = 0;
+        stopAnimation();
 
         if (neutral)
         {
@@ -166,6 +167,11 @@ public class Player_Animation : MonoBehaviour {
     {
         double scale = (double)(newEnd - newStart) / (originalEnd - originalStart);
         return (int)(newStart + ((value - originalStart) * scale));
+    }
+
+    void stopAnimation()
+    {
+        talkDirtyToMe = GameLogic.Instance.getIsLevelActive();
     }
 
 }

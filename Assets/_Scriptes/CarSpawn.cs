@@ -77,7 +77,7 @@ public class CarSpawn : MonoBehaviour {
 		float dist = Vector3.Distance(this.gameObject.transform.position,this.start);
 
 		if (dist > 48) {
-            Debug.Log("Hallo");
+            //Debug.Log("Hallo");
 			clone = Instantiate (Resources.Load ("Car" + Random.Range (1, 4)), this.start, transform.rotation) as GameObject;
 			clone.name = name;
 		}
