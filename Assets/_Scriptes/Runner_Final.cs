@@ -51,7 +51,6 @@ public class Runner_Final : MonoBehaviour {
                     }
                 }
 
-
                 if (AudioAnalyzer.Instance.getPitch() < 300f && AudioAnalyzer.Instance.getPitch() > 0)
                 {
                     duck();
