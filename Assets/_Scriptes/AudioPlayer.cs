@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 using System.Timers;
 
 public class AudioPlayer : MonoBehaviour {
@@ -23,6 +24,12 @@ public class AudioPlayer : MonoBehaviour {
 
 	public delegate void OnTickTockStartedAction();
 	public event OnTickTockStartedAction OnTickTockStarted;
+
+	// timers
+	private const float TIMER_OFF = -100.0f;
+	private System.DateTime tickTockDelayDT;
+	private float playTickTockAudioSourceDelayedTimer = TIMER_OFF;
+
  
 	// Singleton Methods
 	// Static singleton property
@@ -53,10 +60,23 @@ public class AudioPlayer : MonoBehaviour {
 		this.loseAudioSource.clip = loseClip;
 
 		audioQueue = new Queue<AudioClip>();
+
+		this.tickTockDelayDT = System.DateTime.Now;
+
 	}
 
 	protected void Update() {
 		timeSinceLastPlay += Time.deltaTime;
+
+		// decrease the timers
+		this.playTickTockAudioSourceDelayedTimer -= Time.deltaTime;
+
+
+		// check if timer should be triggered
+		if (this.playTickTockAudioSourceDelayedTimer < 0.0f && this.playTickTockAudioSourceDelayedTimer > TIMER_OFF) {
+			//this.playTickTockAudioSourceDelayed ();
+			this.playTickTockAudioSourceDelayedTimer = TIMER_OFF;
+		}
 	}
 
 	public void Init() { /* do nothing */ }
@@ -66,13 +86,21 @@ public class AudioPlayer : MonoBehaviour {
 		this.melodyAudioSource.PlayDelayed (0);
 		this.tickTockEndAudioSource.loop = false;
 
-		Invoke ("playTickTockAudioSourceDelayed", 8 * (60.0f / bpm));
+		//this.playTickTockAudioSourceDelayedTimer = 8 * (60.0f / bpm);
+
+		//Invoke ("playTickTockAudioSourceDelayed", 8 * (60.0f / bpm));
+
+
+
+		StartCoroutine(playTickTockAudioSourceDelayed(5.0f));
+		//this.playTickTockAudioSourceDelayed(8 * (60.0f / bpm));
 		Invoke ("sendTickTockStartedEvent", 8 * (60.0f / bpm));
 		//Invoke ("playTickTockEndAudioSourceDelayed", ((8 + numberOfBeats - 4) * (60.0f / bpm)));
 	}
 
 	public void reScheduleTickTockEndWithDelay(float delay) {
 		Debug.Log ("reSchedule, delay: " + delay);
+		this.playTickTockAudioSourceDelayedTimer = delay;
 		CancelInvoke ("playTickTockEndAudioSourceDelayed");
 		Invoke ("playTickTockEndAudioSourceDelayed", delay);
 	}
@@ -81,7 +109,16 @@ public class AudioPlayer : MonoBehaviour {
 		this.tickTockAudioSource.loop = false;
 	}
 
-	public void playTickTockAudioSourceDelayed() {
+	public IEnumerator playTickTockAudioSourceDelayed(float delay) {
+		
+
+		yield return new WaitForSeconds (delay);
+
+		System.DateTime otherDT = System.DateTime.Now;
+
+		System.TimeSpan timespan = otherDT - this.tickTockDelayDT;
+		Debug.Log ("timespan: " + timespan.TotalMilliseconds);
+
 		this.tickTockAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
 		this.tickTockAudioSource.Play();
 		this.tickTockAudioSource.loop = true;
