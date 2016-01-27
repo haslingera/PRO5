@@ -163,9 +163,12 @@ public class UIBehaviour : MonoBehaviour {
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
 		//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
 		
-		cameraMain = Camera.main.GetComponent<Camera> ();
+		cameraMain = Camera.main;
 		
-		cameraNew = (Camera) Camera.Instantiate(cameraMain, new Vector3(0, 0, 0), Quaternion.FromToRotation(new Vector3(0, 0, 0), new Vector3(0, 0, 1)));
+		if (cameraNew == null) {
+			cameraNew = (Camera) Camera.Instantiate(cameraMain, new Vector3(0, 0, 0), Quaternion.FromToRotation(new Vector3(0, 0, 0), new Vector3(0, 0, 1)));
+		}
+
 		cameraNew.CopyFrom (cameraMain);
 		cameraNew.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
 		//cameraNew.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
@@ -241,7 +244,10 @@ public class UIBehaviour : MonoBehaviour {
 			
 			cameraMain = Camera.main.GetComponent<Camera> ();
 			
-			cameraNew = (Camera) Camera.Instantiate(cameraMain, new Vector3(0, 0, 0), Quaternion.FromToRotation(new Vector3(0, 0, 0), new Vector3(0, 0, 1)));
+			if (cameraNew == null) {
+				cameraNew = (Camera) Camera.Instantiate(cameraMain, new Vector3(0, 0, 0), Quaternion.FromToRotation(new Vector3(0, 0, 0), new Vector3(0, 0, 1)));
+			}
+
 			cameraNew.CopyFrom (cameraMain);
 			cameraNew.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
 			//cameraNew.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
@@ -347,9 +353,12 @@ public class UIBehaviour : MonoBehaviour {
 
 	public void OnButtonGameClicked() {
 
-		Camera cameraMain = Camera.main.GetComponent<Camera> ();
+		cameraMain = Camera.main.GetComponent<Camera> ();
+
+		if (cameraNew == null) {
+			cameraNew = (Camera) Camera.Instantiate(cameraMain, new Vector3(0, 0, 0), Quaternion.FromToRotation(new Vector3(0, 0, 0), new Vector3(0, 0, 1)));
+		}
 		
-		Camera cameraNew = (Camera) Camera.Instantiate(Camera.main, new Vector3(0, 0, 0), Quaternion.FromToRotation(new Vector3(0, 0, 0), new Vector3(0, 0, 1)));
 		cameraNew.CopyFrom (Camera.main);
 		cameraNew.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
 		//cameraNew.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
