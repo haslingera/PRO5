@@ -7,6 +7,7 @@ public class Saw : MonoBehaviour {
 	private StationaryMovement movement;
 	public Vector3 pointA;
 	public Vector3 pointB;
+    private bool over = false;
 
 	private bool didStart = false;
 
@@ -32,11 +33,16 @@ public class Saw : MonoBehaviour {
 
 
 	void FixedUpdate(){
-		// only allow voice control when game officially started
+        // only allow voice control when game officially started
+        isActive();
 		if (this.didStart) {
-			if (!sawing && AudioAnalyzer.Instance.getPitch () > 10) {
-				StartCoroutine (sawDaThing ());
-			}
+            if (over)
+            {
+                if (!sawing && AudioAnalyzer.Instance.getPitch() > 10)
+                {
+                    StartCoroutine(sawDaThing());
+                }
+            }
 		}
 	}
 
@@ -60,5 +66,10 @@ public class Saw : MonoBehaviour {
 			GameLogic.Instance.didFinishLevel ();
 		}
 	}
+
+    private void isActive()
+    {
+        over = GameLogic.Instance.getIsLevelActive();
+    }
 
 }
