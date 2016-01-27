@@ -92,7 +92,6 @@ public class GameLogic : MonoBehaviour {
 				if (this.isFailed || this.isSucceeded) {
 					if (this.didTriggerRescheduleTickTockEnd == false) {
 						this.didTriggerRescheduleTickTockEnd = true;
-						this.frozenLevelTime = this.actualLevelTime;
 
 						// if there's more than 4 beats left, set the time to exactly one "takt" less (subtract 4 beats)
 						float timePerBeat = 60.0f / this.currentBPM;
@@ -107,11 +106,6 @@ public class GameLogic : MonoBehaviour {
 							AudioPlayer.Instance.reScheduleTickTockEndWithDelay (this.actualLevelTime - (timePerBeat * 4));
 							//AudioPlayer.Instance.stopLoopingTickTock ();
 						}
-					}
-				} else {
-					// if time ran out and level was failed or succeeded, save the frozenLevelTime 
-					if (this.actualLevelTime < (60.0f / this.currentBPM)) {
-						this.frozenLevelTime = this.actualLevelTime;
 					}
 				}
 
@@ -292,6 +286,7 @@ public class GameLogic : MonoBehaviour {
 	private bool isGameOver = false;
 	private bool isSucceeded;
 	private bool isFailed;
+	private bool didFreezeLevelTime;
 
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
@@ -310,6 +305,7 @@ public class GameLogic : MonoBehaviour {
 		this.didLoadLevel = true;
 		this.isFailed = false;
 		this.isSucceeded = false;
+		this.didFreezeLevelTime = false;
 
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
@@ -346,6 +342,7 @@ public class GameLogic : MonoBehaviour {
 		this.didLoadLevel = true;
 		this.isFailed = false;
 		this.isSucceeded = false;
+		this.didFreezeLevelTime = false;
 
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
@@ -381,6 +378,7 @@ public class GameLogic : MonoBehaviour {
 		this.didLoadLevel = false;
 		this.isFailed = false;
 		this.isSucceeded = false;
+		this.didFreezeLevelTime = false;
 
 		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
@@ -547,6 +545,7 @@ public class GameLogic : MonoBehaviour {
 		if (this.isInTickTockMode) {
 			Debug.Log ("isSucceeded()");
 			this.isSucceeded = true;
+			AudioPlayer.Instance.playSucceedSound ();
 		}
 	}
 
@@ -554,6 +553,7 @@ public class GameLogic : MonoBehaviour {
 		if (this.isInTickTockMode) {
 			Debug.Log ("isFailed()");
 			this.isFailed = true;
+			AudioPlayer.Instance.playFailSound ();
 		}
 	}
 
@@ -619,5 +619,9 @@ public class GameLogic : MonoBehaviour {
 		} else {
 			return false;
 		}
+	}
+
+	public bool getIsSurviveLevel() {
+		return this.isSurviveLevel;
 	}
 }

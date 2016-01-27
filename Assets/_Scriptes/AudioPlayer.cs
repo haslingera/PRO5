@@ -20,6 +20,9 @@ public class AudioPlayer : MonoBehaviour {
 	private AudioSource tickTockEndAudioSource;
 	private AudioSource melodyAudioSource;
 	private AudioSource loseAudioSource;
+	private AudioSource soundEffectsAudioSource;
+	private AudioClip succeedClip;
+	private AudioClip failClip;
 	private float timeSinceLastPlay; // in seconds
 	private float timeOfLastPlayedClip; // in seconds
 
@@ -54,11 +57,14 @@ public class AudioPlayer : MonoBehaviour {
 		this.tickTockEndAudioSource = this.gameObject.AddComponent<AudioSource> ();
 		this.melodyAudioSource = this.gameObject.AddComponent<AudioSource> ();
 		this.loseAudioSource = this.gameObject.AddComponent<AudioSource> ();
+		this.soundEffectsAudioSource = this.gameObject.AddComponent<AudioSource> ();
 
 		AudioClip tickTockClip = Resources.Load ("TickTock") as AudioClip;
 		AudioClip tickTockEndClip = Resources.Load ("TickTockEnd") as AudioClip;
 		AudioClip melodyClip = Resources.Load ("Melody") as AudioClip;
 		AudioClip loseClip = Resources.Load ("lose") as AudioClip;
+		this.succeedClip = Resources.Load ("succeed") as AudioClip;
+		this.failClip = Resources.Load ("fail") as AudioClip; 
 
 		this.tickTockAudioSource.clip = tickTockClip;
 		this.tickTockEndAudioSource.clip = tickTockEndClip;
@@ -153,6 +159,14 @@ public class AudioPlayer : MonoBehaviour {
 		this.loseAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
 		this.loseAudioSource.loop = false;
 		this.loseAudioSource.Play ();
+	}
+
+	public void playFailSound() {
+		this.soundEffectsAudioSource.PlayOneShot (this.failClip);
+	}
+
+	public void playSucceedSound() {
+		this.soundEffectsAudioSource.PlayOneShot (this.succeedClip);
 	}
 
 	private void sendTickTockStartedEvent() {
