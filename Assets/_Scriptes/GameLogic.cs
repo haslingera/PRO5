@@ -29,7 +29,6 @@ public class GameLogic : MonoBehaviour {
 	}
 
 	void Update() {
-		Debug.Log("remaining: " + this.getRemainingLevelTime ());
 
 		// hide level instructions if timer is ready
 		TimeSpan timeSpanHideLevelInstructions = DateTime.Now - this.dateTimeHideLevelInstructions;
@@ -110,6 +109,7 @@ public class GameLogic : MonoBehaviour {
 						}
 					}
 				} else {
+					// if time ran out and level was failed or succeeded, save the frozenLevelTime 
 					if (this.actualLevelTime < (60.0f / this.currentBPM)) {
 						this.frozenLevelTime = this.actualLevelTime;
 					}
@@ -586,10 +586,8 @@ public class GameLogic : MonoBehaviour {
 		
 	public float getRemainingLevelTime() {
 		if (this.isSucceeded || this.isFailed || this.didLoadLevel == false) {
-			Debug.Log ("frozen");
 			return this.frozenLevelTime;
 		} else {
-			Debug.Log ("actual");
 			return this.actualLevelTime;
 		}
 	}
