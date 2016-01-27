@@ -45,8 +45,8 @@ public class FlappySchrei : MonoBehaviour {
 		if (this.levelDidStart) {
 			Debug.Log ("in 1, loudness: " + AudioAnalyzer.Instance.getMicLoudness());
 			if (AudioAnalyzer.Instance.getMicLoudness () > 30f) {
-				Debug.Log ("in 2");
-				rigbi.AddForce (Vector3.up * 300 * gameSpeed);
+				rigbi.velocity = Vector3.zero;
+				rigbi.AddForce (Vector3.up * 1000 * gameSpeed);
 			} else {
 				rigbi.AddForce (Physics.gravity * rigbi.mass * gameSpeed);
 			}
