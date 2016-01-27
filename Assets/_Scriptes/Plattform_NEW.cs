@@ -15,6 +15,8 @@ public class Plattform_NEW : MonoBehaviour
     bool levelDidStart = false;
     GameObject[] platforms;
     Vector3[] moveRandom;
+    float speed = 0;
+    float randspeed = 0;
 
     // Use this for initialization
     void Start()
@@ -39,6 +41,8 @@ public class Plattform_NEW : MonoBehaviour
             platforms[x].transform.position = temp;
         }
 
+        setSpeed();
+
     }
 
     void OnEnable()
@@ -60,7 +64,6 @@ public class Plattform_NEW : MonoBehaviour
 
     void Update()
     {
-
         if (levelDidStart)
         {
             DB = AudioAnalyzer.Instance.getPitch();//GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().MicLoudness;
@@ -72,12 +75,17 @@ public class Plattform_NEW : MonoBehaviour
             }
             else
             {
+                updateCounter();
                 moveTower();
                 if (counter > 0 && moveThemRandom)
                 {
                     for (int i = 0; i < counter; i++)
                     {
                         moveRandomTower(platforms[i], i);
+                    }
+                    for (int x = 8; x > counter+1; x--)
+                    {
+                        moveRandomTower(platforms[x], x);
                     }
                 }
             }
@@ -121,8 +129,8 @@ public class Plattform_NEW : MonoBehaviour
                     }
                     else if ((int)DB < 350)
                     {
-                        moveDown(); 
-                }
+                        moveDown();
+                    }
             }
         }
         else {
@@ -130,25 +138,25 @@ public class Plattform_NEW : MonoBehaviour
         }
     }
 
-    void moveUp()
+    private void moveUp()
     {
         if (platforms[counter].transform.position.y < 8)
         {
             Vector3 temp = new Vector3(platforms[counter].transform.position.x,
-                                       platforms[counter].transform.position.y + 0.2f, platforms[counter].transform.position.z);
+                                       platforms[counter].transform.position.y + speed, platforms[counter].transform.position.z);
             platforms[counter].transform.position = temp;
-            updatePlayer(1);
+            updatePlayer(0.1f);
         }
     }
     
-    void moveDown()
+    private void moveDown()
     {
         if (platforms[counter].transform.position.y > -6)
         {
             Vector3 temp = new Vector3(platforms[counter].transform.position.x, 
-                                       platforms[counter].transform.position.y - 0.2f, platforms[counter].transform.position.z);
+                                       platforms[counter].transform.position.y - speed, platforms[counter].transform.position.z);
             platforms[counter].transform.position = temp;
-            updatePlayer(-1);
+            updatePlayer(-0.5f);
         }
     }
 
@@ -176,7 +184,7 @@ public class Plattform_NEW : MonoBehaviour
         return Player.transform.position.x == platforms[counter+1].transform.position.x;
     }
 
-    private void updatePlayer(int x)
+    private void updatePlayer(float x)
     {
         Vector3 tower = platforms[counter].transform.position;
         Player.transform.position = Vector3.MoveTowards(Player.transform.position, new Vector3
@@ -186,7 +194,8 @@ public class Plattform_NEW : MonoBehaviour
     private void moveShit()
     {
 
-        if ((int)platforms[counter].transform.position.y == (int)platforms[counter + 1].transform.position.y)
+        if (platforms[counter].transform.position.y < platforms[counter + 1].transform.position.y+0.3 &&
+            platforms[counter].transform.position.y > platforms[counter + 1].transform.position.y - 0.3)
         {
             Vector3 temp = new Vector3(platforms[counter].transform.position.x, platforms[counter + 1].transform.position.y,
                                        platforms[counter].transform.position.z);
@@ -235,13 +244,50 @@ public class Plattform_NEW : MonoBehaviour
             if (tower.transform.position.y == moveRandom[i].y || moveRandom[i].x == 0.0)
             {
                 moveRandom[i] = new Vector3(tower.transform.position.x, Random.Range(-6F, 8F), tower.transform.position.z);
-                tower.transform.position = Vector3.MoveTowards(tower.transform.position, moveRandom[i], 5 * Time.deltaTime);
+                tower.transform.position = Vector3.MoveTowards(tower.transform.position, moveRandom[i], randspeed * Time.deltaTime);
             }
             else
             {
-                tower.transform.position = Vector3.MoveTowards(tower.transform.position, moveRandom[i], 5 * Time.deltaTime);
+                tower.transform.position = Vector3.MoveTowards(tower.transform.position, moveRandom[i], randspeed * Time.deltaTime);
             }
         }
+
+    private void updateCounter()
+    {
+        for(int i = 0; i < platforms.Length; i++)
+        {
+            if(Player.transform.position.x == platforms[i].transform.position.x && !onTheMove)
+            {
+                counter = i;
+                //Debug.Log(counter);
+            }
+        }
+    }
+
+    private void setSpeed()
+    {
+        float temp = GameLogic.Instance.getLevelSpeed();
+
+        if(temp == 1.0)
+        {
+            speed = 0.1f;
+            randspeed = 4;
+        }
+
+        else if (temp > 1.0 && temp < 2.0)
+        {
+            speed = 0.15f;
+            randspeed = 6;
+        }
+
+        else if (temp == 2.0)
+        {
+            speed = 0.2f;
+            randspeed = 8;
+        }
+
+    }
+
 }
 
 
