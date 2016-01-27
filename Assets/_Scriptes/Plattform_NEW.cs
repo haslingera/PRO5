@@ -79,6 +79,10 @@ public class Plattform_NEW : MonoBehaviour
                     {
                         moveRandomTower(platforms[i], i);
                     }
+                    for (int x = 8; x > counter+1; x--)
+                    {
+                        moveRandomTower(platforms[x], x);
+                    }
                 }
             }
         }
@@ -113,6 +117,7 @@ public class Plattform_NEW : MonoBehaviour
                     if ((int)DB > 350)
                     {
                         moveUp();
+                        updateCounter();
                     }
                     else if ((int)DB == -1)
                     {
@@ -121,8 +126,9 @@ public class Plattform_NEW : MonoBehaviour
                     }
                     else if ((int)DB < 350)
                     {
-                        moveDown(); 
-                }
+                        moveDown();
+                        updateCounter();
+                    }
             }
         }
         else {
@@ -137,7 +143,7 @@ public class Plattform_NEW : MonoBehaviour
             Vector3 temp = new Vector3(platforms[counter].transform.position.x,
                                        platforms[counter].transform.position.y + 0.2f, platforms[counter].transform.position.z);
             platforms[counter].transform.position = temp;
-            updatePlayer(1);
+            updatePlayer(0.3f);
         }
     }
     
@@ -148,7 +154,7 @@ public class Plattform_NEW : MonoBehaviour
             Vector3 temp = new Vector3(platforms[counter].transform.position.x, 
                                        platforms[counter].transform.position.y - 0.2f, platforms[counter].transform.position.z);
             platforms[counter].transform.position = temp;
-            updatePlayer(-1);
+            updatePlayer(-0.3f);
         }
     }
 
@@ -176,7 +182,7 @@ public class Plattform_NEW : MonoBehaviour
         return Player.transform.position.x == platforms[counter+1].transform.position.x;
     }
 
-    private void updatePlayer(int x)
+    private void updatePlayer(float x)
     {
         Vector3 tower = platforms[counter].transform.position;
         Player.transform.position = Vector3.MoveTowards(Player.transform.position, new Vector3
@@ -242,6 +248,17 @@ public class Plattform_NEW : MonoBehaviour
                 tower.transform.position = Vector3.MoveTowards(tower.transform.position, moveRandom[i], 5 * Time.deltaTime);
             }
         }
+
+    private void updateCounter()
+    {
+        for(int i = 0; i < platforms.Length; i++)
+        {
+            if(Player.transform.position.x == platforms[i].transform.position.x && !onTheMove)
+            {
+                counter = i;
+            }
+        }
+    }
 }
 
 
