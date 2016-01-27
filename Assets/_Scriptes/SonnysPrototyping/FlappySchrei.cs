@@ -14,7 +14,7 @@ public class FlappySchrei : MonoBehaviour {
 
 	void Awake() {
 		AudioAnalyzer.Instance.Init ();
-		gameSpeed = GameObject.Find("LevelLogic").GetComponent<LevelLogic>().numberOfBeats/8.0f;
+		gameSpeed = GameLogic.Instance.getLevelSpeed();
 		this.GetComponent<Rigidbody> ().useGravity = false;
 	}
 
@@ -43,12 +43,11 @@ public class FlappySchrei : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (this.levelDidStart) {
-			Debug.Log ("in 1, loudness: " + AudioAnalyzer.Instance.getMicLoudness());
 			if (AudioAnalyzer.Instance.getMicLoudness () > 30f) {
 				rigbi.velocity = Vector3.zero;
-				rigbi.AddForce (Vector3.up * 1000 * gameSpeed);
+				rigbi.AddForce (Vector3.up * 4000 * gameSpeed);
 			} else {
-				rigbi.AddForce (Physics.gravity * rigbi.mass * gameSpeed);
+				rigbi.AddForce (Physics.gravity * rigbi.mass * 3 * (gameSpeed*gameSpeed));
 			}
 		}
 	}
@@ -56,6 +55,7 @@ public class FlappySchrei : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (other.GetComponent<Collider>().CompareTag ("Obstacle")) {
 			Destroy (gameObject);
+			GameLogic.Instance.didFailLevel ();
 		}
 	}
 }
