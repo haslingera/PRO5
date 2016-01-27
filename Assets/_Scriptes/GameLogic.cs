@@ -92,6 +92,8 @@ public class GameLogic : MonoBehaviour {
 				if (this.isFailed || this.isSucceeded) {
 					if (this.didTriggerRescheduleTickTockEnd == false) {
 						this.didTriggerRescheduleTickTockEnd = true;
+						this.frozenLevelTime = this.actualLevelTime;
+						this.didFreezeLevelTime = true;
 
 						// if there's more than 4 beats left, set the time to exactly one "takt" less (subtract 4 beats)
 						float timePerBeat = 60.0f / this.currentBPM;
@@ -112,6 +114,11 @@ public class GameLogic : MonoBehaviour {
 				if (this.actualLevelTime < (60.0f / this.currentBPM)) {
 
 					this.isInTickTockMode = false;
+
+					if (!this.didFreezeLevelTime) {
+						this.frozenLevelTime = this.actualLevelTime;
+						this.didFreezeLevelTime = true;
+					}
 
 					// time's over. check if level succeeded or not
 					bool win = this.isSurviveLevel;
@@ -212,6 +219,8 @@ public class GameLogic : MonoBehaviour {
 
 	void OnLevelWasLoaded(int level) {
 		this.didLoadLevel = true;
+		this.didFreezeLevelTime = false;
+		this.frozenLevelTime = actualLevelTime;
 	}
 
 
@@ -585,7 +594,7 @@ public class GameLogic : MonoBehaviour {
 	}
 		
 	public float getRemainingLevelTime() {
-		if (this.isSucceeded || this.isFailed || this.didLoadLevel == false) {
+		if (this.didFreezeLevelTime) {
 			return this.frozenLevelTime;
 		} else {
 			return this.actualLevelTime;
