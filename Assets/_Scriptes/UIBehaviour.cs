@@ -342,7 +342,7 @@ public class UIBehaviour : MonoBehaviour {
 	public void StartScreen () {
 
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
-		//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
+		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
 
 		GameObject.Find ("StartButton").GetComponent<Image> ().enabled = true;
 		GameObject.Find ("Logo").GetComponent<Image> ().enabled = true;
@@ -361,7 +361,7 @@ public class UIBehaviour : MonoBehaviour {
 		
 		cameraNew.CopyFrom (Camera.main);
 		cameraNew.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
-		//cameraNew.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
+		cameraNew.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
 		
 		StartCoroutine(ScreenWipe.use.CrossFadePro (cameraMain, cameraNew, 1.0f));
 

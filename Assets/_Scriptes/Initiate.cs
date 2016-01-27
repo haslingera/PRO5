@@ -8,12 +8,14 @@ public class Initiate : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if (Application.loadedLevelName.Equals ("Road_Scene")) {
-			UIBehaviour.Instance.CameraStartRotation (new Vector3 (0f, 0f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
+			UIBehaviour.Instance.CameraStartRotation (new Vector3 (50f, -90f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
 		} else if (Application.loadedLevelName.Equals ("TreeSawing")) {
 			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-90f, 90f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
 		} else if (Application.loadedLevelName.Equals ("Plattformen-Szene")) {
 			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-90f, 90f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
-		} else {
+		} else if (Application.loadedLevelName.Equals ("FlappyScream")) {
+			UIBehaviour.Instance.CameraStartRotation (new Vector3 (90f, 0f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
+		}else {
 			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-90f, 90f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
 		}
 
@@ -35,6 +37,8 @@ public class Initiate : MonoBehaviour {
 			UIBehaviour.Instance.CameraEndRotation (new Vector3 (-90f, 90f, 0f)).CameraEndSize (0.01f).LevelEnd ();
 		} else if (Application.loadedLevelName.Equals ("Plattformen-Szene")) {
 			UIBehaviour.Instance.CameraEndRotation (new Vector3 (-90f, 90f, 0f)).CameraStartSize (0.01f).LevelEnd ();
+		} else if (Application.loadedLevelName.Equals ("FlappyScream")) {
+			UIBehaviour.Instance.CameraEndRotation (new Vector3 (90f, 0f, 0f)).CameraStartSize (0.01f).LevelEnd ();
 		} else {
 			UIBehaviour.Instance.CameraEndRotation (new Vector3 (0f, 0f, 0f)).CameraEndSize (0.01f).LevelEnd ();
 		}
