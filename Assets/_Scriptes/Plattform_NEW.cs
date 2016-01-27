@@ -72,6 +72,7 @@ public class Plattform_NEW : MonoBehaviour
             }
             else
             {
+                updateCounter();
                 moveTower();
                 if (counter > 0 && moveThemRandom)
                 {
@@ -117,7 +118,6 @@ public class Plattform_NEW : MonoBehaviour
                     if ((int)DB > 350)
                     {
                         moveUp();
-                        updateCounter();
                     }
                     else if ((int)DB == -1)
                     {
@@ -127,7 +127,6 @@ public class Plattform_NEW : MonoBehaviour
                     else if ((int)DB < 350)
                     {
                         moveDown();
-                        updateCounter();
                     }
             }
         }
@@ -136,25 +135,25 @@ public class Plattform_NEW : MonoBehaviour
         }
     }
 
-    void moveUp()
+    private void moveUp()
     {
         if (platforms[counter].transform.position.y < 8)
         {
             Vector3 temp = new Vector3(platforms[counter].transform.position.x,
                                        platforms[counter].transform.position.y + 0.2f, platforms[counter].transform.position.z);
             platforms[counter].transform.position = temp;
-            updatePlayer(0.3f);
+            updatePlayer(0.1f);
         }
     }
     
-    void moveDown()
+    private void moveDown()
     {
         if (platforms[counter].transform.position.y > -6)
         {
             Vector3 temp = new Vector3(platforms[counter].transform.position.x, 
                                        platforms[counter].transform.position.y - 0.2f, platforms[counter].transform.position.z);
             platforms[counter].transform.position = temp;
-            updatePlayer(-0.3f);
+            updatePlayer(-0.5f);
         }
     }
 
@@ -192,7 +191,8 @@ public class Plattform_NEW : MonoBehaviour
     private void moveShit()
     {
 
-        if ((int)platforms[counter].transform.position.y == (int)platforms[counter + 1].transform.position.y)
+        if (platforms[counter].transform.position.y < platforms[counter + 1].transform.position.y+0.3 &&
+            platforms[counter].transform.position.y > platforms[counter + 1].transform.position.y - 0.3)
         {
             Vector3 temp = new Vector3(platforms[counter].transform.position.x, platforms[counter + 1].transform.position.y,
                                        platforms[counter].transform.position.z);
@@ -241,11 +241,11 @@ public class Plattform_NEW : MonoBehaviour
             if (tower.transform.position.y == moveRandom[i].y || moveRandom[i].x == 0.0)
             {
                 moveRandom[i] = new Vector3(tower.transform.position.x, Random.Range(-6F, 8F), tower.transform.position.z);
-                tower.transform.position = Vector3.MoveTowards(tower.transform.position, moveRandom[i], 5 * Time.deltaTime);
+                tower.transform.position = Vector3.MoveTowards(tower.transform.position, moveRandom[i], 8 * Time.deltaTime);
             }
             else
             {
-                tower.transform.position = Vector3.MoveTowards(tower.transform.position, moveRandom[i], 5 * Time.deltaTime);
+                tower.transform.position = Vector3.MoveTowards(tower.transform.position, moveRandom[i], 8 * Time.deltaTime);
             }
         }
 
@@ -256,6 +256,7 @@ public class Plattform_NEW : MonoBehaviour
             if(Player.transform.position.x == platforms[i].transform.position.x && !onTheMove)
             {
                 counter = i;
+                //Debug.Log(counter);
             }
         }
     }
