@@ -105,7 +105,7 @@ public class GameLogic : MonoBehaviour {
 
 						if (shouldReschedule) {
 							AudioPlayer.Instance.reScheduleTickTockEndWithDelay (this.actualLevelTime - (timePerBeat * 4));
-							AudioPlayer.Instance.stopLoopingTickTock ();
+							//AudioPlayer.Instance.stopLoopingTickTock ();
 						}
 					}
 				}

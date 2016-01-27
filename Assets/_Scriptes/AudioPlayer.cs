@@ -126,8 +126,11 @@ public class AudioPlayer : MonoBehaviour {
 		//Invoke ("playTickTockEndAudioSourceDelayed", delay);
 
 		// calculate time diff for date
-		this.delayPlayTickTockEnd =  (GameLogic.Instance.getCurrentLevelNumberOfBeats() - 4) * (60.0f / GameLogic.Instance.getCurrentBPM());
 		this.dateTimePlayTickTockEnd = DateTime.Now;
+		this.delayPlayTickTockEnd =  delay;
+
+		this.dateTimeStopLoopingTickTock = DateTime.Now;
+		this.delayStopLoopingTickTock = Mathf.Max((delay - (60.0f / GameLogic.Instance.getCurrentBPM())), 0);
 	}
 
 	public void stopLoopingTickTock() {
