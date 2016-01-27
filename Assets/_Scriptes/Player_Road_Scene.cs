@@ -10,11 +10,12 @@ public class Player_Road_Scene : MonoBehaviour {
 	Vector3 newPos;
     bool levelDidStart = false;
 	private float levelSpeed;
+    bool stop = false;
 
     // Use this for initialization
     void Start () {
 		start = this.transform.position;
-		end = new Vector3 (22f, start.y,start.z);
+		end = new Vector3 (24f, start.y,start.z);
 		newPos = start;
 		this.levelSpeed = GameLogic.Instance.getLevelSpeed ();
 	}
@@ -41,27 +42,31 @@ public class Player_Road_Scene : MonoBehaviour {
 
         if (levelDidStart)
         {
-            db = AudioAnalyzer.Instance.getMicLoudness();
-
-            if (!move)
+            if (!stop)
             {
-                if (db > 15f)
-                {
-					newPos.x += (0.2f * this.levelSpeed);
-                    this.transform.position = newPos;
-                    move = true;
-                }
-            }
-            else {
-                if (db > 15f)
-                {
-                    move = false;
-                }
-            }
+                db = AudioAnalyzer.Instance.getMicLoudness();
 
-            if (this.transform.position.x > end.x)
-            {
-                GameLogic.Instance.didFinishLevel();
+                if (!move)
+                {
+                    if (db > 15f)
+                    {
+                        newPos.x += (0.2f * this.levelSpeed);
+                        this.transform.position = newPos;
+                        move = true;
+                    }
+                }
+                else {
+                    if (db > 15f)
+                    {
+                        move = false;
+                    }
+                }
+
+                if (this.transform.position.x >= end.x)
+                {
+                    GameLogic.Instance.didFinishLevel();
+                    stop = true;
+                }
             }
         }
 	}
