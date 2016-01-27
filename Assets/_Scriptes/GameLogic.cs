@@ -602,4 +602,17 @@ public class GameLogic : MonoBehaviour {
 	public bool getShowMainMenu() {
 		return this.showMainMenu;
 	}
+
+	public bool getIsLevelActive() {
+		// returns true if level is currently active, meaning that the player still has to play and has neither succeeded nor failed yet
+		if (this.isInTickTockMode) {
+			if (this.isSucceeded || this.isFailed) {
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			return false;
+		}
+	}
 }
