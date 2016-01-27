@@ -39,7 +39,7 @@ public class GameLogic : MonoBehaviour {
 
 		// show level instructions if timer is ready
 		TimeSpan timeSpanShowLevelInstructions = DateTime.Now - this.dateTimeShowLevelInstructions;
-		if (this.delayShowLevelInstructions > 0.0f && timeSpanShowLevelInstructions.TotalSeconds > this.delayShowLevelInstructions) {
+		if (this.delayShowLevelInstructions > 0.0f && timeSpanShowLevelInstructions.TotalSeconds > this.delayShowLevelInstructions && this.didLoadLevel) {
 			this.delayShowLevelInstructions = -10.0f;
 			this.sendOnShowLevelInstructionsEvent ();
 		}
@@ -89,9 +89,10 @@ public class GameLogic : MonoBehaviour {
 				this.actualLevelTime -= Time.deltaTime;
 
 				// check if the level is "over", meaning that a survivor level has failed, or a task-level has finished
-				if (this.isFailed) {
+				if (this.isFailed || this.isSucceeded) {
 					if (this.didTriggerRescheduleTickTockEnd == false) {
 						this.didTriggerRescheduleTickTockEnd = true;
+						this.frozenLevelTime = this.actualLevelTime;
 
 						// if there's more than 4 beats left, set the time to exactly one "takt" less (subtract 4 beats)
 						float timePerBeat = 60.0f / this.currentBPM;
@@ -270,6 +271,7 @@ public class GameLogic : MonoBehaviour {
 
 	private float actualLevelTime;
 	private float currentLevelMaxTime;
+	private float frozenLevelTime;
 
 	private bool didTriggerReadyToStartEvent;
 	private bool didTriggerRescheduleTickTockEnd;
@@ -309,6 +311,7 @@ public class GameLogic : MonoBehaviour {
 		this.currentBPM = defaultBPM;
 		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats;
 		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
+		this.frozenLevelTime = actualLevelTime;
 		this.currentLevelMaxTime = this.actualLevelTime;
 
 		// tell audioplayer to start new ticktock audio
@@ -344,6 +347,7 @@ public class GameLogic : MonoBehaviour {
 		this.currentBPM = defaultBPM;
 		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats;
 		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
+		this.frozenLevelTime = actualLevelTime;
 		this.currentLevelMaxTime = this.actualLevelTime;
 
 		// tell audioplayer to start new ticktock audio
@@ -360,7 +364,6 @@ public class GameLogic : MonoBehaviour {
 			this.OnShowLevelInstructions ();
 		}
 	}
-		
 
 	public void startGameWithLevel(string level) {
 		this.levels = new string[] {level};
@@ -379,6 +382,7 @@ public class GameLogic : MonoBehaviour {
 		this.currentBPM = 80;
 		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats;
 		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
+		this.frozenLevelTime = actualLevelTime;
 		this.currentLevelMaxTime = this.actualLevelTime;
 
 		// tell audioplayer to start new ticktock audio
@@ -388,9 +392,11 @@ public class GameLogic : MonoBehaviour {
 		Application.LoadLevel (level);
 
 		// send out broadcast to show level information
-		if (this.OnShowLevelInstructions != null) {
-			this.OnShowLevelInstructions ();
-		}
+		this.dateTimeShowLevelInstructions = DateTime.Now;
+		this.delayShowLevelInstructions = 1.0f;
+
+		this.dateTimeHideLevelInstructions = DateTime.Now;
+		this.delayHideLevelInstructions = 60.0f / this.currentBPM * 4;
 
 		// register for broadcast event and waits until the audio player tells that the tick tock sound started, then the countdown will start.
 		AudioPlayer.Instance.OnTickTockStarted += tickTockStarted;
@@ -484,6 +490,7 @@ public class GameLogic : MonoBehaviour {
 	}
 
 	private void sendOnShowLevelInstructionsEvent() {
+		Debug.Log ("show Level Instructions");
 		if (this.OnShowLevelInstructions != null) this.OnShowLevelInstructions ();
 	}
 
@@ -552,6 +559,7 @@ public class GameLogic : MonoBehaviour {
 	public void setLevelNumberOfBeats(int numberOfBeats) {
 		this.currentLevelNumberOfBeats = numberOfBeats;
 		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
+		this.frozenLevelTime = actualLevelTime;
 		this.currentLevelMaxTime = this.actualLevelTime;
 	}
 
@@ -572,7 +580,11 @@ public class GameLogic : MonoBehaviour {
 	}
 		
 	public float getRemainingLevelTime() {
-		return this.actualLevelTime;
+		if (this.isSucceeded || this.isFailed || this.didLoadLevel == false) {
+			return this.frozenLevelTime;
+		} else {
+			return this.actualLevelTime;
+		}
 	}
 
 	public float getLevelTime() {

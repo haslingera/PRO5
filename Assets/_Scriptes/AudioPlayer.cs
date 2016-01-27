@@ -94,7 +94,6 @@ public class AudioPlayer : MonoBehaviour {
 		// call stopLoopingTickTock if timer is ready
 		TimeSpan timeSpanStopLoopingTickTock = DateTime.Now - this.dateTimeStopLoopingTickTock;
 		if (this.delayStopLoopingTickTock > 0.0f && timeSpanStopLoopingTickTock.TotalSeconds > this.delayStopLoopingTickTock) {
-			Debug.Log ("timeSpanStopLoopingTickTock: " + timeSpanStopLoopingTickTock.TotalSeconds);
 			this.delayStopLoopingTickTock = -10.0f;
 			this.stopLoopingTickTock ();
 		}
@@ -102,7 +101,6 @@ public class AudioPlayer : MonoBehaviour {
 		// call playTickTockEnd if timer is ready
 		TimeSpan timeSpanPlayTickTockEnd = DateTime.Now - this.dateTimePlayTickTockEnd;
 		if (this.delayPlayTickTockEnd > 0.0f && timeSpanPlayTickTockEnd.TotalSeconds > this.delayPlayTickTockEnd) {
-			Debug.Log ("timeSpanPlayTickTockEnd: " + timeSpanPlayTickTockEnd.TotalSeconds);
 			this.delayPlayTickTockEnd = -10.0f;
 			this.playTickTockEndAudioSourceDelayed ();
 		}
@@ -155,10 +153,7 @@ public class AudioPlayer : MonoBehaviour {
 	}
 
 	private void sendTickTockStartedEvent() {
-		this.dateTimePlayTickTockEnd = DateTime.Now;
-		this.dateTimeStopLoopingTickTock = DateTime.Now;
 
-		Debug.Log ("Seinding Tick Tock Started Event");
 		// send broadcast event that tick tock phase has started
 		if (this.OnTickTockStarted != null) {
 			this.OnTickTockStarted ();
@@ -166,11 +161,11 @@ public class AudioPlayer : MonoBehaviour {
 
 		// by now the gamelogic should know how many beats the level lasts, use this information to call the playTickTockEndAudioSourceDelayed
 		//Invoke("playTickTockEndAudioSourceDelayed", (GameLogic.Instance.getCurrentLevelNumberOfBeats() - 4) * (60.0f / GameLogic.Instance.getCurrentBPM()));
+		this.dateTimePlayTickTockEnd = DateTime.Now;
 		this.delayPlayTickTockEnd =  (GameLogic.Instance.getCurrentLevelNumberOfBeats() - 4) * (60.0f / GameLogic.Instance.getCurrentBPM());
-		Debug.Log ("delayPlayTickTockEnd: " + this.delayPlayTickTockEnd);
 
+		this.dateTimeStopLoopingTickTock = DateTime.Now;
 		this.delayStopLoopingTickTock = (GameLogic.Instance.getCurrentLevelNumberOfBeats () - 5) * (60.0f / GameLogic.Instance.getCurrentBPM ());
-		Debug.Log ("delayStopLoopingTickTock: " + this.delayStopLoopingTickTock);
 		//Invoke ("stopLoopingTickTock", (GameLogic.Instance.getCurrentLevelNumberOfBeats() - 5) * (60.0f / GameLogic.Instance.getCurrentBPM ()));
 	}
 
