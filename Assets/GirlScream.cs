@@ -26,10 +26,10 @@ public class GirlScream : MonoBehaviour {
 
 	void Update() {
 		if (levelDidStart) {
-			if (AudioAnalyzer.Instance.getPitch () < 200) {
-				this.GetComponent<Player_Animation> ().talkDirtyToMe = true;
+			if (AudioAnalyzer.Instance.getPitch () < 200 && AudioAnalyzer.Instance.getPitch() > 0) {
+				GetComponent<Player_Animation> ().talkDirtyToMe = true;
 			} else {
-				this.GetComponent<Player_Animation> ().talkDirtyToMe = false;
+				GetComponent<Player_Animation> ().talkDirtyToMe = false;
 			}
 		}
 	}

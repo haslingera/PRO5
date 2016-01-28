@@ -26,11 +26,11 @@ public class BoyScream : MonoBehaviour {
 
 	void Update() {
 		if (levelDidStart) {
+			Debug.Log (AudioAnalyzer.Instance.getPitch ());
 			if (AudioAnalyzer.Instance.getPitch () > 200) {
-				//this.GetComponent<Player_Animation> ().talkDirtyToMe = true;
-				Debug.Log ("set true");
+				GetComponent<Player_Animation> ().talkDirtyToMe = true;
 			} else {
-				this.GetComponent<Player_Animation> ().talkDirtyToMe = false;
+				GetComponent<Player_Animation> ().talkDirtyToMe = false;
 			}
 		}
 	}
