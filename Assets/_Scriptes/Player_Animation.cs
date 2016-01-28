@@ -21,7 +21,8 @@ public class Player_Animation : MonoBehaviour {
     public bool highRes = false;
     bool blinken = false;
     int blinker = 45;
-    public float blinkSpeed = 0.05f;
+    public float blinkHeight = 0.05f;
+    public int blinkSpeed = 50;
     public bool präsi = false;
     private bool stop;
 	
@@ -151,7 +152,7 @@ public class Player_Animation : MonoBehaviour {
 
         if(counter == 0)
         {
-            blinker = (int)Random.Range(1, 50);
+            blinker = (int)Random.Range(1, blinkSpeed);
         }
 
         if (blinker == 45)
@@ -159,11 +160,11 @@ public class Player_Animation : MonoBehaviour {
 
             if (counter < 20)
             {
-                temp.transform.localScale -= new Vector3(0f, blinkSpeed, 0f);
+                temp.transform.localScale -= new Vector3(0f, blinkHeight, 0f);
                 counter++;
             }
             else {
-                temp.transform.localScale += new Vector3(0f, blinkSpeed, 0f);
+                temp.transform.localScale += new Vector3(0f, blinkHeight, 0f);
                 counter++;
             }
 
