@@ -4,12 +4,14 @@ using System.Collections;
 public class BabyScream : MonoBehaviour {
 
 	private bool levelDidStart;
-
 	private bool babyscream;
+	private SkinnedMeshRenderer babyMeshRen;
 
 	void Start () {
+		babyMeshRen = GetComponent<SkinnedMeshRenderer> ();
 		levelDidStart = false;
 		babyscream = false;
+		GameObject.Find("eyes_default").transform.localScale = new Vector3(1.0f, 0.001f, 1.0f);;
 	}
 
 	// register for broadcast event "OnLevelReadyToStart"
@@ -35,8 +37,8 @@ public class BabyScream : MonoBehaviour {
 			}
 
 			if (babyscream) {
-				SkinnedMeshRenderer babyMeshRen = GetComponent<SkinnedMeshRenderer> ();
 				babyMeshRen.SetBlendShapeWeight (0, (Mathf.Sin (Time.time*20)*50)+50);
+				GetComponent<Player_Animation> ().blinkSpeed = 0.09f;
 			}
 		}
 	}

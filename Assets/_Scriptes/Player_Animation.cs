@@ -11,6 +11,7 @@ public class Player_Animation : MonoBehaviour {
     SkinnedMeshRenderer skinnedMeshRendererTongue;
     Mesh skinnedMeshTongue;
 
+	public bool usingOwnTalk = false;
     public bool talkDirtyToMe = false;
 	public bool talkFrequ = false;
     public bool tongue = false;
@@ -52,7 +53,7 @@ public class Player_Animation : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-		if (!talkDirtyToMe) {
+		if (!talkDirtyToMe && !usingOwnTalk) {
 			skinnedMeshRenderer.SetBlendShapeWeight (0, 0.0f);
 		}
 
