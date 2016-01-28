@@ -81,4 +81,9 @@ public class Player_Road_Scene : MonoBehaviour {
         GameLogic.Instance.didFailLevel ();
 
 	}
+
+    public void setStop(bool temp)
+    {
+        this.stop = temp;
+    }
 }
