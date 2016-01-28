@@ -11,6 +11,7 @@ public class Player_Animation : MonoBehaviour {
     SkinnedMeshRenderer skinnedMeshRendererTongue;
     Mesh skinnedMeshTongue;
 
+	public bool usingOwnTalk = false;
     public bool talkDirtyToMe = false;
 	public bool talkFrequ = false;
     public bool tongue = false;
@@ -18,10 +19,12 @@ public class Player_Animation : MonoBehaviour {
 	int blink;
     public bool neutral = false;
     public bool highRes = false;
-    public bool withMouthBlob = false;
     bool blinken = false;
     int blinker = 45;
-    public float blinkSpeed = 0.05f;
+    public float blinkHeight = 0.05f;
+    public int blinkSpeed = 50;
+    public bool präsi = false;
+    private bool stop;
 	
 	// Use this for initialization
 	void Start () {
@@ -46,20 +49,22 @@ public class Player_Animation : MonoBehaviour {
 
         }
 
-        if (withMouthBlob)
-        {
-            skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
-        }
 
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update() {
+		if (!talkDirtyToMe && !usingOwnTalk) {
+			skinnedMeshRenderer.SetBlendShapeWeight (0, 0.0f);
+		}
 
         int tmp = 0;
         int tmp2 = 0;
         float tempDB = 0;
-        stopAnimation();
+
+        if (!präsi) { 
+            stopAnimation();
+        }
 
         if (neutral)
         {
@@ -69,30 +74,35 @@ public class Player_Animation : MonoBehaviour {
         {
             Blink2();
         }
+        if (stop)
+        {
+            if (talkDirtyToMe)
+            {
+                tempDB = getDB();
+                tmp = ConvertRange(0, 100, 30, 48, (int)tempDB);
+                tmp2 = ConvertRange(0, 100, 11, 48, (int)tempDB);
+                skinnedMeshRenderer.SetBlendShapeWeight(0, tempDB);
+                if (neutral)
+                    skinnedMeshRendererEyes.SetBlendShapeWeight(8, tempDB);
+            }
 
-		if (talkDirtyToMe) {
-			tempDB = getDB();
-            tmp = ConvertRange(0,100, 30,48,(int)tempDB);
-            tmp2 = ConvertRange(0, 100, 11, 48, (int)tempDB);
-            skinnedMeshRenderer.SetBlendShapeWeight (0, tempDB);
-            if(neutral)
-			    skinnedMeshRendererEyes.SetBlendShapeWeight(8, tempDB);
-		}
-		
-		if (talkFrequ) {
-			
-			float tempFQ = AudioAnalyzer.Instance.getPitch();
-            //Debug.Log(tempFQ);
-            tmp = ConvertRange(100, 650, 30, 48, (int)tempFQ);
-            tmp2 = ConvertRange(100, 650, 11, 48, (int)tempFQ);
-            if (tempFQ != -1){
-				skinnedMeshRenderer.SetBlendShapeWeight (0, tempFQ/8);
-                if(neutral)
-				    skinnedMeshRendererEyes.SetBlendShapeWeight(6, tempFQ/8);
-			}
-			else
-				skinnedMeshRenderer.SetBlendShapeWeight(0,0f);
-		}
+            if (talkFrequ)
+            {
+
+                float tempFQ = AudioAnalyzer.Instance.getPitch();
+                //Debug.Log(tempFQ);
+                tmp = ConvertRange(100, 650, 30, 48, (int)tempFQ);
+                tmp2 = ConvertRange(100, 650, 11, 48, (int)tempFQ);
+                if (tempFQ != -1)
+                {
+                    skinnedMeshRenderer.SetBlendShapeWeight(0, tempFQ / 8);
+                    if (neutral)
+                        skinnedMeshRendererEyes.SetBlendShapeWeight(6, tempFQ / 8);
+                }
+                else
+                    skinnedMeshRenderer.SetBlendShapeWeight(0, 0f);
+            }
+        }
 
         if (tongue && neutral)
         {
@@ -142,19 +152,19 @@ public class Player_Animation : MonoBehaviour {
 
         if(counter == 0)
         {
-            blinker = (int)Random.Range(1, 50);
+            blinker = (int)Random.Range(1, blinkSpeed);
         }
 
-        if (blinker == 45)
+        if (blinker == 2)
         {
 
             if (counter < 20)
             {
-                temp.transform.localScale -= new Vector3(0f, blinkSpeed, 0f);
+                temp.transform.localScale -= new Vector3(0f, blinkHeight, 0f);
                 counter++;
             }
             else {
-                temp.transform.localScale += new Vector3(0f, blinkSpeed, 0f);
+                temp.transform.localScale += new Vector3(0f, blinkHeight, 0f);
                 counter++;
             }
 
@@ -177,7 +187,7 @@ public class Player_Animation : MonoBehaviour {
 
     void stopAnimation()
     {
-        talkDirtyToMe = GameLogic.Instance.getIsLevelActive();
+        stop = GameLogic.Instance.getIsLevelActive();
     }
 
 }

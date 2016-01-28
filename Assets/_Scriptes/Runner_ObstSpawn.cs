@@ -68,4 +68,9 @@ public class Runner_ObstSpawn : MonoBehaviour {
         }
     }
 
+    private void isGoing()
+    {
+        stop = GameLogic.Instance.getIsLevelActive();
+    }
+
 }

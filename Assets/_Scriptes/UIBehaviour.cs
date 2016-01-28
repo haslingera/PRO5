@@ -7,7 +7,6 @@ public class UIBehaviour : MonoBehaviour {
 	Color backgroundColor;
 	Color zoomToObjectColor;
 
-	Camera sceneCamera;
 	GameObject zoomToObject;
 
 	Vector3 originalCameraPosition;
@@ -18,26 +17,20 @@ public class UIBehaviour : MonoBehaviour {
 	Vector3 cameraStartPosition = new Vector3 (0f, 0f, 0f);
 	float cameraStartSize = 0.0f;
 
-	bool startSizeSet = false;
-	bool startPosSet = false;
-	bool startRotSet = false;
-	bool startSpeedSet = false;
-
 	Vector3 cameraEndRotation = new Vector3 (0f, 0f, 0f);
 	Vector3 cameraEndPosition = new Vector3 (0f, 0f, 0f);
 	float cameraEndSize = 0.01f;
 
+	bool startSizeSet = false;
+	bool startPosSet = false;
+	bool startRotSet = false;
+
 	bool endSizeSet = false;
 	bool endPosSet = false;
 	bool endRotSet = false;
-	bool endSpeedSet = false;
 
 	bool first = true;
-
-	float TimeLineWidth = 3f;
-	GameObject[] timeLines = new GameObject[4];
-	float timeLineAnimationTime = 0.5f;
-
+	
 	bool timeBand = false;
 	bool timeBandCreated = false;
 
@@ -46,14 +39,12 @@ public class UIBehaviour : MonoBehaviour {
 
 	float lastTimeValue = 0.0f;
 
-	Camera cameraNew;
-	Camera cameraMain;
-
 	float cameraStartSpeed = 3.0f;
 	float cameraEndSpeed = 2.0f;
 	float showLivesSpeed = 3.0f;
 
 	public bool initateScript = true;
+	bool imageEffects = true;
 
 	private static UIBehaviour instance = null;
 
@@ -62,7 +53,7 @@ public class UIBehaviour : MonoBehaviour {
 	void Awake() {
 		DontDestroyOnLoad(transform.gameObject);
 	}
-	
+
 	public static UIBehaviour Instance {
 		get {
 			if (instance == null) { instance = new GameObject ("UIBehaviour").AddComponent<UIBehaviour> (); }
@@ -74,7 +65,9 @@ public class UIBehaviour : MonoBehaviour {
 		if (timeBand) {
 			if (timeBandCreated) {
 				if ((int)GameLogic.Instance.getRemainingLevelTime() > 0) {
+					imageEffects = false;
 					ChangeTimeBandSize(GameLogic.Instance.getRemainingLevelTime() / GameLogic.Instance.getLevelTime());
+					imageEffects = true;
 				}
 			}
 		}
@@ -88,21 +81,20 @@ public class UIBehaviour : MonoBehaviour {
 		} else {
 
 			//Set Camera And Zoom To Object
-			sceneCamera = Camera.main.GetComponent<Camera> ();
 			if (GameObject.FindGameObjectsWithTag ("ZoomTo").Length != 0) {
 				zoomToObject = GameObject.FindGameObjectsWithTag ("ZoomTo") [0];
 			}
 
 			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
-			//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
+			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
 			
 			//Set Camera To See All Things That Were Seen In 16:9
 			AdjustCamera ();
 			
 			//Set Original Camera;
-			originalCameraPosition = sceneCamera.transform.position;
-			originalCameraRotation = sceneCamera.transform.eulerAngles;
-			originalCameraSize = sceneCamera.orthographicSize;
+			originalCameraPosition = Camera.main.transform.position;
+			originalCameraRotation = Camera.main.transform.eulerAngles;
+			originalCameraSize = Camera.main.orthographicSize;
 			
 			//Get's a new color based on the last player color
 			SetBackgroundColorFromZoomToObject ();
@@ -119,14 +111,14 @@ public class UIBehaviour : MonoBehaviour {
 			}
 
 			//Set the camera upwards and to the original position  
-			if (startRotSet) { sceneCamera.transform.eulerAngles = cameraStartRotation; } else { sceneCamera.transform.eulerAngles = originalCameraRotation; };
-			if (startPosSet) { sceneCamera.transform.position = cameraStartPosition; } else { sceneCamera.transform.position = originalCameraPosition; };
-			if (startSizeSet) { ChangeOrthographicCameraSize (Camera.main, cameraStartSize); } else { ChangeOrthographicCameraSize (Camera.main, originalCameraSize); };
+			if (startRotSet) { Camera.main.transform.eulerAngles = cameraStartRotation; } else { Camera.main.transform.eulerAngles = originalCameraRotation; };
+			if (startPosSet) { Camera.main.transform.position = cameraStartPosition; } else { Camera.main.transform.position = originalCameraPosition; };
+			if (startSizeSet) { ChangeOrthographicCameraSize (cameraStartSize); } else { ChangeOrthographicCameraSize (originalCameraSize); };
 				
 				//Start the camera entering process
-			iTween.MoveTo(sceneCamera.gameObject, iTween.Hash("x", originalCameraPosition.x, "y", originalCameraPosition.y, "z", originalCameraPosition.z, "easetype",iTween.EaseType.easeInOutSine, "time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f));
-			iTween.RotateTo(sceneCamera.gameObject,iTween.Hash("x", originalCameraRotation.x, "y", originalCameraRotation.y, "z", originalCameraRotation.z, "easetype",iTween.EaseType.easeInOutSine,"time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f));
-			iTween.ValueTo (sceneCamera.gameObject, iTween.Hash("from",sceneCamera.orthographicSize, "to",originalCameraSize, "time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeCameraSize"));
+			iTween.MoveTo(Camera.main.gameObject, iTween.Hash("x", originalCameraPosition.x, "y", originalCameraPosition.y, "z", originalCameraPosition.z, "easetype",iTween.EaseType.easeInOutSine, "time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f));
+			iTween.RotateTo(Camera.main.gameObject,iTween.Hash("x", originalCameraRotation.x, "y", originalCameraRotation.y, "z", originalCameraRotation.z, "easetype",iTween.EaseType.easeInOutSine,"time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f));
+			iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from",Camera.main.orthographicSize, "to",originalCameraSize, "time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeCameraSize"));
 			
 			if (timeBand) {
 				StartCoroutine (StartTimeBand (cameraStartSpeed / GameLogic.Instance.getLevelSpeed() / 6.0f, cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f));
@@ -134,7 +126,6 @@ public class UIBehaviour : MonoBehaviour {
 			
 			endSizeSet = false;
 			endRotSet = false;
-			endSpeedSet = false;
 		}
 		
 	}
@@ -160,22 +151,7 @@ public class UIBehaviour : MonoBehaviour {
 		images [3].GetComponent<Image>().enabled = true;
 		images [3].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, 0);
 
-		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
-		//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
-		
-		cameraMain = Camera.main;
-		
-		if (cameraNew == null) {
-			cameraNew = (Camera) Camera.Instantiate(cameraMain, new Vector3(0, 0, 0), Quaternion.FromToRotation(new Vector3(0, 0, 0), new Vector3(0, 0, 1)));
-		}
-
-		cameraNew.CopyFrom (cameraMain);
-		cameraNew.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
-		//cameraNew.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
-		
-		StartCoroutine(ScreenWipe.use.CrossFadePro (cameraNew, cameraMain, seconds));
-		
-		iTween.ValueTo (sceneCamera.gameObject, iTween.Hash("from",0f, "to",1f, "time", seconds, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeTimeBandSize"));
+		iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from",0f, "to",1f, "time", seconds, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeTimeBandSize"));
 
 	}
 	
@@ -183,13 +159,15 @@ public class UIBehaviour : MonoBehaviour {
 
 		float ratio = Screen.width / Screen.height;
 
-		if (cameraMain != null && cameraNew != null) {
-			ChangeOrthographicCameraSize (cameraMain, originalCameraSize + (originalCameraSize * 60 / Screen.height * value));
-			ChangeOrthographicCameraSize (cameraNew, originalCameraSize + (originalCameraSize * 60 / Screen.height * value));
+		if (imageEffects) {
+			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().blurSize = 3.0f * (1.0f - value);
+			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().saturation = 1.0f * value;
 		} else {
-			ChangeOrthographicCameraSize (Camera.main, originalCameraSize + (originalCameraSize * 60 / Screen.height * value));
+			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
+			//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
 		}
 
+		ChangeOrthographicCameraSize (originalCameraSize + (originalCameraSize * 60 / Screen.height * value));
 
 		images [0].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.height, 60 * value);
 		images [1].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, 60 * value);
@@ -238,21 +216,9 @@ public class UIBehaviour : MonoBehaviour {
 	void TimeBandEnd(float time) {
 		if (timeBandCreated) {
 			timeBandCreated = false;
-		
-			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
-			//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
-			
-			cameraMain = Camera.main.GetComponent<Camera> ();
-			
-			if (cameraNew == null) {
-				cameraNew = (Camera) Camera.Instantiate(cameraMain, new Vector3(0, 0, 0), Quaternion.FromToRotation(new Vector3(0, 0, 0), new Vector3(0, 0, 1)));
-			}
 
-			cameraNew.CopyFrom (cameraMain);
-			cameraNew.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
-			//cameraNew.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
-			
-			StartCoroutine(ScreenWipe.use.CrossFadePro (cameraNew, cameraMain, time));
+			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
+			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
 
 			iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from", GameLogic.Instance.getRemainingLevelTime() / GameLogic.Instance.getLevelTime(), "to",0f, "time", time, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeTimeBandSize"));
 			
@@ -261,15 +227,15 @@ public class UIBehaviour : MonoBehaviour {
 
 	public void EndAnimation(float time) {
 
-		if (!endRotSet) {cameraEndRotation = sceneCamera.transform.eulerAngles; }
-		if (!endPosSet) {cameraEndPosition = sceneCamera.transform.position; }
-		if (!startSizeSet) { cameraEndSize = sceneCamera.orthographicSize; }
+		if (!endRotSet) {cameraEndRotation = Camera.main.transform.eulerAngles; }
+		if (!endPosSet) {cameraEndPosition = Camera.main.transform.position; }
+		if (!startSizeSet) {cameraEndSize = Camera.main.orthographicSize; }
 
 		//Start the camera process
-		iTween.MoveTo(sceneCamera.gameObject, iTween.Hash("x", cameraEndPosition.x, "y", cameraEndPosition.y, "z", cameraEndPosition.z, "easetype",iTween.EaseType.easeInOutSine, "time", time));
-		iTween.RotateTo(sceneCamera.gameObject,iTween.Hash("x", cameraEndRotation.x, "y", cameraEndRotation.y, "z", cameraEndRotation.z, "easetype",iTween.EaseType.easeInOutSine,"time", time));
-		iTween.ValueTo (sceneCamera.gameObject, iTween.Hash("from",sceneCamera.orthographicSize, "to",cameraEndSize, "time", time, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeCameraSize"));
-		iTween.ValueTo (sceneCamera.gameObject, iTween.Hash("from",0 ,"to", 1, "time", time, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "LerpBackgroundColors"));
+		iTween.MoveTo(Camera.main.gameObject, iTween.Hash("x", cameraEndPosition.x, "y", cameraEndPosition.y, "z", cameraEndPosition.z, "easetype",iTween.EaseType.easeInOutSine, "time", time));
+		iTween.RotateTo(Camera.main.gameObject,iTween.Hash("x", cameraEndRotation.x, "y", cameraEndRotation.y, "z", cameraEndRotation.z, "easetype",iTween.EaseType.easeInOutSine,"time", time));
+		iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from",Camera.main.orthographicSize, "to",cameraEndSize, "time", time, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeCameraSize"));
+		iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from",0 ,"to", 1, "time", time, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "LerpBackgroundColors"));
 		
 		endSizeSet = false;
 		endRotSet = false;
@@ -289,6 +255,10 @@ public class UIBehaviour : MonoBehaviour {
 
 	public void ShowLives() {
 		if (timeBandCreated) {
+
+			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
+			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
+
 			TimeBandEnd(showLivesSpeed / GameLogic.Instance.getLevelSpeed() / 6.0f);
 		}
 		StartCoroutine (ShowLivesNumerator(showLivesSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f, GameLogic.Instance.getNumberOfLives()));
@@ -353,17 +323,8 @@ public class UIBehaviour : MonoBehaviour {
 
 	public void OnButtonGameClicked() {
 
-		cameraMain = Camera.main.GetComponent<Camera> ();
-
-		if (cameraNew == null) {
-			cameraNew = (Camera) Camera.Instantiate(cameraMain, new Vector3(0, 0, 0), Quaternion.FromToRotation(new Vector3(0, 0, 0), new Vector3(0, 0, 1)));
-		}
-		
-		cameraNew.CopyFrom (Camera.main);
-		cameraNew.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
-		cameraNew.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
-		
-		StartCoroutine(ScreenWipe.use.CrossFadePro (cameraMain, cameraNew, 1.0f));
+		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
+		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
 
 		GameObject.Find ("StartButton").GetComponent<Image> ().enabled = false;
 		GameObject.Find ("Logo").GetComponent<Image> ().enabled = false;
@@ -383,15 +344,35 @@ public class UIBehaviour : MonoBehaviour {
 		GameObject.Find ("InstructionText").GetComponent<Text> ().enabled = false;
 	}
 
+	IEnumerator ChangeText() {
+		
+		GameObject.Find ("startText").transform.localScale = new Vector3(0, 0, 0);
+		GameObject.Find ("startText").GetComponent<Text> ().enabled = true;
+		
+		Hashtable ht = new Hashtable();
+		ht.Add("x",1.0);
+		ht.Add("y",1.0);
+		ht.Add("7",1.0);
+		ht.Add("time",0.5);
+		ht.Add("easetype",iTween.EaseType.easeOutCubic);
+		
+		iTween.ScaleTo (GameObject.Find ("startText"),ht);
+		
+		yield return new WaitForSeconds(1.5f);
+		
+		Text startText = GameObject.Find ("startText").GetComponent<Text> ();
+		
+		startText.text = "go!";
+		
+		yield return new WaitForSeconds(1);
+		
+		GameObject.Find ("startText").GetComponent<Text> ().enabled = false;
+		
+	}
+
 	//--------------------------------------
 	//------------HELPER-METHODS------------
 	//--------------------------------------
-
-	public UIBehaviour CameraEndSpeed(float speed) {
-		cameraEndSpeed = speed;
-		endSpeedSet = true;
-		return this;
-	}
 
 	public UIBehaviour CameraEndSize(float size) {
 		cameraEndSize = size;
@@ -435,7 +416,7 @@ public class UIBehaviour : MonoBehaviour {
 	}
 
 	void ChangeCameraSize(float value) {
-		ChangeOrthographicCameraSize (Camera.main, value);
+		ChangeOrthographicCameraSize (value);
 	}
 
 	void SetBackgroundColorFromZoomToObject() {
@@ -462,7 +443,7 @@ public class UIBehaviour : MonoBehaviour {
 
 	}
 
-	void ChangeOrthographicCameraSize(Camera camera, float size) {
+	void ChangeOrthographicCameraSize(float size) {
 
 		float screenRatio = (float)Screen.width / (float)Screen.height;
 		float desiredRatio = 16.0f / 9.0f;
@@ -470,40 +451,14 @@ public class UIBehaviour : MonoBehaviour {
 		if (screenRatio < desiredRatio) {
 			float newScale = desiredRatio / screenRatio;
 			
-			camera.projectionMatrix = Matrix4x4.Ortho (
+			Camera.main.projectionMatrix = Matrix4x4.Ortho (
 				-size * 1.78f, size * 1.78f,
 				-size * newScale, size * newScale,
-				camera.nearClipPlane, camera.farClipPlane);
+				Camera.main.nearClipPlane, Camera.main.farClipPlane);
 		} else {
-			camera.orthographicSize = size;
+			Camera.main.orthographicSize = size;
 		}
 
-	}
-
-	IEnumerator ChangeText() {
-
-		GameObject.Find ("startText").transform.localScale = new Vector3(0, 0, 0);
-		GameObject.Find ("startText").GetComponent<Text> ().enabled = true;
-		
-		Hashtable ht = new Hashtable();
-		ht.Add("x",1.0);
-		ht.Add("y",1.0);
-		ht.Add("7",1.0);
-		ht.Add("time",0.5);
-		ht.Add("easetype",iTween.EaseType.easeOutCubic);
-		
-		iTween.ScaleTo (GameObject.Find ("startText"),ht);
-		
-		yield return new WaitForSeconds(1.5f);
-		
-		Text startText = GameObject.Find ("startText").GetComponent<Text> ();
-		
-		startText.text = "go!";
-		
-		yield return new WaitForSeconds(1);
-		
-		GameObject.Find ("startText").GetComponent<Text> ().enabled = false;
-		
 	}
 
 }

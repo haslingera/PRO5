@@ -21,7 +21,6 @@ public class Initiate : MonoBehaviour {
 
 		if (UIBehaviour.Instance.initateScript) {
 			UIBehaviour.Instance.initateScript = false;
-
 			GameLogic.Instance.OnShowLevelInstructions += UIBehaviour.Instance.ShowInstruction;
 			GameLogic.Instance.OnHideLevelInstructions += UIBehaviour.Instance.HideInstruction;
 			GameLogic.Instance.OnShowLives += UIBehaviour.Instance.ShowLives;
