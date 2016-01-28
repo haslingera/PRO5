@@ -8,7 +8,7 @@ public class Initiate : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if (Application.loadedLevelName.Equals ("Road_Scene")) {
-			UIBehaviour.Instance.CameraStartRotation (new Vector3 (50f, -90f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
+			UIBehaviour.Instance.CameraStartRotation (new Vector3 (0f, -90f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
 		} else if (Application.loadedLevelName.Equals ("TreeSawing")) {
 			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-90f, 90f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
 		} else if (Application.loadedLevelName.Equals ("Plattformen-Szene")) {
@@ -37,7 +37,7 @@ public class Initiate : MonoBehaviour {
 
 	void TransitionToNextLevel() {
 		if (Application.loadedLevelName.Equals ("Road_Scene")) {
-			UIBehaviour.Instance.CameraEndRotation (new Vector3 (0f, 0f, 0f)).CameraEndSize (0.01f).LevelEnd ();
+			UIBehaviour.Instance.CameraEndRotation (new Vector3 (0f, -90f, 0f)).CameraEndSize (0.01f).LevelEnd ();
 		} else if (Application.loadedLevelName.Equals ("TreeSawing")) {
 			UIBehaviour.Instance.CameraEndRotation (new Vector3 (-90f, 90f, 0f)).CameraEndSize (0.01f).LevelEnd ();
 		} else if (Application.loadedLevelName.Equals ("Plattformen-Szene")) {

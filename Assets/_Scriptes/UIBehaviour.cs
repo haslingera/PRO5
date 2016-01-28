@@ -184,14 +184,21 @@ public class UIBehaviour : MonoBehaviour {
 
 		if (timeBandCreated) {
 
-			if (value > 0.5f) {
+			/*if (value > 0.5f) {
 				redValue = value;
-			}
+			}*/
 
-			images [0].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value / redValue, 1.0f * value / redValue);
-			images [1].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value / redValue, 1.0f * value / redValue);
-			images [2].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value / redValue, 1.0f * value / redValue);
-			images [3].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value / redValue, 1.0f * value / redValue);
+			if (GameLogic.Instance.getIsSurviveLevel()) {
+				images [0].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value);
+				images [1].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value);
+				images [2].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value);
+				images [3].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value);
+			} else {
+				images [0].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value);
+				images [1].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value);
+				images [2].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value);
+				images [3].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value);
+			}
 
 		}
 
@@ -267,8 +274,13 @@ public class UIBehaviour : MonoBehaviour {
 	IEnumerator ShowLivesNumerator(float time, int lives) {
 
 		GameObject.Find ("livesOld").GetComponent<Text> ().text = lives + 1 + "";
-		GameObject.Find ("livesNew").GetComponent<Text> ().text = lives + "";
-		
+
+		if (lives == 0) {
+			GameObject.Find ("livesNew").GetComponent<Text> ().text = "Game Over!";
+		} else {
+			GameObject.Find ("livesNew").GetComponent<Text> ().text = lives + "";
+		}
+
 		GameObject.Find ("livesNew").GetComponent<RectTransform> ().localPosition = new Vector2 (0,Screen.height * 2f);
 		
 		GameObject.Find ("livesOld").GetComponent<Text> ().enabled = true;
@@ -296,8 +308,10 @@ public class UIBehaviour : MonoBehaviour {
 
 		yield return new WaitForSeconds (time *  2.0f / 3.0f);
 
-		GameObject.Find ("livesOld").GetComponent<Text> ().enabled = false;
-		GameObject.Find ("livesNew").GetComponent<Text> ().enabled = false;
+		if (lives != 0) {
+			GameObject.Find ("livesOld").GetComponent<Text> ().enabled = false;
+			GameObject.Find ("livesNew").GetComponent<Text> ().enabled = false;
+		}
 
 	}
 
