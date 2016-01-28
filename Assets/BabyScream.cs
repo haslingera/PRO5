@@ -38,7 +38,8 @@ public class BabyScream : MonoBehaviour {
 
 			if (babyscream) {
 				babyMeshRen.SetBlendShapeWeight (0, (Mathf.Sin (Time.time*20)*50)+50);
-				GetComponent<Player_Animation> ().blinkSpeed = 0.09f;
+				GetComponent<Player_Animation> ().blinkHeight = 0.05f;
+				GetComponent<Player_Animation> ().blinkSpeed = 10;
 			}
 		}
 	}
