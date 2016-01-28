@@ -21,6 +21,7 @@ public class Player_Animation : MonoBehaviour {
     bool blinken = false;
     int blinker = 45;
     public float blinkSpeed = 0.05f;
+    public bool präsi = false;
 	
 	// Use this for initialization
 	void Start () {
@@ -47,14 +48,17 @@ public class Player_Animation : MonoBehaviour {
 
 
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update() {
 
         int tmp = 0;
         int tmp2 = 0;
         float tempDB = 0;
-        stopAnimation();
+
+        if (!präsi) { 
+            stopAnimation();
+        }
 
         if (neutral)
         {
