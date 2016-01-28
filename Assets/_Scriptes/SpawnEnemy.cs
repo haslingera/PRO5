@@ -19,6 +19,8 @@ public class SpawnEnemy : MonoBehaviour {
 	public int limit = 300;
     bool levelDidStart = false;
     bool stop = false;
+    private float globalSpeed;
+    GameObject player;
 
     // Use this for initialization
     void Start () {
@@ -28,20 +30,23 @@ public class SpawnEnemy : MonoBehaviour {
 
 		count = 0;
 		spawnPoint = new Vector3[5];
-		spawnPoint [0] = new Vector3 (21.9f,3f,-18f);
+		spawnPoint [0] = new Vector3 (21.9f,3f, Random.Range(-18f, -25f));
 		spawnPoint [1] = new Vector3 (21.9f,3f,-24f);
-		spawnPoint [2] = new Vector3 (-25f,3f,-24f);
+		spawnPoint [2] = new Vector3 (-25f,3f, Random.Range(-15f, -25f));
 		spawnPoint [3] = new Vector3 (26f,3f,-7f);
-		spawnPoint [4] = new Vector3 (-14f,3f,-35f);
+		spawnPoint [4] = new Vector3 (Random.Range(-50f,-25f),3f,-35f);
 
 		position = spawnPoint [Random.Range(0,spawnPoint.Length)];
         startPosition = this.transform.position;
-		playerPosition = GameObject.Find("Player").transform.position;
+        player = GameObject.Find("Player");
+        playerPosition = player.transform.position;
         enem = GameObject.Find ("Enemy");
 
+        /*
 		cam = Camera.main;
 		planes = GeometryUtility.CalculateFrustumPlanes(cam);
 		objColl = this.GetComponent<Collider>();
+        */
 
         if (randomSpawn)
         {
@@ -73,19 +78,22 @@ public class SpawnEnemy : MonoBehaviour {
 
         if (levelDidStart)
         {
-            float tempDB = AudioAnalyzer.Instance.getMicLoudness();
             distance = Vector3.Distance(playerPosition, transform.position);
             rotateChar();
 
-            if (GeometryUtility.TestPlanesAABB(planes, objColl.bounds))
+            /*if (GeometryUtility.TestPlanesAABB(planes, objColl.bounds))
+            {
                 visible = true;
+                //Debug.Log("Visible");
+            }
             else {
                 visible = false;
                 count++;
-            }
+                Debug.Log(count);
+            }*/
 
-            //Debug.Log (tempDB);
             isWon();
+            this.speed += (globalSpeed - 1);
 
             if (!stop)
             {
@@ -95,15 +103,18 @@ public class SpawnEnemy : MonoBehaviour {
                     count = 0;
                 }
                 else {
-                    if (tempDB > -5)
+                    if (AudioAnalyzer.Instance.getMicLoudness() > 20)
                     {
                         moveAway();
                     }
                     else {
-                        this.speed += 0.1f;
                         this.transform.position = Vector3.MoveTowards(this.transform.position, playerPosition, speed * Time.deltaTime);
                     }
                 }
+            }
+            else
+            {
+                player.GetComponent<SkinnedMeshRenderer>().SetBlendShapeWeight(0,0.0f); 
             }
         }
 	}
@@ -163,9 +174,9 @@ public class SpawnEnemy : MonoBehaviour {
 
     void setSpeed()
     {
-        float temp = GameLogic.Instance.getLevelSpeed();
+        globalSpeed = GameLogic.Instance.getLevelSpeed();
 
-        this.speed = temp;
+        this.speed = 10;
     }
 }
 
