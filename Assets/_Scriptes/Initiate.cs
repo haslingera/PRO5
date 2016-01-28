@@ -15,7 +15,13 @@ public class Initiate : MonoBehaviour {
 			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-90f, 90f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
 		} else if (Application.loadedLevelName.Equals ("FlappyScream")) {
 			UIBehaviour.Instance.CameraStartRotation (new Vector3 (90f, 0f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
-		}else {
+		} else if (Application.loadedLevelName.Equals ("Tod-Szene-Spiel")) {
+			UIBehaviour.Instance.CameraStartRotation (new Vector3 (26.3f, -40f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
+		} else if (Application.loadedLevelName.Equals ("GlassDestroying")) {
+			UIBehaviour.Instance.CameraStartRotation (new Vector3 (90f, 16.27f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
+		} else if (Application.loadedLevelName.Equals ("Tennis")) {
+			UIBehaviour.Instance.CameraStartRotation (new Vector3 (14f, -307f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
+		} else {
 			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-90f, 90f, 0f)).TimeBand(true).CameraStartSize (0.01f).LevelStart ();
 		}
 
@@ -38,6 +44,12 @@ public class Initiate : MonoBehaviour {
 			UIBehaviour.Instance.CameraEndRotation (new Vector3 (-90f, 90f, 0f)).CameraStartSize (0.01f).LevelEnd ();
 		} else if (Application.loadedLevelName.Equals ("FlappyScream")) {
 			UIBehaviour.Instance.CameraEndRotation (new Vector3 (90f, 0f, 0f)).CameraStartSize (0.01f).LevelEnd ();
+		} else if (Application.loadedLevelName.Equals ("Tod-Szene-Spiel")) {
+			UIBehaviour.Instance.CameraEndRotation (new Vector3 (26.3f, -40f, 0f)).CameraStartSize (0.01f).LevelEnd ();
+		} else if (Application.loadedLevelName.Equals ("GlassDestroying")) {
+			UIBehaviour.Instance.CameraEndRotation (new Vector3 (90f, 16.27f, 0f)).CameraStartSize (0.01f).LevelEnd ();
+		} else if (Application.loadedLevelName.Equals ("Tennis")) {
+			UIBehaviour.Instance.CameraEndRotation (new Vector3 (90f, 16.27f, 0f)).CameraStartSize (0.01f).LevelEnd ();
 		} else {
 			UIBehaviour.Instance.CameraEndRotation (new Vector3 (0f, 0f, 0f)).CameraEndSize (0.01f).LevelEnd ();
 		}

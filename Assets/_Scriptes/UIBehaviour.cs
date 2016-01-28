@@ -104,7 +104,7 @@ public class UIBehaviour : MonoBehaviour {
 			backgroundColor = zoomToObjectColor;
 			zoomToObjectColor = tempColor;
 			
-			Camera.main.GetComponent<Camera> ().backgroundColor = backgroundColor;
+			GameObject.Find("BackgroundCamera").GetComponent<Camera> ().backgroundColor = backgroundColor;
 
 			if (zoomToObject != null) {
 				zoomToObject.GetComponent<Renderer> ().materials[0].SetColor ("_Color", zoomToObjectColor);
