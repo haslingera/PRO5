@@ -59,6 +59,6 @@ public class MenuScript : MonoBehaviour {
 	}
 
 	public void onBabyScare() {
-		GameLogic.Instance.startGameWithLevel ("BabyScare");
+		GameLogic.Instance.startGameWithLevel ("BabyScream");
 	}
 }
