@@ -337,7 +337,7 @@ public class GameLogic : MonoBehaviour {
 		this.isSucceeded = false;
 		this.didFreezeLevelTime = false;
 
-		this.numberOfLives = 1;
+		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = defaultBPM;
 		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats;
@@ -410,7 +410,7 @@ public class GameLogic : MonoBehaviour {
 		this.isSucceeded = false;
 		this.didFreezeLevelTime = false;
 
-		this.numberOfLives = 1;
+		this.numberOfLives = 3;
 		this.numberOfLevelsCompleted = 0;
 		this.currentBPM = 80;
 		this.currentLevelNumberOfBeats = defaultLevelNumberOfBeats;

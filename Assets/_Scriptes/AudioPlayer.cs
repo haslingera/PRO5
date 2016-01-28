@@ -164,14 +164,17 @@ public class AudioPlayer : MonoBehaviour {
 	}
 
 	public void playFailSound() {
+		this.soundEffectsAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
 		this.soundEffectsAudioSource.PlayOneShot (this.failClip);
 	}
 
 	public void playSucceedSound() {
+		this.soundEffectsAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
 		this.soundEffectsAudioSource.PlayOneShot (this.succeedClip);
 	}
 
 	public void playGameOverSound() {
+		this.soundEffectsAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
 		this.soundEffectsAudioSource.PlayOneShot (this.gameoverClip);
 	}
 
