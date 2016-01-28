@@ -148,17 +148,17 @@ public class GameLogic : MonoBehaviour {
 
 						// TODO: maybe should not be a fixed time later on, but rather a callback from the animation class
 						this.dateTimeLoadNextLevel = DateTime.Now;
-						this.delayLoadNextLevel = (60.0f / this.currentBPM) * 4.5f;
+						this.delayLoadNextLevel = (60.0f / this.currentBPM) * 1.0f + ((60.0f / this.getNextLevelBPM()) * 3.5f);
 						//Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 4.5f); 
 
 						// send show instructions after 2 more beats
 						this.dateTimeShowLevelInstructions = DateTime.Now;
-						this.delayShowLevelInstructions = (60.0f / this.currentBPM) * 4.5f;
+						this.delayShowLevelInstructions = (60.0f / this.currentBPM) * 1.0f + ((60.0f / this.getNextLevelBPM()) * 3.5f);
 						//Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 4.5f);
 
 						// send hide instructions after 6 more beats
 						this.dateTimeHideLevelInstructions = DateTime.Now;
-						this.delayHideLevelInstructions = (60.0f / this.currentBPM) * 8.5f;
+						this.delayHideLevelInstructions = (60.0f / this.currentBPM) * 1.0f + ((60.0f / this.getNextLevelBPM()) * 7.5f);
 						//Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 8.5f);
 
 					} else {
@@ -506,6 +506,12 @@ public class GameLogic : MonoBehaviour {
 		// get the next level to load
 		int randomNumber = UnityEngine.Random.Range(0, this.levels.Length * 5);
 		this.nextLevel = this.levels[randomNumber % this.levels.Length];
+	}
+
+	private int getNextLevelBPM() {
+		int plusBeats = ((this.numberOfLevelsCompleted + 1) / 2) * 16;
+		int nextLevelBPM = Mathf.Min(defaultBPM + plusBeats, defaultBPM * 2);
+		return nextLevelBPM;
 	}
 
 	private void tickTockStarted() {
