@@ -48,7 +48,7 @@ public class Player_Animation : MonoBehaviour {
 
         if (withMouthBlob)
         {
-
+            skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
         }
 
     }
