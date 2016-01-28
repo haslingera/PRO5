@@ -110,21 +110,22 @@ public class CarSpawn : MonoBehaviour {
 
 	void OnCollisionEnter(Collision col)
 	{
-		if (col.gameObject.name == "Player")
+		if (col.gameObject.name == "Player" && !stop)
 		{
             player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
             StartCoroutine(player.GetComponent<Player_Road_Scene>().resetPlayer());
             stopMovement();
-            Debug.Log("Stop");
+            player.GetComponent<Player_Road_Scene>().setStop(true);
+            //Debug.Log("Stop");
 		}
 	}
 
 	void levelSpeed(){
 
-		//Debug.Log (worldSpeed);
 		float temp = worldSpeed - 1;
+        Debug.Log (worldSpeed);
 
-		this.speed = Random.Range (Mathf.Max(2-(temp*1.5f), 1), 6-(temp * 2));
+        this.speed = Random.Range (Mathf.Max(2-(temp*1.5f), 1), 6-(temp * 2));
 
 	}
 
