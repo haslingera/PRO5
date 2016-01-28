@@ -299,7 +299,7 @@ public class GameLogic : MonoBehaviour {
 
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
-	private string[] levels = new string[] {"TreeSawing", "Tennis", "FlappyScream", "Road_Scene", "Plattformen-Szene", "Tod-Szene-Spiel", "JumpAndDuck", "GlassDestroying"};
+	private string[] levels = new string[] {"TreeSawing", "Tennis", "FlappyScream", "Road_Scene", "Plattformen-Szene", "Tod-Szene-Spiel", "JumpAndDuck", "GlassDestroying", "PedestrianScare", "BabyScream"};
 	private string nextLevel;
 
 	private bool showMainMenu = false;
@@ -553,16 +553,22 @@ public class GameLogic : MonoBehaviour {
 	public void didFinishLevel() {
 		if (this.isInTickTockMode) {
 			Debug.Log ("isSucceeded()");
-			this.isSucceeded = true;
-			AudioPlayer.Instance.playSucceedSound ();
+
+			if (this.isSucceeded == false) {
+				this.isSucceeded = true;
+				AudioPlayer.Instance.playSucceedSound ();
+			}
 		}
 	}
 
 	public void didFailLevel() {
 		if (this.isInTickTockMode) {
 			Debug.Log ("isFailed()");
-			this.isFailed = true;
-			AudioPlayer.Instance.playFailSound ();
+
+			if (this.isFailed == false) {
+				this.isFailed = true;
+				AudioPlayer.Instance.playFailSound ();
+			}
 		}
 	}
 

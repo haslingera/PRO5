@@ -53,4 +53,12 @@ public class MenuScript : MonoBehaviour {
 	public void onGlassDestroyer() {
 		GameLogic.Instance.startGameWithLevel ("GlassDestroying");
 	}
+
+	public void onPedestrianScare() {
+		GameLogic.Instance.startGameWithLevel ("PedestrianScare");
+	}
+
+	public void onBabyScare() {
+		GameLogic.Instance.startGameWithLevel ("BabyScare");
+	}
 }
