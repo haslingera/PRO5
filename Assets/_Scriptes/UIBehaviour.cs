@@ -115,7 +115,7 @@ public class UIBehaviour : MonoBehaviour {
 			Camera.main.GetComponent<Camera> ().backgroundColor = backgroundColor;
 
 			if (zoomToObject != null) {
-				zoomToObject.GetComponent<Renderer> ().material.SetColor ("_Color", zoomToObjectColor);
+				zoomToObject.GetComponent<Renderer> ().materials[0].SetColor ("_Color", zoomToObjectColor);
 			}
 
 			//Set the camera upwards and to the original position  
