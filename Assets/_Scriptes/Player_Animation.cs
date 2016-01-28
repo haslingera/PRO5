@@ -155,7 +155,7 @@ public class Player_Animation : MonoBehaviour {
             blinker = (int)Random.Range(1, blinkSpeed);
         }
 
-        if (blinker == 45)
+        if (blinker == 2)
         {
 
             if (counter < 20)

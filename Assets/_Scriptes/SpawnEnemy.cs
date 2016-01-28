@@ -30,9 +30,9 @@ public class SpawnEnemy : MonoBehaviour {
 		spawnPoint = new Vector3[5];
 		spawnPoint [0] = new Vector3 (21.9f,3f,-18f);
 		spawnPoint [1] = new Vector3 (21.9f,3f,-24f);
-		spawnPoint [2] = new Vector3 (-15f,3f,-24f);
+		spawnPoint [2] = new Vector3 (-25f,3f,-24f);
 		spawnPoint [3] = new Vector3 (26f,3f,-7f);
-		spawnPoint [4] = new Vector3 (-14f,3f,-29f);
+		spawnPoint [4] = new Vector3 (-14f,3f,-35f);
 
 		position = spawnPoint [Random.Range(0,spawnPoint.Length)];
         startPosition = this.transform.position;

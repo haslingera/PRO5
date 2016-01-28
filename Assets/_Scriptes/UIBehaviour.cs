@@ -104,7 +104,7 @@ public class UIBehaviour : MonoBehaviour {
 			backgroundColor = zoomToObjectColor;
 			zoomToObjectColor = tempColor;
 			
-			Camera.main.GetComponent<Camera> ().backgroundColor = backgroundColor;
+			GameObject.Find("BackgroundCamera").GetComponent<Camera> ().backgroundColor = backgroundColor;
 
 			if (zoomToObject != null) {
 				zoomToObject.GetComponent<Renderer> ().materials[0].SetColor ("_Color", zoomToObjectColor);
@@ -269,7 +269,7 @@ public class UIBehaviour : MonoBehaviour {
 		GameObject.Find ("livesOld").GetComponent<Text> ().text = lives + 1 + "";
 		GameObject.Find ("livesNew").GetComponent<Text> ().text = lives + "";
 		
-		GameObject.Find ("livesNew").GetComponent<RectTransform> ().localPosition = new Vector2 (0,Screen.height * 1.5f);
+		GameObject.Find ("livesNew").GetComponent<RectTransform> ().localPosition = new Vector2 (0,Screen.height * 2f);
 		
 		GameObject.Find ("livesOld").GetComponent<Text> ().enabled = true;
 		GameObject.Find ("livesNew").GetComponent<Text> ().enabled = true;
@@ -288,7 +288,7 @@ public class UIBehaviour : MonoBehaviour {
 
 		iTween.ValueTo(GameObject.Find ("livesOld").gameObject, iTween.Hash(
 			"from", GameObject.Find ("livesOld").GetComponent<RectTransform> ().localPosition.y,
-			"to", -Screen.height  * 1.5f,
+			"to", -Screen.height * 2f,
 			"time", 0.4f,
 			"easetype", iTween.EaseType.easeInOutBack,
 			"onupdatetarget", this.gameObject, 

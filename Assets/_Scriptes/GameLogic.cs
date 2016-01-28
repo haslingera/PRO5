@@ -72,6 +72,13 @@ public class GameLogic : MonoBehaviour {
 			this.playLoseSound ();
 		}
 
+		// play game over sound if timer is ready
+		TimeSpan timeSpanPlayGameOver = DateTime.Now - this.dateTimePlayGameOver;
+		if (this.delayPlayGameOver > 0.0f && timeSpanPlayGameOver.TotalSeconds > this.delayPlayGameOver) {
+			this.delayPlayGameOver = -10.0f;
+			AudioPlayer.Instance.playGameOverSound ();
+		}
+
 
 		// if level is started, decrease level time
 		if (this.didLoadLevel && !this.isGameOver) {
@@ -160,16 +167,26 @@ public class GameLogic : MonoBehaviour {
 						this.numberOfLives--;
 
 						// check if game over
-						if (this.numberOfLives < 0) {
-							this.isGameOver = true;
+						if (this.numberOfLives <= 0) {
 
-							// show lives
-							if (this.OnShowLives != null) {
-								this.dateTimeShowLives = DateTime.Now;
-								this.delayShowLives = (60.0f / this.currentBPM) * 1.0f;
-								//Invoke ("sendOnShowLivesEvent", (60.0f / this.currentBPM) * 1.0f);
-							}
-								
+							if (this.isGameOver == false) {
+								this.isGameOver = true;
+
+								// show lives
+								if (this.OnShowLives != null) {
+									this.dateTimeShowLives = DateTime.Now;
+									this.delayShowLives = (60.0f / this.currentBPM) * 1.0f;
+									//Invoke ("sendOnShowLivesEvent", (60.0f / this.currentBPM) * 1.0f);
+								}
+
+								// after 1 beat play the lose sound
+								//this.dateTimePlayLose = DateTime.Now;
+								//this.delayPlayLose = (60.0f / this.currentBPM) * 1.0f;
+
+								// after 1 beat play the game over sound
+								this.dateTimePlayGameOver = DateTime.Now;
+								this.delayPlayGameOver = (60.0f / this.currentBPM) * 1.0f;
+							}	
 							
 							return;
 						} 
@@ -253,6 +270,7 @@ public class GameLogic : MonoBehaviour {
 
 
 
+
 	// timing data
 
 	private DateTime dateTimeShowLevelInstructions;
@@ -272,6 +290,9 @@ public class GameLogic : MonoBehaviour {
 
 	private DateTime dateTimePlayLose;
 	private float delayPlayLose;
+
+	private DateTime dateTimePlayGameOver;
+	private float delayPlayGameOver;
 
 
 
@@ -299,7 +320,7 @@ public class GameLogic : MonoBehaviour {
 
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
-	private string[] levels = new string[] {"TreeSawing", "Tennis", "FlappyScream", "Road_Scene", "Plattformen-Szene", "Tod-Szene-Spiel", "JumpAndDuck", "GlassDestroying", "PedestrianScare", "BabyScream"};
+	private string[] levels = new string[] {"TreeSawing", "Tennis", "FlappyScream", "Road_Scene", "Plattformen-Szene", "Tod-Szene-Spiel", "JumpAndDuck", "GlassDestroying"};
 	private string nextLevel;
 
 	private bool showMainMenu = false;
@@ -533,6 +554,9 @@ public class GameLogic : MonoBehaviour {
 
 		this.dateTimePlayLose = DateTime.Now;
 		this.delayPlayLose = -10.0f;
+
+		this.dateTimePlayGameOver = DateTime.Now;
+		this.delayPlayGameOver = -10.0f;
 	}
 
 	// ------------------------
