@@ -75,11 +75,6 @@ public class UIBehaviour : MonoBehaviour {
 
 	public void LevelStart() {
 
-		if (GameLogic.Instance.getShowMainMenu()) {
-		//if (true) {
-			StartScreen();
-		} else {
-
 			//Set Camera And Zoom To Object
 			if (GameObject.FindGameObjectsWithTag ("ZoomTo").Length != 0) {
 				zoomToObject = GameObject.FindGameObjectsWithTag ("ZoomTo") [0];
@@ -110,12 +105,16 @@ public class UIBehaviour : MonoBehaviour {
 				zoomToObject.GetComponent<Renderer> ().materials[0].SetColor ("_Color", zoomToObjectColor);
 			}
 
+		if (GameLogic.Instance.getShowMainMenu ()) {
+			//if (true) {
+			StartScreen ();
+		} else {
 			//Set the camera upwards and to the original position  
 			if (startRotSet) { Camera.main.transform.eulerAngles = cameraStartRotation; } else { Camera.main.transform.eulerAngles = originalCameraRotation; };
 			if (startPosSet) { Camera.main.transform.position = cameraStartPosition; } else { Camera.main.transform.position = originalCameraPosition; };
 			if (startSizeSet) { ChangeOrthographicCameraSize (cameraStartSize); } else { ChangeOrthographicCameraSize (originalCameraSize); };
-				
-				//Start the camera entering process
+			
+			//Start the camera entering process
 			iTween.MoveTo(Camera.main.gameObject, iTween.Hash("x", originalCameraPosition.x, "y", originalCameraPosition.y, "z", originalCameraPosition.z, "easetype",iTween.EaseType.easeInOutSine, "time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f));
 			iTween.RotateTo(Camera.main.gameObject,iTween.Hash("x", originalCameraRotation.x, "y", originalCameraRotation.y, "z", originalCameraRotation.z, "easetype",iTween.EaseType.easeInOutSine,"time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f));
 			iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from",Camera.main.orthographicSize, "to",originalCameraSize, "time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeCameraSize"));
@@ -126,6 +125,7 @@ public class UIBehaviour : MonoBehaviour {
 			
 			endSizeSet = false;
 			endRotSet = false;
+			
 		}
 		
 	}
@@ -249,7 +249,7 @@ public class UIBehaviour : MonoBehaviour {
 		float differenceValueB = zoomToObjectColor.b - backgroundColor.b;
 
 		Color differenceColor = new Color (backgroundColor.r + differenceValueR * value, backgroundColor.g + differenceValueG * value, backgroundColor.b + differenceValueB * value);
-		Camera.main.GetComponent<Camera> ().backgroundColor = differenceColor;
+		GameObject.Find("BackgroundCamera").GetComponent<Camera> ().backgroundColor = differenceColor;
 
 	}
 
@@ -329,6 +329,10 @@ public class UIBehaviour : MonoBehaviour {
 		GameObject.Find ("StartButton").GetComponent<Image> ().enabled = false;
 		GameObject.Find ("Logo").GetComponent<Image> ().enabled = false;
 
+		if (timeBand) {
+			StartCoroutine (StartTimeBand (cameraStartSpeed / GameLogic.Instance.getLevelSpeed() / 6.0f, cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f));
+		}
+		
 		GameLogic.Instance.startNewSinglePlayerGame ();
 	}
 
