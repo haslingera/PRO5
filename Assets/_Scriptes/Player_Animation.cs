@@ -52,6 +52,9 @@ public class Player_Animation : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+		if (!talkDirtyToMe) {
+			skinnedMeshRenderer.SetBlendShapeWeight (0, 0.0f);
+		}
 
         int tmp = 0;
         int tmp2 = 0;

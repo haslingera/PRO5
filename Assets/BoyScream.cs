@@ -27,7 +27,7 @@ public class BoyScream : MonoBehaviour {
 	void Update() {
 		if (levelDidStart) {
 			Debug.Log (AudioAnalyzer.Instance.getPitch ());
-			if (AudioAnalyzer.Instance.getPitch () > 200) {
+			if (AudioAnalyzer.Instance.getPitch () < 200 && AudioAnalyzer.Instance.getPitch() > 0) {
 				GetComponent<Player_Animation> ().talkDirtyToMe = true;
 			} else {
 				GetComponent<Player_Animation> ().talkDirtyToMe = false;
