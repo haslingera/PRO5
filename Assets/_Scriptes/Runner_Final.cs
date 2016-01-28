@@ -61,13 +61,13 @@ public class Runner_Final : MonoBehaviour {
                     if (frequ < 350f && frequ > 0)
                     {
                         duck();
-                        Debug.Log("duck");
+                        //Debug.Log("duck");
                     }
 
                     if (frequ > 450f)
                     {
                         jump();
-                        Debug.Log("jump");
+                        //Debug.Log("jump");
                     }
 
                     if (Time.time - startTimer > 1.5f)

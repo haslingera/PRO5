@@ -18,7 +18,6 @@ public class Player_Animation : MonoBehaviour {
 	int blink;
     public bool neutral = false;
     public bool highRes = false;
-    public bool withMouthBlob = false;
     bool blinken = false;
     int blinker = 45;
     public float blinkSpeed = 0.05f;
@@ -46,10 +45,6 @@ public class Player_Animation : MonoBehaviour {
 
         }
 
-        if (withMouthBlob)
-        {
-            skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
-        }
 
     }
 	
