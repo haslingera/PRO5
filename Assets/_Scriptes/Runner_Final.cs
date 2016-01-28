@@ -39,18 +39,17 @@ public class Runner_Final : MonoBehaviour {
 
         if (this.levelDidStart)
         {
+            if (onStart)
+            {
+                this.transform.position = Vector3.MoveTowards(this.transform.position, start, 0.3f);
+                if (start.x == this.transform.position.x)
+                {
+                    onStart = false;
+                }
+            }
 
             if (!stop)
             {
-                if (onStart )
-                {
-                    this.transform.position = Vector3.MoveTowards(this.transform.position, start, 0.1f);
-                    if (start.x == this.transform.position.x)
-                    {
-                        onStart = false;
-                    }
-                }
-
                 float frequ = AudioAnalyzer.Instance.getPitch();
 
                 if (!onStart) {
@@ -61,13 +60,13 @@ public class Runner_Final : MonoBehaviour {
                     if (frequ < 350f && frequ > 0)
                     {
                         duck();
-                        //Debug.Log("duck");
+                        Debug.Log("duck");
                     }
 
                     if (frequ > 450f)
                     {
                         jump();
-                        //Debug.Log("jump");
+                        Debug.Log("jump");
                     }
 
                     if (Time.time - startTimer > 1.5f)
