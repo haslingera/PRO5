@@ -320,7 +320,7 @@ public class GameLogic : MonoBehaviour {
 
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
-	private string[] levels = new string[] {"TreeSawing", "Tennis", "FlappyScream", "Road_Scene", "Plattformen-Szene", "Tod-Szene-Spiel", "JumpAndDuck", "GlassDestroying", "PedestrianScare", "BabyScream"};
+	private string[] levels = new string[] {"TreeSawing", "Tennis", "FlappyScream", "Road_Scene", "Plattformen-Szene", "Tod-Szene-Spiel", "JumpAndDuck", "GlassDestroying"};
 	private string nextLevel;
 
 	private bool showMainMenu = false;
