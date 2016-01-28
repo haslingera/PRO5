@@ -17,7 +17,7 @@ public class Runner_Final : MonoBehaviour {
 	void Start () {
 		rigbi = GetComponent<Rigidbody> ();
 		scale = this.transform.localScale;
-		start = new Vector3 (-44.51059f, -0.03087401f,-3.86591f);
+		start = new Vector3 (-44.51059f, 0.274f, -3.86591f);
 		this.levelDidStart = false; 
 	}
 
@@ -42,7 +42,7 @@ public class Runner_Final : MonoBehaviour {
 
             if (!stop)
             {
-                if (onStart)
+                if (onStart )
                 {
                     this.transform.position = Vector3.MoveTowards(this.transform.position, start, 0.1f);
                     if (start.x == this.transform.position.x)
@@ -51,25 +51,35 @@ public class Runner_Final : MonoBehaviour {
                     }
                 }
 
-                if (AudioAnalyzer.Instance.getPitch() < 300f && AudioAnalyzer.Instance.getPitch() > 0)
-                {
-                    duck();
-                }
+                float frequ = AudioAnalyzer.Instance.getPitch();
 
-                if (AudioAnalyzer.Instance.getPitch() > 500f)
-                {
-                    jump();
-                }
+                if (!onStart) {
+                    if(frequ == -1)
+                    {
+                        //Do nothing
+                    }
+                    if (frequ < 350f && frequ > 0)
+                    {
+                        duck();
+                        //Debug.Log("duck");
+                    }
 
-                if (Time.time - startTimer > 1f)
-                {
-                    already = false;
-                    transform.localScale = scale;
-                }
+                    if (frequ > 450f)
+                    {
+                        jump();
+                        //Debug.Log("jump");
+                    }
 
-                if (!already)
-                {
-                    startTimer = Time.time;
+                    if (Time.time - startTimer > 1.5f)
+                    {
+                        already = false;
+                        transform.localScale = scale;
+                    }
+
+                    if (!already)
+                    {
+                        startTimer = Time.time;
+                    }
                 }
                 /*if (!onStart && (int)start.x != (int)this.transform.position.x) {
 				    StartCoroutine (endGame ());
