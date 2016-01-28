@@ -69,7 +69,7 @@ public class Player_Animation : MonoBehaviour {
         {
             Blink2();
         }
-        if (!stop)
+        if (stop)
         {
             if (talkDirtyToMe)
             {
