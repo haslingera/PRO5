@@ -79,6 +79,13 @@ public class GameLogic : MonoBehaviour {
 			AudioPlayer.Instance.playGameOverSound ();
 		}
 
+		// play menu sound if timer is ready
+		TimeSpan timeSpanPlayMenuSound = DateTime.Now - this.dateTimePlayMenuSound;
+		if (this.delayMenuSound > 0.0f && timeSpanPlayMenuSound.TotalSeconds > this.delayMenuSound) {
+			this.delayMenuSound = -10.0f;
+			AudioPlayer.Instance.playMenuSound ();
+		}
+
 
 		// if level is started, decrease level time
 		if (this.didLoadLevel && !this.isGameOver) {
@@ -186,6 +193,10 @@ public class GameLogic : MonoBehaviour {
 								// after 1 beat play the game over sound
 								this.dateTimePlayGameOver = DateTime.Now;
 								this.delayPlayGameOver = (60.0f / this.currentBPM) * 1.0f;
+
+								// play menu sound after long time
+								this.dateTimePlayMenuSound = DateTime.Now;
+								this.delayMenuSound = (60.0f / this.currentBPM) * 12.0f;
 							}	
 							
 							return;
@@ -293,6 +304,9 @@ public class GameLogic : MonoBehaviour {
 
 	private DateTime dateTimePlayGameOver;
 	private float delayPlayGameOver;
+
+	private DateTime dateTimePlayMenuSound;
+	private float delayMenuSound; 
 
 
 
@@ -471,6 +485,7 @@ public class GameLogic : MonoBehaviour {
 	}
 
 	public void loadFirstLevelOnHold() {
+		AudioPlayer.Instance.playMenuSound ();
 		this.showMainMenu = true;
 		this.isGameOver = true;
 		this.didLoadLevel = false;
@@ -563,6 +578,9 @@ public class GameLogic : MonoBehaviour {
 
 		this.dateTimePlayGameOver = DateTime.Now;
 		this.delayPlayGameOver = -10.0f;
+
+		this.dateTimePlayMenuSound = DateTime.Now;
+		this.delayMenuSound = -10.0f;
 	}
 
 	// ------------------------

@@ -21,9 +21,11 @@ public class AudioPlayer : MonoBehaviour {
 	private AudioSource melodyAudioSource;
 	private AudioSource loseAudioSource;
 	private AudioSource soundEffectsAudioSource;
+	private AudioSource menuAudioSource;
 	private AudioClip succeedClip;
 	private AudioClip failClip;
 	private AudioClip gameoverClip;
+	private AudioClip menuClip;
 	private float timeSinceLastPlay; // in seconds
 	private float timeOfLastPlayedClip; // in seconds
 
@@ -59,6 +61,7 @@ public class AudioPlayer : MonoBehaviour {
 		this.melodyAudioSource = this.gameObject.AddComponent<AudioSource> ();
 		this.loseAudioSource = this.gameObject.AddComponent<AudioSource> ();
 		this.soundEffectsAudioSource = this.gameObject.AddComponent<AudioSource> ();
+		this.menuAudioSource = this.gameObject.AddComponent<AudioSource> ();
 
 		AudioClip tickTockClip = Resources.Load ("TickTock") as AudioClip;
 		AudioClip tickTockEndClip = Resources.Load ("TickTockEnd") as AudioClip;
@@ -67,11 +70,13 @@ public class AudioPlayer : MonoBehaviour {
 		this.succeedClip = Resources.Load ("succeed_v02") as AudioClip;
 		this.failClip = Resources.Load ("fail_v02") as AudioClip; 
 		this.gameoverClip = Resources.Load ("gameover_v02") as AudioClip;
+		this.menuClip = Resources.Load ("menusound") as AudioClip;
 
 		this.tickTockAudioSource.clip = tickTockClip;
 		this.tickTockEndAudioSource.clip = tickTockEndClip;
 		this.melodyAudioSource.clip = melodyClip;
 		this.loseAudioSource.clip = loseClip;
+		this.menuAudioSource.clip = this.menuClip;
 
 		audioQueue = new Queue<AudioClip>();
 
@@ -83,6 +88,8 @@ public class AudioPlayer : MonoBehaviour {
 
 		this.dateTimePlayTickTockEnd = DateTime.Now;
 		this.delayPlayTickTockEnd = -10.0f;
+
+		this.menuAudioSource.loop = true;
 	}
 
 	protected void Update() {
@@ -117,6 +124,8 @@ public class AudioPlayer : MonoBehaviour {
 	public void Init() { /* do nothing */ }
 
 	public void startIntroAudio(int bpm) {
+		this.stopMenuSound ();
+		
 		this.melodyAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
 		this.melodyAudioSource.Play ();
 		this.tickTockEndAudioSource.loop = false;
@@ -176,6 +185,16 @@ public class AudioPlayer : MonoBehaviour {
 	public void playGameOverSound() {
 		this.soundEffectsAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
 		this.soundEffectsAudioSource.PlayOneShot (this.gameoverClip);
+	}
+
+	public void playMenuSound() {
+		if (this.menuAudioSource.isPlaying == false) {
+			this.menuAudioSource.Play ();
+		}
+	}
+
+	public void stopMenuSound() {
+		this.menuAudioSource.Stop ();
 	}
 
 	private void sendTickTockStartedEvent() {
