@@ -26,8 +26,8 @@ public class Plattform_NEW : MonoBehaviour
         Player = GameObject.Find("Player");
         AudioAnalyzer.Instance.Init();
 
-        platforms = new GameObject[10];
-        moveRandom = new Vector3[10];
+        platforms = new GameObject[6];
+        moveRandom = new Vector3[6];
 
         for (int i = 0; i < platforms.Length; i++)
         {
@@ -37,7 +37,7 @@ public class Plattform_NEW : MonoBehaviour
 
         for (int x = 1; x < platforms.Length-1; x++)
         {
-            Vector3 temp = new Vector3(platforms[x].transform.position.x, Random.Range(-7F, 8F), platforms[x].transform.position.z);
+            Vector3 temp = new Vector3(platforms[x].transform.position.x, Random.Range(-5F, 8F), platforms[x].transform.position.z);
             platforms[x].transform.position = temp;
         }
 
@@ -83,7 +83,7 @@ public class Plattform_NEW : MonoBehaviour
                     {
                         moveRandomTower(platforms[i], i);
                     }
-                    for (int x = 8; x > counter+1; x--)
+                    for (int x = 4; x > counter+1; x--)
                     {
                         moveRandomTower(platforms[x], x);
                     }
@@ -110,9 +110,9 @@ public class Plattform_NEW : MonoBehaviour
     void moveTower()
     {
 
-        if (counter == 9)
+        if (counter == 5)
         {
-            if (platforms[counter].transform.position.y > 1.60 && platforms[counter].transform.position.y < 1.70 && counter == 9)
+            if (platforms[counter].transform.position.y > 1.55 && platforms[counter].transform.position.y < 1.75)
             {
                 endGame();
             }
@@ -121,6 +121,7 @@ public class Plattform_NEW : MonoBehaviour
                     if ((int)DB > 350)
                     {
                         moveUp();
+                        Debug.Log("UP");
                     }
                     else if ((int)DB == -1)
                     {
@@ -130,7 +131,8 @@ public class Plattform_NEW : MonoBehaviour
                     else if ((int)DB < 350)
                     {
                         moveDown();
-                    }
+                        Debug.Log("Down");
+                }
             }
         }
         else {
@@ -151,7 +153,7 @@ public class Plattform_NEW : MonoBehaviour
     
     private void moveDown()
     {
-        if (platforms[counter].transform.position.y > -6)
+        if (platforms[counter].transform.position.y > -5)
         {
             Vector3 temp = new Vector3(platforms[counter].transform.position.x, 
                                        platforms[counter].transform.position.y - speed, platforms[counter].transform.position.z);
@@ -173,7 +175,7 @@ public class Plattform_NEW : MonoBehaviour
         if (isThere())
         {
             onTheMove = false;
-            if(counter < 9)
+            if(counter < 5)
                 counter++;
         }
 
@@ -229,10 +231,10 @@ public class Plattform_NEW : MonoBehaviour
     private void endGame()
     {
         //Vector3 tempEnd = GameObject.Find("End").transform.position;
-        Vector3 tempNewPos = new Vector3(8.5f, 9.78f, 9.78f);
+        Vector3 tempNewPos = new Vector3(-2.7f, 9.78f, 9.78f);
         iTween.MoveTo(Player, tempNewPos, 2);
 
-        if(Player.transform.position.x >= 7.5)
+        if(Player.transform.position.x >= -4.5)
         {
             GameLogic.Instance.didFinishLevel();
         }
