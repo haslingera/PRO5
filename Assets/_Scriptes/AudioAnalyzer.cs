@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.Audio;
 using System.Threading;
-
+using Pitch;
 
 // Singleton Code from: http://clearcutgames.net/home/?p=437
 // Analyze Code from: http://answers.unity3d.com/questions/157940/getoutputdata-and-getspectrumdata-they-represent-t.html
@@ -36,7 +36,8 @@ public class AudioAnalyzer : MonoBehaviour {
 	private YIN yin;
 	private Thread yinThread;
 
-
+	private PitchTracker pitchTracker;
+	private float latestPitch;
 
 	// Static singleton property
 	public static AudioAnalyzer Instance {
@@ -64,6 +65,10 @@ public class AudioAnalyzer : MonoBehaviour {
 		this.yinThread = new Thread (new ThreadStart (yin.startYIN));
 		this.yinThread.IsBackground = true;
 		this.yinThread.Start ();
+
+		this.pitchTracker = new PitchTracker();
+		this.pitchTracker.SampleRate = 44100.0;
+		this.latestPitch = -1.0f;
 	}
 
 //mic initialization
@@ -108,7 +113,7 @@ public class AudioAnalyzer : MonoBehaviour {
 		// pass the value to a static var so we can access it from anywhere
 		MicLoudness = LevelMax ();
 	
-		if (!this.yinThread.IsAlive) {
+		//if (!this.yinThread.IsAlive) {
 			// read mic data
 			float[] waveData = new float[this.yinSampleWindow];
 			int micPosition = Microphone.GetPosition (null) - (this.yinSampleWindow + 1); // null means the first microphone
@@ -116,12 +121,26 @@ public class AudioAnalyzer : MonoBehaviour {
 				return;
 			_clipRecord.GetData (waveData, micPosition);
 		
+			pitchTracker.ProcessBuffer (waveData, this.yinSampleWindow);
+			PitchTracker.PitchRecord record = pitchTracker.CurrentPitchRecord;
+		this.latestPitch = record.Pitch;
+
+		if (this.latestPitch < 1.0f)
+			this.latestPitch = -1.0f;
+		Debug.Log ("latestPitch: " + latestPitch);
+			//Debug.Log ("pitch: " + record.Pitch);
+
 			// restart thread
-			this.yin.setupSamples (waveData);
+			/*this.yin.setupSamples (waveData);
 			this.yinThread = new Thread (new ThreadStart (yin.startYIN));
 			this.yinThread.IsBackground = true;
-			this.yinThread.Start ();
-		} 
+			this.yinThread.Start ();*/
+		//} 
+
+
+
+
+		//pitchTracker.ProcessBuffer(audioBuffer);
 	}
 
 // start mic when scene starts
@@ -163,7 +182,8 @@ public class AudioAnalyzer : MonoBehaviour {
 	}
 
 	public float getPitch() {
-		return this.yin.getPitch ();
+		return this.latestPitch;
+		//return this.yin.getPitch ();
 	}
 
 	public float getMicLoudness() {
