@@ -164,6 +164,8 @@ public class AudioPlayer : MonoBehaviour {
 		this.tickTockEndAudioSource.pitch = GameLogic.Instance.getLevelSpeed ();
 		this.tickTockEndAudioSource.Play();
 		this.tickTockEndAudioSource.loop = false;
+		this.stopLoopingTickTock ();
+		this.tickTockAudioSource.Stop ();
 	}
 
 	public void playLoseSound() {
