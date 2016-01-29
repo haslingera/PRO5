@@ -94,7 +94,6 @@ public class SpawnEnemy : MonoBehaviour {
             }*/
 
             isWon();
-            Debug.Log(speed);
 
             if (!stop)
             {
