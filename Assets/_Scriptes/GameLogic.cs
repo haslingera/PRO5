@@ -649,10 +649,15 @@ public class GameLogic : MonoBehaviour {
 	}
 		
 	public float getRemainingLevelTime() {
+		// get time for one beat
+		float oneBeat = (60.0f / this.currentBPM);
+
 		if (this.didFreezeLevelTime) {
-			return this.frozenLevelTime;
+			return Mathf.Max(this.frozenLevelTime - oneBeat, 0);
+
 		} else {
-			return this.actualLevelTime;
+			return Mathf.Max(this.actualLevelTime - oneBeat, 0);
+
 		}
 	}
 
