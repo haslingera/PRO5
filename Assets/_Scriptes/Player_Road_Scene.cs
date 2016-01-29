@@ -50,8 +50,9 @@ public class Player_Road_Scene : MonoBehaviour {
                 {
                     if (db > 15f)
                     {
-                        newPos.x += (0.2f * this.levelSpeed);
-                        this.transform.position = newPos;
+                        newPos.x += (0.2f);
+                        //this.transform.position = newPos;
+                        transform.position = Vector3.MoveTowards(transform.position, newPos, 10*levelSpeed * Time.deltaTime);
                         move = true;
                     }
                 }

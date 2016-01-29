@@ -68,7 +68,7 @@ public class Plattform_NEW : MonoBehaviour
         {
             DB = AudioAnalyzer.Instance.getPitch();//GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().MicLoudness;
                                                    //frequ = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().getPitch ();
-                                                   //Debug.Log (DB)
+            Debug.Log(DB);
             if (first == 1 && counter == 0)
             {
                 startGame();
@@ -216,7 +216,7 @@ public class Plattform_NEW : MonoBehaviour
                     //Do noting
 
                 }
-                else if ((int)DB < 350)
+                else if ((int)DB < 300)
                 {
                     //Debug.Log ("DOWN");
                     moveDown();
@@ -259,7 +259,7 @@ public class Plattform_NEW : MonoBehaviour
             if(Player.transform.position.x == platforms[i].transform.position.x && !onTheMove)
             {
                 counter = i;
-                //Debug.Log(counter);
+                Debug.Log(counter);
             }
         }
     }
@@ -270,8 +270,8 @@ public class Plattform_NEW : MonoBehaviour
 
         if(temp == 1.0)
         {
-            speed = 0.1f;
-            randspeed = 4;
+            speed = 0.12f;
+            randspeed = 5;
         }
 
         else if (temp > 1.0 && temp < 2.0)
@@ -280,7 +280,13 @@ public class Plattform_NEW : MonoBehaviour
             randspeed = 6;
         }
 
-        else if (temp == 2.0)
+        else if (temp > 1.3 && temp < 1.7)
+        {
+            speed = 0.17f;
+            randspeed = 7;
+        }
+
+        else if (temp > 1.7)
         {
             speed = 0.2f;
             randspeed = 8;
