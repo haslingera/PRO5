@@ -25,7 +25,7 @@ public class CarSpawn : MonoBehaviour {
 		iTween.Init (this.gameObject);
 		worldSpeed = GameLogic.Instance.getLevelSpeed();
 		levelDidStart = GameLogic.Instance.getLevelIsReadyToStart ();
-        Debug.Log(levelDidStart);
+        //Debug.Log(levelDidStart);
 	}
 
     void OnEnable()
@@ -124,9 +124,10 @@ public class CarSpawn : MonoBehaviour {
 	void levelSpeed(){
 
 		float temp = worldSpeed - 1;
-        Debug.Log (worldSpeed);
+        //Debug.Log (worldSpeed);
 
-        this.speed = Random.Range (Mathf.Max(2-(temp*1.5f), 1), 6-(temp * 2));
+        this.speed = Random.Range (Mathf.Max(2-(temp*1.5f), 1), 5-(temp * 2));
+        //Debug.Log(speed);
 
 	}
 
