@@ -54,7 +54,8 @@ public class SpawnEnemy : MonoBehaviour {
         }
 
         setSpeed();
-	}
+        this.speed = speed * globalSpeed;
+    }
 
     void OnEnable()
     {
@@ -93,7 +94,7 @@ public class SpawnEnemy : MonoBehaviour {
             }*/
 
             isWon();
-            this.speed += (globalSpeed - 1);
+            Debug.Log(speed);
 
             if (!stop)
             {

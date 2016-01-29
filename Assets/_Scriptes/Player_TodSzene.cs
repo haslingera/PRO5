@@ -12,7 +12,7 @@ public class Player_TodSzene : MonoBehaviour {
     void Start () {
 		this.levelDidStart = GameLogic.Instance.getLevelIsReadyToStart ();
 
-        enem = Instantiate(Resources.Load("Enemy" + Random.Range(1, 3)), new Vector3(21.9f, 3f, -18f), transform.rotation) as GameObject;
+        enem = Instantiate(Resources.Load("Enemy" + Random.Range(1, 4)), new Vector3(21.9f, 3f, -18f), transform.rotation) as GameObject;
         enem.name = "Enemy";
     }
 
