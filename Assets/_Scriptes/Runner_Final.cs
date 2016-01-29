@@ -14,6 +14,7 @@ public class Runner_Final : MonoBehaviour {
 	private bool onStart = true;
 	private bool levelDidStart;
     bool stop = false;
+    int frequ;
 
 	void Start () {
 		rigbi = GetComponent<Rigidbody> ();
@@ -73,7 +74,8 @@ public class Runner_Final : MonoBehaviour {
 
             if (!stop)
             {
-                float frequ = AudioAnalyzer.Instance.getPitch();
+                frequ = (int)AudioAnalyzer.Instance.getPitch();
+                Debug.Log(frequ);
 
                 if (!onStart) {
                     if(frequ == -1)
@@ -87,7 +89,7 @@ public class Runner_Final : MonoBehaviour {
                         //Debug.Log("duck");
                     }
 
-                    if (frequ > 450f)
+                    if (frequ > 400f)
                     {
                         jump();
                         //Debug.Log("jump");

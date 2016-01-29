@@ -59,14 +59,14 @@ public class StationaryMovement : MonoBehaviour {
 	}*/
 
 	private void hideLevelInstructions() {
-		Debug.Log ("hide Level Instructions");
+		//Debug.Log ("hide Level Instructions");
 	}
 
 	// Update is called once per frame
 	void Update () {
 		if (this.levelDidStart) {
 			if (!movementToPoint) {
-				Debug.Log (Time.deltaTime);
+				//Debug.Log (Time.deltaTime);
 				Vector3 newPos = transform.position;
 				newPos += new Vector3 (constantSpeedX, constantSpeedY, constantSpeedZ);
 				transform.position = Vector3.MoveTowards(transform.position, newPos, 100 * Time.deltaTime * direction);

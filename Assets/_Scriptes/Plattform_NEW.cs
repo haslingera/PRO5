@@ -119,10 +119,10 @@ public class Plattform_NEW : MonoBehaviour
             }
             else
             {
-                    if ((int)DB > 350)
+                    if ((int)DB > 400)
                     {
                         moveUp();
-                        Debug.Log("UP");
+                        //Debug.Log("UP");
                     }
                     else if ((int)DB == -1)
                     {
@@ -132,7 +132,7 @@ public class Plattform_NEW : MonoBehaviour
                     else if ((int)DB < 350)
                     {
                         moveDown();
-                        Debug.Log("Down");
+                        //Debug.Log("Down");
                 }
             }
         }
@@ -209,7 +209,7 @@ public class Plattform_NEW : MonoBehaviour
         else {
             if (!onTheMove)
             {
-                if ((int)DB > 350)
+                if ((int)DB > 400)
                 {
                     //Debug.Log ("UP");
                     moveUp();
@@ -219,7 +219,7 @@ public class Plattform_NEW : MonoBehaviour
                     //Do noting
 
                 }
-                else if ((int)DB < 300)
+                else if ((int)DB < 350)
                 {
                     //Debug.Log ("DOWN");
                     moveDown();

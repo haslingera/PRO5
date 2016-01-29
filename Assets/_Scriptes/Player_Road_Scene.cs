@@ -15,9 +15,9 @@ public class Player_Road_Scene : MonoBehaviour {
     // Use this for initialization
     void Start () {
 		start = this.transform.position;
-		end = new Vector3 (24f, start.y,start.z);
+		end = new Vector3 (22.8f, start.y,start.z);
 		newPos = start;
-		this.levelSpeed = GameLogic.Instance.getLevelSpeed ();
+		this.levelSpeed = GameLogic.Instance.getLevelSpeed ()+1.0f;
 	}
 
     void OnEnable()
@@ -50,7 +50,7 @@ public class Player_Road_Scene : MonoBehaviour {
                 {
                     if (db > 15f)
                     {
-                        newPos.x += (0.2f);
+                        newPos.x += (0.3f);
                         //this.transform.position = newPos;
                         transform.position = Vector3.MoveTowards(transform.position, newPos, 10*levelSpeed * Time.deltaTime);
                         move = true;
