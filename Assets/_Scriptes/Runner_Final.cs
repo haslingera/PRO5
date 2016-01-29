@@ -10,6 +10,7 @@ public class Runner_Final : MonoBehaviour {
 	private bool already = false;
 	private Vector3 scale;
 	private Vector3 start;
+    GameObject obstacle;
 	private bool onStart = true;
 	private bool levelDidStart;
     bool stop = false;
@@ -18,8 +19,26 @@ public class Runner_Final : MonoBehaviour {
 		rigbi = GetComponent<Rigidbody> ();
 		scale = this.transform.localScale;
 		start = new Vector3 (-44.51059f, 0.274f, -3.86591f);
-		this.levelDidStart = false; 
-	}
+		this.levelDidStart = false;
+
+        Vector3 start2 = new Vector3(-29f, 0.13f, -7.4f);
+
+        start2.y = Random.Range(0, 2);
+        if (start2.y == 1)
+        {
+            start2.y = 4.264082e-17f;
+            obstacle = Instantiate(Resources.Load("Obstacle_big"), start2, this.transform.rotation) as GameObject;
+            obstacle.transform.rotation = Quaternion.Euler(0, 90, 0);
+            //clone.transform.localScale.Set(this.transform.localScale.x, 3.6f, this.transform.localScale.z);
+        }
+        else {
+            obstacle = Instantiate(Resources.Load("Obstacle"), start2, this.transform.rotation) as GameObject;
+            obstacle.transform.rotation = Quaternion.Euler(0, 90, 0);
+        }
+
+        obstacle.name = "Obstacle";
+
+    }
 
 	void OnEnable() {
 		GameLogic.Instance.OnLevelReadyToStart += levelReadyToStart;
@@ -36,6 +55,10 @@ public class Runner_Final : MonoBehaviour {
 	
 
 	void FixedUpdate () {
+        if (stop)
+        {
+            this.GetComponent<SkinnedMeshRenderer>().SetBlendShapeWeight(0, 0.0f);
+        }
 
         if (this.levelDidStart)
         {
@@ -57,6 +80,7 @@ public class Runner_Final : MonoBehaviour {
                     {
                         //Do nothing
                     }
+
                     if (frequ < 350f && frequ > 0)
                     {
                         duck();
@@ -117,7 +141,7 @@ public class Runner_Final : MonoBehaviour {
 
 	public IEnumerator endGame(){
         stop = true;
-		yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1);
 		GameLogic.Instance.didFailLevel ();
 	}
 
