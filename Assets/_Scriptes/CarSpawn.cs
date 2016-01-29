@@ -113,6 +113,7 @@ public class CarSpawn : MonoBehaviour {
 		if (col.gameObject.name == "Player" && !stop)
 		{
             player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            //player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationY;
             StartCoroutine(player.GetComponent<Player_Road_Scene>().resetPlayer());
             stopMovement();
             player.GetComponent<Player_Road_Scene>().setStop(true);
