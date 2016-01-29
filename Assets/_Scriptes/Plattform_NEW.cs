@@ -17,6 +17,7 @@ public class Plattform_NEW : MonoBehaviour
     Vector3[] moveRandom;
     float speed = 0;
     float randspeed = 0;
+    float globalSpeed;
 
     // Use this for initialization
     void Start()
@@ -146,7 +147,7 @@ public class Plattform_NEW : MonoBehaviour
         {
             Vector3 temp = new Vector3(platforms[counter].transform.position.x,
                                        platforms[counter].transform.position.y + speed, platforms[counter].transform.position.z);
-            platforms[counter].transform.position = temp;
+            platforms[counter].transform.position = Vector3.MoveTowards(platforms[counter].transform.position, temp, 10 * globalSpeed * Time.deltaTime);
             updatePlayer(0.1f);
         }
     }
@@ -157,7 +158,7 @@ public class Plattform_NEW : MonoBehaviour
         {
             Vector3 temp = new Vector3(platforms[counter].transform.position.x, 
                                        platforms[counter].transform.position.y - speed, platforms[counter].transform.position.z);
-            platforms[counter].transform.position = temp;
+            platforms[counter].transform.position = Vector3.MoveTowards(platforms[counter].transform.position, temp, 10 * globalSpeed * Time.deltaTime);
             updatePlayer(-0.5f);
         }
     }
@@ -268,27 +269,27 @@ public class Plattform_NEW : MonoBehaviour
 
     private void setSpeed()
     {
-        float temp = GameLogic.Instance.getLevelSpeed();
+        globalSpeed = GameLogic.Instance.getLevelSpeed();
 
-        if(temp == 1.0)
+        if(globalSpeed == 1.0)
         {
             speed = 0.12f;
             randspeed = 5;
         }
 
-        else if (temp > 1.0 && temp < 2.0)
+        else if (globalSpeed > 1.0 && globalSpeed < 2.0)
         {
             speed = 0.15f;
             randspeed = 6;
         }
 
-        else if (temp > 1.3 && temp < 1.7)
+        else if (globalSpeed > 1.3 && globalSpeed < 1.7)
         {
             speed = 0.17f;
             randspeed = 7;
         }
 
-        else if (temp > 1.7)
+        else if (globalSpeed > 1.7)
         {
             speed = 0.2f;
             randspeed = 8;
