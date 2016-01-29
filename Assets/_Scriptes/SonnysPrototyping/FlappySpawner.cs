@@ -37,7 +37,7 @@ public class FlappySpawner : MonoBehaviour {
 		if (this.levelDidStart) {
 			if (!isSpawning) {
 				isSpawning = true;
-				StartCoroutine (SpawnObject(Random.Range (minTime / (gameSpeed), maxTime / (gameSpeed))));
+				StartCoroutine (SpawnObject(Random.Range (minTime / (2), maxTime / (gameSpeed))));
 			}
 		}
 	}

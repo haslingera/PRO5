@@ -22,6 +22,7 @@ public class GameLogic : MonoBehaviour {
 
 	void Awake() {
 		DontDestroyOnLoad(this.transform.gameObject);
+		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 	}
 
 	void Start() {

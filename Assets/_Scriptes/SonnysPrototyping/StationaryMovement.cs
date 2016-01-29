@@ -63,10 +63,14 @@ public class StationaryMovement : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void FixedUpdate () {
+	void Update () {
 		if (this.levelDidStart) {
-			if (!movementToPoint) {			
-				transform.position += new Vector3 (constantSpeedX, constantSpeedY, constantSpeedZ) * direction;
+			if (!movementToPoint) {
+				Debug.Log (Time.deltaTime);
+				Vector3 newPos = transform.position;
+				newPos += new Vector3 (constantSpeedX, constantSpeedY, constantSpeedZ);
+				transform.position = Vector3.MoveTowards(transform.position, newPos, 100 * Time.deltaTime * direction);
+				//transform.position += new Vector3 (constantSpeedX, constantSpeedY, constantSpeedZ) * direction * Time.deltaTime;
 			} else if (journeyLength > 0) {
 				float distCovered = 0;
 				if (timeMovement && time > 0) {
