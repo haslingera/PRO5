@@ -5,8 +5,9 @@ public class Runner_ObstSpawn : MonoBehaviour {
 
 	private float[] height = new float[2];
 	private int end = -70;
-	private int spawnNew = -45;
+    private int spawnNew;
 	private Vector3 start = new Vector3(-29f,0.13f,-7.4f);
+    GameObject obstacle;
 	GameObject clone;
 	private bool spawned = false;
 	private float defaultSpeed = -0.11f;
@@ -17,12 +18,15 @@ public class Runner_ObstSpawn : MonoBehaviour {
 	void Start () {
 		height[0] = 0.13f;
 		height[1] = 2.1f;
+        spawnNew = Random.Range(-40,-50);
 		setSpeed ();
         player = GameObject.Find("Player");
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+        isGoing();
 
 		if ((int)transform.position.x == end) {
 			destroyObst();
@@ -63,14 +67,13 @@ public class Runner_ObstSpawn : MonoBehaviour {
         if (col.gameObject.name == "Player")
         {
             StartCoroutine(player.GetComponent<Runner_Final>().endGame());
-            stop = true;
             GetComponent<StationaryMovement>().constantSpeedX = 0;
         }
     }
 
     private void isGoing()
     {
-        stop = GameLogic.Instance.getIsLevelActive();
+        stop = !GameLogic.Instance.getIsLevelActive();
     }
 
 }
