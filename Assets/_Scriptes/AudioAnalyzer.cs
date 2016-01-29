@@ -16,7 +16,7 @@ public class AudioAnalyzer : MonoBehaviour {
 	private string _device;
 	private bool _isInitialized;
 	private static float refValue = 0.01f;
-	static int _sampleWindow = 128;
+	static int _sampleWindow = 1024;
 	static AudioClip _clipRecord = new AudioClip ();
 	
 	
@@ -113,7 +113,27 @@ public class AudioAnalyzer : MonoBehaviour {
 		// pass the value to a static var so we can access it from anywhere
 		MicLoudness = LevelMax ();
 	
-		//if (!this.yinThread.IsAlive) {
+		// new version
+		/*
+		float[] waveData = new float[this.yinSampleWindow];
+		int micPosition = Microphone.GetPosition (null) - (this.yinSampleWindow + 1); // null means the first microphone
+		if (micPosition < 0)
+			return;
+		
+		_clipRecord.GetData (waveData, micPosition);
+		pitchTracker.ProcessBuffer (waveData, this.yinSampleWindow);
+		PitchTracker.PitchRecord record = pitchTracker.CurrentPitchRecord;
+		this.latestPitch = record.Pitch;
+
+		if (this.latestPitch < 1.0f) {
+			this.latestPitch = -1.0f;
+		}
+				Debug.Log ("pitch: " + this.latestPitch);
+
+*/
+
+		// old YIN algorithm
+		 if (!this.yinThread.IsAlive) {
 			// read mic data
 			float[] waveData = new float[this.yinSampleWindow];
 			int micPosition = Microphone.GetPosition (null) - (this.yinSampleWindow + 1); // null means the first microphone
@@ -121,21 +141,15 @@ public class AudioAnalyzer : MonoBehaviour {
 				return;
 			_clipRecord.GetData (waveData, micPosition);
 		
-			pitchTracker.ProcessBuffer (waveData, this.yinSampleWindow);
-			PitchTracker.PitchRecord record = pitchTracker.CurrentPitchRecord;
-		this.latestPitch = record.Pitch;
-
-		if (this.latestPitch < 1.0f)
-			this.latestPitch = -1.0f;
-		Debug.Log ("latestPitch: " + latestPitch);
+			
 			//Debug.Log ("pitch: " + record.Pitch);
 
 			// restart thread
-			/*this.yin.setupSamples (waveData);
+			this.yin.setupSamples (waveData);
 			this.yinThread = new Thread (new ThreadStart (yin.startYIN));
 			this.yinThread.IsBackground = true;
-			this.yinThread.Start ();*/
-		//} 
+			this.yinThread.Start ();
+		} 
 
 
 
@@ -182,8 +196,8 @@ public class AudioAnalyzer : MonoBehaviour {
 	}
 
 	public float getPitch() {
-		return this.latestPitch;
-		//return this.yin.getPitch ();
+		//return this.latestPitch;
+		return this.yin.getPitch ();
 	}
 
 	public float getMicLoudness() {
