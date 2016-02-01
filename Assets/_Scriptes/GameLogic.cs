@@ -454,6 +454,8 @@ public class GameLogic : MonoBehaviour {
 
 		// register for broadcast event and waits until the audio player tells that the tick tock sound started, then the countdown will start.
 		AudioPlayer.Instance.OnTickTockStarted += tickTockStarted;
+
+		Application.targetFrameRate = 60;
 	}
 
 	public void startNewDemoGame() {
