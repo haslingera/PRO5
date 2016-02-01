@@ -52,7 +52,11 @@ public class Player_Road_Scene : MonoBehaviour {
                     {
                         newPos.x += (0.3f);
                         //this.transform.position = newPos;
+<<<<<<< HEAD
                         transform.position = Vector3.MoveTowards(transform.position, newPos, (10*levelSpeed) * Time.deltaTime);
+=======
+                        transform.position = Vector3.MoveTowards(transform.position, newPos, 10 * levelSpeed * Time.deltaTime);
+>>>>>>> d2df821e7d2826b4a52038a0f864645a0ae91373
                         move = true;
                     }
                 }
