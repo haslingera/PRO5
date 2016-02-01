@@ -12,11 +12,6 @@ public class PingPongBall : MonoBehaviour {
 		movement.constantSpeedX *= GameLogic.Instance.getLevelSpeed ();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-
-	}
-
 	void OnCollisionEnter(Collision other) {
 		if (other.gameObject.CompareTag ("TennisPlayer1") || other.gameObject.CompareTag ("TennisPlayer2")) {
 			movement.revertMovement ();
