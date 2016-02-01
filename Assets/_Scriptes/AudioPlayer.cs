@@ -70,7 +70,7 @@ public class AudioPlayer : MonoBehaviour {
 		this.succeedClip = Resources.Load ("succeed_v02") as AudioClip;
 		this.failClip = Resources.Load ("fail_v02") as AudioClip; 
 		this.gameoverClip = Resources.Load ("gameover_v02") as AudioClip;
-		this.menuClip = Resources.Load ("menusound") as AudioClip;
+		this.menuClip = Resources.Load ("menusound_v02") as AudioClip;
 
 		this.tickTockAudioSource.clip = tickTockClip;
 		this.tickTockEndAudioSource.clip = tickTockEndClip;
