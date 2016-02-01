@@ -69,7 +69,7 @@ public class StationaryMovement : MonoBehaviour {
 				//Debug.Log (Time.deltaTime);
 				Vector3 newPos = transform.position;
 				newPos += new Vector3 (constantSpeedX, constantSpeedY, constantSpeedZ);
-				transform.position = Vector3.MoveTowards(transform.position, newPos, 100 * Time.deltaTime * direction);
+				transform.position = Vector3.MoveTowards(transform.position, newPos, 100 * Time.deltaTime);
 				//transform.position += new Vector3 (constantSpeedX, constantSpeedY, constantSpeedZ) * direction * Time.deltaTime;
 			} else if (journeyLength > 0) {
 				float distCovered = 0;
@@ -87,7 +87,7 @@ public class StationaryMovement : MonoBehaviour {
 	}
 
 	public void revertMovement(){
-		direction *= -1.0f;
+		constantSpeedX *= -1.0f;
 	}
 
 	public void moveToPoint(Vector3 pointA, Vector3 pointB, float speed, float time) {
