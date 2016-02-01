@@ -31,6 +31,10 @@ public class GameLogic : MonoBehaviour {
 
 	void Update() {
 
+		if (Input.GetKey (KeyCode.Escape)) {
+			// TODO: go to menu!
+		}
+
 		// hide level instructions if timer is ready
 		TimeSpan timeSpanHideLevelInstructions = DateTime.Now - this.dateTimeHideLevelInstructions;
 		if (this.delayHideLevelInstructions > 0.0f && timeSpanHideLevelInstructions.TotalSeconds > this.delayHideLevelInstructions) {
@@ -375,6 +379,8 @@ public class GameLogic : MonoBehaviour {
 
 		// register for broadcast event and waits until the audio player tells that the tick tock sound started, then the countdown will start.
 		AudioPlayer.Instance.OnTickTockStarted += tickTockStarted;
+
+		Application.targetFrameRate = 60;
 	}
 
 	public void restart() {
