@@ -108,10 +108,11 @@ public class Plattform_NEW : MonoBehaviour
         
     }
 
+    //moves towers and looks if player is on the last tower
     void moveTower()
     {
 
-        if (counter == 5)
+        if (counter == platforms.Length-1)
         {
             if (platforms[counter].transform.position.y > 1.55 && platforms[counter].transform.position.y < 1.75)
             {
@@ -141,6 +142,7 @@ public class Plattform_NEW : MonoBehaviour
         }
     }
 
+    //moves the tower up
     private void moveUp()
     {
         if (platforms[counter].transform.position.y < 8)
@@ -152,6 +154,7 @@ public class Plattform_NEW : MonoBehaviour
         }
     }
     
+    //moves the tower up
     private void moveDown()
     {
         if (platforms[counter].transform.position.y > -5)
@@ -163,6 +166,7 @@ public class Plattform_NEW : MonoBehaviour
         }
     }
 
+    //moves the charakter from one tower to an other
     void moveCharakter()
     {
         if (!onTheMove)
@@ -182,11 +186,13 @@ public class Plattform_NEW : MonoBehaviour
 
     }
 
+    //looks if the charakter is there
     private bool isThere()
     {
         return Player.transform.position.x == platforms[counter+1].transform.position.x;
     }
 
+    //updates the players position
     private void updatePlayer(float x)
     {
         Vector3 tower = platforms[counter].transform.position;
@@ -194,6 +200,7 @@ public class Plattform_NEW : MonoBehaviour
                                                         (tower.x, Player.transform.position.y + x, tower.z), 10 * Time.deltaTime);
     }
 
+    //moves the towers if it's not the last tower
     private void moveShit()
     {
 
@@ -229,6 +236,7 @@ public class Plattform_NEW : MonoBehaviour
 
     }
 
+    //ends the game
     private void endGame()
     {
         //Vector3 tempEnd = GameObject.Find("End").transform.position;
@@ -242,6 +250,7 @@ public class Plattform_NEW : MonoBehaviour
 
     }
 
+    //moves the towers random
     private void moveRandomTower(GameObject tower, int i)
     {
             if (tower.transform.position.y == moveRandom[i].y || moveRandom[i].x == 0.0)
@@ -255,6 +264,7 @@ public class Plattform_NEW : MonoBehaviour
             }
         }
 
+    //sets the actual tower
     private void updateCounter()
     {
         for(int i = 0; i < platforms.Length; i++)
@@ -267,6 +277,7 @@ public class Plattform_NEW : MonoBehaviour
         }
     }
 
+    //sets speed for movemennt
     private void setSpeed()
     {
         globalSpeed = GameLogic.Instance.getLevelSpeed();

@@ -117,6 +117,7 @@ public class Runner_Final : MonoBehaviour {
         }
 	}
 	
+    //jump method 
 	private void jump() {
 		if (!already) {
 			//transform.Translate (Vector3.up * 100 * Time.deltaTime, Space.World);
@@ -126,6 +127,7 @@ public class Runner_Final : MonoBehaviour {
 		}
 	}
 
+    //duck method
 	private void duck() {
 		if (!already) {
 			Vector3 temp = scale;
@@ -141,6 +143,7 @@ public class Runner_Final : MonoBehaviour {
 		AudioAnalyzer.Instance.Init ();
 	}
 
+    //ends the game and sets stop boolean
 	public IEnumerator endGame(){
         stop = true;
         yield return new WaitForSeconds(1);
