@@ -51,10 +51,12 @@ public class Runner_ObstSpawn : MonoBehaviour {
         }
 	}
 
-	void destroyObst(){
+    //destroy the acutal gameobject
+	private void destroyObst(){
 		Destroy (this.gameObject);
 	}
 
+    //sets speed for the level
 	void setSpeed(){
 		// set speed for obstacles based on level speed
 		float levelSpeed = GameLogic.Instance.getLevelSpeed ();
@@ -71,6 +73,7 @@ public class Runner_ObstSpawn : MonoBehaviour {
         }
     }
 
+    //looks if the level is still running
     private void isGoing()
     {
         stop = !GameLogic.Instance.getIsLevelActive();

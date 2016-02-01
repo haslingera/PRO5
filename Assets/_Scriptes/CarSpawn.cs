@@ -50,8 +50,10 @@ public class CarSpawn : MonoBehaviour {
 
         if (levelDidStart)
         {
+            //if level still runs
             if (!stop)
             {
+                //if car moves 
                 if (!this.moves() && !onTheMove)
                 {
                     levelSpeed();
@@ -72,6 +74,7 @@ public class CarSpawn : MonoBehaviour {
         }
 	}
 
+    //spawns a new car when called
 	void spawnCar(){
 
 		float dist = Vector3.Distance(this.gameObject.transform.position,this.start);
@@ -84,6 +87,7 @@ public class CarSpawn : MonoBehaviour {
 
 	}
 
+    //destroys car when called
 	void destroyCar(){
 
 		if (clone != null) {
@@ -100,6 +104,7 @@ public class CarSpawn : MonoBehaviour {
 		this.onTheMove = x;
 	}
 
+    //when car moves reutrns true
 	bool moves(){
         //Debug.Log(this.transform.position + " + " + start);
         if (this.transform.position == start)
@@ -108,6 +113,7 @@ public class CarSpawn : MonoBehaviour {
 			return true;
 	}
 
+    //collision methode for player
 	void OnCollisionEnter(Collision col)
 	{
 		if (col.gameObject.name == "Player" && !stop)
@@ -121,6 +127,7 @@ public class CarSpawn : MonoBehaviour {
 		}
 	}
 
+    //sets speed for the cars
 	void levelSpeed(){
 
 		float temp = worldSpeed - 1;
@@ -131,6 +138,7 @@ public class CarSpawn : MonoBehaviour {
 
 	}
 
+    //stops every movement
     void stopMovement() {
         iTween.Stop(this.gameObject);
         //iTween.MoveTo(this.gameObject, iTween.Hash("z", transform.position.z-3, "easetype", "linear", "time", speed));
