@@ -9,6 +9,7 @@ public class CapPropeller : MonoBehaviour {
     Vector3 startR;
     GameObject left;
     GameObject right;
+    GameObject middle;
 
     // Use this for initialization
     void Start () {
@@ -16,8 +17,10 @@ public class CapPropeller : MonoBehaviour {
         left = GameObject.Find("left_part");
         right = GameObject.Find("right_part");
 
-        startL = left.transform.position;
-        startR = right.transform.position;
+        middle = GameObject.Find("hat_top");
+
+        //startL = left.transform.position;
+        //startR = right.transform.position;
 
     }
 	
@@ -29,8 +32,12 @@ public class CapPropeller : MonoBehaviour {
         right.transform.RotateAround(transform.position, transform.up, Time.deltaTime * 90f);
         rotChange += rot;
 
-        left.transform.position = startL;
+        Vector3 temp = middle.transform.position;
+        temp.y = 3.176f;
+        temp.z = middle.transform.position.z - 0.5f;
 
-        right.transform.position = startR;
+        left.transform.position = temp;
+
+        right.transform.position = temp;
     }
 }

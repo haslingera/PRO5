@@ -11,6 +11,7 @@ public class GlassDestroyer : MonoBehaviour {
 	private float endTime;
 	private float targetPitch;
 	private float targetPitchOffset = 50.0f;
+    private SkinnedMeshRenderer scream;
 
 	public GameObject broken;
 
@@ -30,6 +31,8 @@ public class GlassDestroyer : MonoBehaviour {
 		targetPitch = Random.Range (150, 550);
 		this.levelDidStart = false; // set this to false when game is ready for distribution
 		this.levelDidStart = GameLogic.Instance.getLevelIsReadyToStart();
+        scream = GameObject.Find("punk").GetComponent<SkinnedMeshRenderer>();
+
 	}
 
 	void OnEnable() {
@@ -46,7 +49,8 @@ public class GlassDestroyer : MonoBehaviour {
 
 	void Update () {
 		if (this.levelDidStart) {
-			//moves while screaming
+            //moves while screaming
+            lost();
 			if (screaming) {
 				transform.position = new Vector3 (Mathf.Sin ((Time.time - startTime) * 20) * (Time.time - startTime) / 20f, transform.position.y, transform.position.z);
 			}
@@ -77,7 +81,17 @@ public class GlassDestroyer : MonoBehaviour {
 				clone = Instantiate (broken, transform.position, broken.transform.rotation) as GameObject; 
 				Destroy (gameObject);
 				GameLogic.Instance.didFinishLevel ();
+                scream.SetBlendShapeWeight(0,0.0f);
 			}
 		}
 	}
+
+    private void lost()
+    {
+        if (!GameLogic.Instance.getIsLevelActive())
+        {
+            scream.SetBlendShapeWeight(0, 0.0f);
+        }
+    }
+
 }

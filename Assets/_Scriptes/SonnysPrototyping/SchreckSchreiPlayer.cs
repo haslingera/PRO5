@@ -5,6 +5,7 @@ public class SchreckSchreiPlayer : MonoBehaviour {
 
 	private StationaryMovement movement;
 	private Player_Animation animationMouth;
+    private SkinnedMeshRenderer talk;
 
 	private bool moved = true;
 	private RaycastHit hit;
@@ -14,6 +15,7 @@ public class SchreckSchreiPlayer : MonoBehaviour {
 	void Start () {
 		movement = GetComponent<StationaryMovement> ();
 		animationMouth = GetComponent<Player_Animation> ();
+        talk = GetComponent<SkinnedMeshRenderer>();
 		levelDidStart = false;
 	}
 
@@ -52,19 +54,22 @@ public class SchreckSchreiPlayer : MonoBehaviour {
 						GameLogic.Instance.didFinishLevel ();
 						Player_Animation ani = hit.collider.gameObject.GetComponent<Player_Animation> ();
 						ani.talkDirtyToMe = true;
+                        talk.SetBlendShapeWeight(0,0.0f);
 
 						GameLogic.Instance.didFinishLevel ();
 					} else if (hit.collider.CompareTag ("pupil")) {
 						StationaryMovement pupil = hit.collider.gameObject.GetComponent<StationaryMovement> ();
 						pupil.stopMovement ();
 						GameLogic.Instance.didFailLevel ();
-					}
+                        talk.SetBlendShapeWeight(0, 0.0f);
+                    }
 
 					if (hit.collider.CompareTag ("police")) {
 						StationaryMovement police = hit.collider.gameObject.GetComponent<StationaryMovement> ();
 						police.stopMovement ();
 						GameLogic.Instance.didFailLevel ();
-					}
+                        talk.SetBlendShapeWeight(0, 0.0f);
+                    }
 				}
 			}
 		}
