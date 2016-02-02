@@ -31,6 +31,8 @@ public class Initiate : MonoBehaviour {
 			GameLogic.Instance.OnHideLevelInstructions += UIBehaviour.Instance.HideInstruction;
 			GameLogic.Instance.OnShowLives += UIBehaviour.Instance.ShowLives;
 			GameLogic.Instance.OnShowTransitionToNextLevel += TransitionToNextLevel;
+			GameLogic.Instance.OnShowScore += UIBehaviour.Instance.StartScoreNumerator;
+			//GameLogic.Instance.OnHideScore += UIBehaviour.Instance.HideScoreNumerator;
 		}
 
 	}
