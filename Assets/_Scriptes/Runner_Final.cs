@@ -75,7 +75,7 @@ public class Runner_Final : MonoBehaviour {
             if (!stop)
             {
                 frequ = (int)AudioAnalyzer.Instance.getPitch();
-                Debug.Log(frequ);
+                //Debug.Log(frequ);
 
                 if (!onStart) {
                     if(frequ == -1)
@@ -144,10 +144,14 @@ public class Runner_Final : MonoBehaviour {
 	}
 
     //ends the game and sets stop boolean
-	public IEnumerator endGame(){
+	public void endGame(){
         stop = true;
-        yield return new WaitForSeconds(1);
 		GameLogic.Instance.didFailLevel ();
 	}
+
+    public bool getStop()
+    {
+        return this.stop;
+    }
 
 }

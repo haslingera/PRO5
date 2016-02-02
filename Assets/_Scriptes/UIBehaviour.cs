@@ -84,7 +84,7 @@ public class UIBehaviour : MonoBehaviour {
 
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
 		GameObject.Find ("BlackOverlay").GetComponent<Image> ().enabled = true;
-		//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
+		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
 			
 		//Set Camera To See All Things That Were Seen In 16:9
 		AdjustCamera ();
@@ -129,6 +129,7 @@ public class UIBehaviour : MonoBehaviour {
 			iTween.RotateTo(Camera.main.gameObject,iTween.Hash("x", originalCameraRotation.x, "y", originalCameraRotation.y, "z", originalCameraRotation.z, "easetype",iTween.EaseType.easeInOutSine,"time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f));
 			iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from",Camera.main.orthographicSize, "to", originalCameraSize + (originalCameraSize *  timeBandWidth / Screen.height), "time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeCameraSize"));
 	
+			imageEffects = true;
 			TimeBandStart();
 
 			endSizeSet = false;
@@ -156,8 +157,6 @@ public class UIBehaviour : MonoBehaviour {
 
 		ChangeTimeBandSize (1.0f);
 
-		scaleTimeBand = true;
-
 	}
 	
 	void ChangeTimeBandSize (float value) {
@@ -175,7 +174,7 @@ public class UIBehaviour : MonoBehaviour {
 		} else {
 			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
 			GameObject.Find ("BlackOverlay").GetComponent<Image> ().enabled = false;
-			//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
+			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
 		}
 
 		ChangeOrthographicCameraSize (originalCameraSize + (originalCameraSize *  timeBandWidth / Screen.height * value));
@@ -221,7 +220,7 @@ public class UIBehaviour : MonoBehaviour {
 	void TimeBandEnd(float time) {
 
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
-		//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
+		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
 
 		iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from", GameLogic.Instance.getRemainingLevelTime() / GameLogic.Instance.getLevelTime(), "to",1f, "time", time, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeTimeBandSize"));
 	}
@@ -256,7 +255,7 @@ public class UIBehaviour : MonoBehaviour {
 
 	public void ShowLives() {
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
-		//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
+		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
 
 		scaleTimeBand = false;
 		imageEffects = true;
@@ -371,9 +370,11 @@ public class UIBehaviour : MonoBehaviour {
 
 	public void StartScreen () {
 
+		imageEffects = true;
+
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
 		GameObject.Find ("BlackOverlay").GetComponent<Image> ().enabled = true;
-		//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
+		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
 
 		GameObject.Find ("StartText").GetComponent<Text> ().enabled = true;
 		GameObject.Find ("Logo").GetComponent<Image> ().enabled = true;
@@ -385,15 +386,12 @@ public class UIBehaviour : MonoBehaviour {
 
 		GameObject.Find ("StartButton").GetComponent<Button> ().onClick.RemoveAllListeners ();
 
-		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
-		GameObject.Find ("BlackOverlay").GetComponent<Image> ().enabled = false;
+		//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
 		//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
-
-		imageEffects = false;
 
 		GameObject.Find ("StartText").GetComponent<Text> ().enabled = false;
 		GameObject.Find ("Logo").GetComponent<Image> ().enabled = false;
-		GameObject.Find ("BlackOverlay").GetComponent<Image> ().enabled = false;
+		//GameObject.Find ("BlackOverlay").GetComponent<Image> ().enabled = false;
 		
 		GameLogic.Instance.startNewSinglePlayerGame ();
 	}
@@ -404,12 +402,37 @@ public class UIBehaviour : MonoBehaviour {
 	}
 
 	public void ShowInstruction () {
+
+		GameObject.Find ("InstructionImageScream").GetComponent<Image> ().enabled = true;
+
+		if (Application.loadedLevelName.Equals ("Road_Scene")) {
+			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "to run";
+		} else if (Application.loadedLevelName.Equals ("TreeSawing")) {
+			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "high and low by turns";
+		} else if (Application.loadedLevelName.Equals ("Plattformen-Szene")) {
+			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "high or low";
+		} else if (Application.loadedLevelName.Equals ("FlappyScream")) {
+			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "to fly";
+		} else if (Application.loadedLevelName.Equals ("Tod-Szene-Spiel")) {
+			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "to scare enemies";
+		} else if (Application.loadedLevelName.Equals ("GlassDestroying")) {
+			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "and find the right pitch";
+		} else if (Application.loadedLevelName.Equals ("Tennis")) {
+			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "to swing";
+		} else if (Application.loadedLevelName.Equals ("JumpAndDuck")) {
+			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "hight to jump, low to duck";
+		} else {
+			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "do soitast net sein";
+		}
+
 		GameObject.Find ("InstructionText").GetComponent<Text> ().enabled = true;
 	}
 
 	public void HideInstruction () {
 		imageEffects = false;
+		scaleTimeBand = true;
 		GameObject.Find ("InstructionText").GetComponent<Text> ().enabled = false;
+		GameObject.Find ("InstructionImageScream").GetComponent<Image> ().enabled = false;
 	}
 
 	//--------------------------------------
