@@ -409,7 +409,7 @@ public class GameLogic : MonoBehaviour {
 
 		// start transition to next scene
 		this.dateTimeStartTransition = DateTime.Now;
-		this.delayStartTransition = (60.0f / this.currentBPM) * 0.0f;
+		this.delayStartTransition = (60.0f / this.currentBPM) * 0.1f;
 		//Invoke("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 1.0f);
 
 		// load next level after sime time
