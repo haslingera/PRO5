@@ -13,14 +13,16 @@ public class Runner_ObstSpawn : MonoBehaviour {
 	private float defaultSpeed = -0.11f;
     GameObject player;
     bool stop = false;
+    StationaryMovement stationaryMovement;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		height[0] = 0.13f;
 		height[1] = 2.1f;
         spawnNew = Random.Range(-40,-50);
-		setSpeed ();
         player = GameObject.Find("Player");
+        stationaryMovement = this.GetComponent<StationaryMovement>();
+        setSpeed();
 	}
 	
 	// Update is called once per frame
@@ -31,7 +33,8 @@ public class Runner_ObstSpawn : MonoBehaviour {
 		if ((int)transform.position.x == end) {
 			destroyObst();
 		}
-        if (!stop)
+
+        if (this.stop)
         {
             if ((int)transform.position.x == spawnNew && !spawned)
             {
@@ -57,26 +60,39 @@ public class Runner_ObstSpawn : MonoBehaviour {
 	}
 
     //sets speed for the level
-	void setSpeed(){
+	public void setSpeed(){
 		// set speed for obstacles based on level speed
 		float levelSpeed = GameLogic.Instance.getLevelSpeed ();
-		StationaryMovement stationaryMovement = GameObject.Find ("Obstacle").GetComponent<StationaryMovement> ();
+		//stationaryMovement = GameObject.Find ("Obstacle").GetComponent<StationaryMovement> ();
 		stationaryMovement.constantSpeedX = this.defaultSpeed * levelSpeed;
 	}
+
+    private void setSpeedStop()
+    {
+        stationaryMovement.stopMovement();
+    }
 
     void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.name == "Player")
         {
-            StartCoroutine(player.GetComponent<Runner_Final>().endGame());
-            GetComponent<StationaryMovement>().constantSpeedX = 0;
+            player.GetComponent<Runner_Final>().endGame();
+            setSpeedStop();
+            this.stop = false;
         }
     }
 
     //looks if the level is still running
     private void isGoing()
     {
-        stop = !GameLogic.Instance.getIsLevelActive();
+        //Debug.Log(GameLogic.Instance.getIsLevelActive());
+        this.stop = GameLogic.Instance.getIsLevelActive();
+
+        if(player.GetComponent<Runner_Final>().getStop())
+        {
+            setSpeedStop();
+        }
+
     }
 
 }
