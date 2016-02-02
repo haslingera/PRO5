@@ -240,7 +240,7 @@ public class Plattform_NEW : MonoBehaviour
     private void endGame()
     {
         //Vector3 tempEnd = GameObject.Find("End").transform.position;
-        Vector3 tempNewPos = new Vector3(-2.7f, 9.78f, 9.78f);
+        Vector3 tempNewPos = new Vector3(-4.29f, 9.78f, -1.29f);
         iTween.MoveTo(Player, tempNewPos, 2);
 
         if(Player.transform.position.x >= -4.5)
