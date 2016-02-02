@@ -158,7 +158,7 @@ public class GameLogic : MonoBehaviour {
 						this.delayStartTransition = (60.0f / this.currentBPM) * 1.0f;
 						//Invoke("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 1.0f);
 
-						// TODO: maybe should not be a fixed time later on, but rather a callback from the animation class
+						// load next level after sime time
 						this.dateTimeLoadNextLevel = DateTime.Now;
 						this.delayLoadNextLevel = (60.0f / this.currentBPM) * 1.0f + ((60.0f / this.getNextLevelBPM()) * 3.5f);
 						//Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 4.5f); 
@@ -226,7 +226,7 @@ public class GameLogic : MonoBehaviour {
 						this.delayStartTransition = (60.0f / this.currentBPM) * 5.0f;
 						//Invoke ("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 5.0f);
 
-						// TODO: maybe should not be a fixed time later on, but rather a callback from the animation class
+						// load next level after some time
 						this.dateTimeLoadNextLevel = DateTime.Now;
 						this.delayLoadNextLevel = (60.0f / this.currentBPM) * 8.5f;
 						//Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 8.5f);
@@ -402,20 +402,30 @@ public class GameLogic : MonoBehaviour {
 		this.actualLevelTime = 60.0f / this.currentBPM * this.currentLevelNumberOfBeats;
 		this.frozenLevelTime = actualLevelTime;
 		this.currentLevelMaxTime = this.actualLevelTime;
+		this.setIsSurviveLevel (true); // default will be survive level
 
 		// tell audioplayer to start new ticktock audio
 		AudioPlayer.Instance.startIntroAudio (this.currentBPM);
 
-		// load a random first level
-		int randomNumber = UnityEngine.Random.Range(0, this.levels.Length * 5);
+		// start transition to next scene
+		this.dateTimeStartTransition = DateTime.Now;
+		this.delayStartTransition = (60.0f / this.currentBPM) * 0.1f;
+		//Invoke("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 1.0f);
 
-		this.setIsSurviveLevel (true); // default will be survive level
-		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
+		// load next level after sime time
+		this.dateTimeLoadNextLevel = DateTime.Now;
+		this.delayLoadNextLevel = (60.0f / this.currentBPM) * 1.0f + ((60.0f / this.getNextLevelBPM()) * 2.5f);
+		//Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 4.5f); 
 
-		// send out broadcast to show level information
-		if (this.OnShowLevelInstructions != null) {
-			this.OnShowLevelInstructions ();
-		}
+		// send show instructions after 2 more beats
+		this.dateTimeShowLevelInstructions = DateTime.Now;
+		this.delayShowLevelInstructions = (60.0f / this.currentBPM) * 1.0f + ((60.0f / this.getNextLevelBPM()) * 2.5f);
+		//Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 4.5f);
+
+		// send hide instructions after 6 more beats
+		this.dateTimeHideLevelInstructions = DateTime.Now;
+		this.delayHideLevelInstructions = (60.0f / this.currentBPM) * 1.0f + ((60.0f / this.getNextLevelBPM()) * 6.5f);
+		//Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 8.5f);
 	}
 
 	public void startGameWithLevel(string level) {
