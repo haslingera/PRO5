@@ -55,6 +55,7 @@ public class SpawnEnemy : MonoBehaviour {
 
         setSpeed();
         this.speed = speed * globalSpeed;
+        //Debug.Log(speed);
     }
 
     void OnEnable()
