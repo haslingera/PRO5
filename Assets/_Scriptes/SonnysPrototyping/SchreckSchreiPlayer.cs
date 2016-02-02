@@ -37,7 +37,7 @@ public class SchreckSchreiPlayer : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (this.levelDidStart) {
-		if (AudioAnalyzer.Instance.getMicLoudness() > 30f) {
+            if (getDB() > 90) {
 			animationMouth.talkDirtyToMe = true;
 			if (moved) {
 				movement.moveToPoint(movement.moveTo, 0.0f, 0.1f);
@@ -74,4 +74,17 @@ public class SchreckSchreiPlayer : MonoBehaviour {
 			}
 		}
 	}
+
+    float getDB()
+    {
+
+        float db;
+        float endDB = 0;
+        db = AudioAnalyzer.Instance.getMicLoudness();
+        endDB = (Mathf.InverseLerp(-70, 40, db)) * 100;
+        //Debug.Log(endDB);
+        if (endDB < 40)
+            return 0;
+        return endDB;
+    }
 }
