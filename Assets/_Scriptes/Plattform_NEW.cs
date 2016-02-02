@@ -160,7 +160,7 @@ public class Plattform_NEW : MonoBehaviour
         if (platforms[counter].transform.position.y > -5)
         {
             Vector3 temp = new Vector3(platforms[counter].transform.position.x, 
-                                       platforms[counter].transform.position.y - speed, platforms[counter].transform.position.z);
+                                       platforms[counter].transform.position.y - (speed+0.3f), platforms[counter].transform.position.z);
             platforms[counter].transform.position = Vector3.MoveTowards(platforms[counter].transform.position, temp, 10 * globalSpeed * Time.deltaTime);
             updatePlayer(-0.5f);
         }
