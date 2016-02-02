@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.Audio;
 using System.Threading;
 using Pitch;
+using AssemblyCSharp;
 
 // Singleton Code from: http://clearcutgames.net/home/?p=437
 // Analyze Code from: http://answers.unity3d.com/questions/157940/getoutputdata-and-getspectrumdata-they-represent-t.html
@@ -32,12 +33,14 @@ public class AudioAnalyzer : MonoBehaviour {
 	private float[] yinBuffer;
 	private int[] dataBuffer;
 	// YIN Frequency Detection variables end
-	
+
 	private YIN yin;
 	private Thread yinThread;
 
 	private PitchTracker pitchTracker;
 	private float latestPitch;
+
+	private MIT mit;
 
 	// Static singleton property
 	public static AudioAnalyzer Instance {
@@ -56,6 +59,7 @@ public class AudioAnalyzer : MonoBehaviour {
 
 	void Start ()
 	{
+		this.mit = new MIT ();
 		this.yinPitch = -1.0f;
 		this.dataBuffer = new int[this.yinSampleWindow];
 	
@@ -112,6 +116,25 @@ public class AudioAnalyzer : MonoBehaviour {
 		// levelMax equals to the highest normalized value power 2, a small number because < 1
 		// pass the value to a static var so we can access it from anywhere
 		MicLoudness = LevelMax ();
+
+		MIT._dywapitchtracker pitchtracker;
+		pitchtracker._pitchConfidence = 0;
+		pitchtracker._prevPitch = 0.0;
+		this.mit.dywapitch_inittracking(pitchtracker);
+
+		// For each available audio buffer, call 'dywapitch_computepitch'
+		float[] waveData = new float[this.yinSampleWindow];
+		int micPosition = Microphone.GetPosition (null) - (this.yinSampleWindow + 1); // null means the first microphone
+		if (micPosition < 0) return;
+
+		_clipRecord.GetData (waveData, micPosition);
+		double[] doubleWaveData = new double[waveData.Length];
+		waveData.CopyTo (doubleWaveData, 0);
+		double thepitch = this.mit.dywapitch_computepitch(pitchtracker, doubleWaveData, 0, waveData.Length);
+		this.latestPitch = (float) thepitch;
+		if (this.latestPitch <= 1 || MicLoudness < 0)
+			this.latestPitch = -1;
+		Debug.Log ("thepitch: " + thepitch + ", loudness: " + MicLoudness);
 	
 		// new version
 		/*
@@ -133,7 +156,7 @@ public class AudioAnalyzer : MonoBehaviour {
 */
 
 		// old YIN algorithm
-		 if (!this.yinThread.IsAlive) {
+		 /*if (!this.yinThread.IsAlive) {
 			// read mic data
 			float[] waveData = new float[this.yinSampleWindow];
 			int micPosition = Microphone.GetPosition (null) - (this.yinSampleWindow + 1); // null means the first microphone
@@ -150,7 +173,7 @@ public class AudioAnalyzer : MonoBehaviour {
 			this.yinThread.IsBackground = true;
 			this.yinThread.Start ();
 		} 
-
+*/
 
 
 
@@ -196,8 +219,8 @@ public class AudioAnalyzer : MonoBehaviour {
 	}
 
 	public float getPitch() {
-		//return this.latestPitch;
-		return this.yin.getPitch ();
+		return this.latestPitch;
+		//return this.yin.getPitch ();
 	}
 
 	public float getMicLoudness() {
