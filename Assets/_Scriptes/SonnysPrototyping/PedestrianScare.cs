@@ -42,4 +42,14 @@ public class PedestrianScare : MonoBehaviour {
 			}
 		}
 	}
+
+	void OnTriggerEnter(Collider other) {
+		if (other.CompareTag("police")) {
+			GameLogic.Instance.didFinishLevel();
+		}
+
+		if (other.CompareTag ("pupil")) {
+			GameLogic.Instance.didFailLevel ();
+		}
+	}
 }
