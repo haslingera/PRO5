@@ -91,6 +91,20 @@ public class GameLogic : MonoBehaviour {
 			AudioPlayer.Instance.playMenuSound ();
 		}
 
+		// show score if timer is ready
+		TimeSpan timeSpanShowScore = DateTime.Now - this.dateTimeShowScore;
+		if (this.delayShowScore > 0.0f && timeSpanShowScore.TotalSeconds > this.delayShowScore) {
+			this.delayShowScore = -10.0f;
+			this.sendOnShowScoreEvent ();
+		}
+
+		// hide score if timer is ready
+		TimeSpan timeSpanHideScore = DateTime.Now - this.dateTimeHideScore;
+		if (this.delayHideScore > 0.0f && timeSpanHideScore.TotalSeconds > this.delayHideScore) {
+			this.delayHideScore = -10.0f;
+			this.sendOnHideScoreEvent ();
+		}
+
 
 		// if level is started, decrease level time
 		if (this.didLoadLevel && !this.isGameOver) {
@@ -157,6 +171,14 @@ public class GameLogic : MonoBehaviour {
 						this.dateTimeStartTransition = DateTime.Now;
 						this.delayStartTransition = (60.0f / this.currentBPM) * 1.0f;
 						//Invoke("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 1.0f);
+
+						// send on show score event
+						this.dateTimeShowScore = DateTime.Now;
+						this.delayShowScore = (60.0f / this.currentBPM) * 1.0f;
+
+						// send hide show score event
+						this.dateTimeHideScore = DateTime.Now;
+						this.delayHideScore = (60.0f / this.currentBPM) * 3.0f;
 
 						// load next level after sime time
 						this.dateTimeLoadNextLevel = DateTime.Now;
@@ -284,6 +306,12 @@ public class GameLogic : MonoBehaviour {
 	public delegate void OnShowLivesAction();
 	public event OnShowLivesAction OnShowLives;
 
+	public delegate void OnShowScoreAction ();
+	public event OnShowScoreAction OnShowScore;
+
+	public delegate void OnHideScoreAction ();
+	public event OnHideScoreAction OnHideScore;
+
 
 
 
@@ -312,6 +340,12 @@ public class GameLogic : MonoBehaviour {
 
 	private DateTime dateTimePlayMenuSound;
 	private float delayMenuSound; 
+
+	private DateTime dateTimeShowScore;
+	private float delayShowScore;
+
+	private DateTime dateTimeHideScore;
+	private float delayHideScore;
 
 
 
@@ -571,6 +605,14 @@ public class GameLogic : MonoBehaviour {
 		if (this.OnHideLevelInstructions != null) this.OnHideLevelInstructions ();
 	}
 
+	private void sendOnShowScoreEvent() {
+		if (this.OnShowScore != null) this.OnShowScore ();
+	}
+
+	private void sendOnHideScoreEvent() {
+		if (this.OnHideScore != null) this.OnHideScore ();
+	}
+
 	private void playLoseSound() {
 		// play lose sound
 		AudioPlayer.Instance.playLoseSound();
@@ -600,6 +642,12 @@ public class GameLogic : MonoBehaviour {
 
 		this.dateTimePlayMenuSound = DateTime.Now;
 		this.delayMenuSound = -10.0f;
+
+		this.dateTimeShowScore = DateTime.Now;
+		this.delayShowScore = -10.0f;
+
+		this.dateTimeHideScore = DateTime.Now;
+		this.delayHideScore = -10.0f;
 	}
 
 	// ------------------------
