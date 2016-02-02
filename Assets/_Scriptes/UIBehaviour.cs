@@ -403,6 +403,8 @@ public class UIBehaviour : MonoBehaviour {
 
 	public void ShowInstruction () {
 
+		GameObject.Find ("InstructionImageScream").GetComponent<Image> ().enabled = true;
+
 		if (Application.loadedLevelName.Equals ("Road_Scene")) {
 			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "to run";
 		} else if (Application.loadedLevelName.Equals ("TreeSawing")) {
@@ -417,6 +419,8 @@ public class UIBehaviour : MonoBehaviour {
 			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "and find the right pitch";
 		} else if (Application.loadedLevelName.Equals ("Tennis")) {
 			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "to swing";
+		} else if (Application.loadedLevelName.Equals ("JumpAndDuck")) {
+			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "hight to jump, low to duck";
 		} else {
 			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "do soitast net sein";
 		}
@@ -428,6 +432,7 @@ public class UIBehaviour : MonoBehaviour {
 		imageEffects = false;
 		scaleTimeBand = true;
 		GameObject.Find ("InstructionText").GetComponent<Text> ().enabled = false;
+		GameObject.Find ("InstructionImageScream").GetComponent<Image> ().enabled = false;
 	}
 
 	//--------------------------------------
