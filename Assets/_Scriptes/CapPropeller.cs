@@ -25,7 +25,7 @@ public class CapPropeller : MonoBehaviour {
 
 
         //this.transform.rotation = Quaternion.EulerAngles(0.0f, rotChange, 0.0f);
-        transform.RotateAround(middle.transform.position, Vector3.up, 50 * Time.deltaTime);
+        transform.RotateAround(middle.transform.position, Vector3.up, 80 * Time.deltaTime);
         rotChange += rot;
         /*
         left.transform.RotateAround(transform.position, transform.up, Time.deltaTime * 90f);
