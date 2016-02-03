@@ -120,7 +120,7 @@ public class Plattform_NEW : MonoBehaviour
             }
             else
             {
-                    if ((int)DB > 400)
+                    if ((int)DB > 300)
                     {
                         moveUp();
                         //Debug.Log("UP");
@@ -130,7 +130,7 @@ public class Plattform_NEW : MonoBehaviour
                         //Do noting
 
                     }
-                    else if ((int)DB < 350)
+                    else if ((int)DB < 300)
                     {
                         moveDown();
                         //Debug.Log("Down");
