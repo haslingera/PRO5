@@ -31,7 +31,7 @@ public class BabyScream : MonoBehaviour {
 
 	void Update() {
 		if (levelDidStart) {
-			if (AudioAnalyzer.Instance.getMicLoudness() > 30) {
+			if (AudioAnalyzer.Instance.getMicLoudness() > 35f) {
 				GameLogic.Instance.didFailLevel ();
 				babyscream = true;
 			}
