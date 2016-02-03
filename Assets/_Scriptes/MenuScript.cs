@@ -17,6 +17,10 @@ public class MenuScript : MonoBehaviour {
 		GameLogic.Instance.startNewDemoGame ();
 	}
 
+	public void onPresentationGame() {
+		GameLogic.Instance.loadPresentationLevelOnHold ();
+	}
+
 	public void onTreeSawing() {
 		GameLogic.Instance.startGameWithLevel ("TreeSawing");
 	}

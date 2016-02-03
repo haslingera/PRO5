@@ -196,6 +196,8 @@ public class GameLogic : MonoBehaviour {
 						//Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 8.5f);
 
 					} else {
+						if (this.isPresentationGame)
+							this.numberOfLevelsCompleted++;
 						Debug.Log ("did Fail");
 						// level was lost
 						this.numberOfLives--;
@@ -245,22 +247,26 @@ public class GameLogic : MonoBehaviour {
 
 						// after 5 beats hide the lives and start transition to next level
 						this.dateTimeStartTransition = DateTime.Now;
-						this.delayStartTransition = (60.0f / this.currentBPM) * 5.0f;
+						if (this.isPresentationGame) this.delayStartTransition = (60.0f / this.currentBPM) * 1.0f + ((60.0f / this.getNextLevelBPM ()) * 4.0f);
+						else this.delayStartTransition = (60.0f / this.currentBPM) * 5.0f;
 						//Invoke ("sendOnStartTransitionEvent", (60.0f / this.currentBPM) * 5.0f);
 
 						// load next level after some time
 						this.dateTimeLoadNextLevel = DateTime.Now;
-						this.delayLoadNextLevel = (60.0f / this.currentBPM) * 8.5f;
+						if (this.isPresentationGame) this.delayLoadNextLevel = (60.0f / this.currentBPM) * 1.0f + ((60.0f / this.getNextLevelBPM ()) * 7.5f);
+						else this.delayLoadNextLevel = (60.0f / this.currentBPM) * 8.5f;
 						//Invoke ("loadNextLevel", (60.0f / this.currentBPM) * 8.5f);
 
 						// send show instructions
 						this.dateTimeShowLevelInstructions = DateTime.Now;
-						this.delayShowLevelInstructions = (60.0f / this.currentBPM) * 8.5f;
+						if (this.isPresentationGame) this.delayShowLevelInstructions = (60.0f / this.currentBPM) * 1.0f + ((60.0f / this.getNextLevelBPM ()) * 7.5f);
+						else this.delayShowLevelInstructions = (60.0f / this.currentBPM) * 8.5f;
 						//Invoke("sendOnShowLevelInstructionsEvent", (60.0f / this.currentBPM) * 8.5f);
 
 						// send hide instructions after 4 more beats
 						this.dateTimeHideLevelInstructions = DateTime.Now;
-						this.delayHideLevelInstructions = (60.0f / this.currentBPM) * 12.5f;
+						if (this.isPresentationGame) this.delayHideLevelInstructions = (60.0f / this.currentBPM) * 1.0f + ((60.0f / this.getNextLevelBPM ()) * 11.5f);
+						else this.delayHideLevelInstructions = (60.0f / this.currentBPM) * 12.5f;
 						//Invoke("sendOnHideLevelInstructionsEvent", (60.0f / this.currentBPM) * 12.5f);
 					}
 			
@@ -375,6 +381,9 @@ public class GameLogic : MonoBehaviour {
 	private int numberOfLevelsCompleted;
 	private string[] levels = new string[] {"TreeSawing", "Tennis", "FlappyScream", "Road_Scene", "Plattformen-Szene", "Tod-Szene-Spiel", "JumpAndDuck", "GlassDestroying", "BabyScream", "PedestrianScare"};
 	private string nextLevel;
+
+	private bool isPresentationGame = false;
+	private int levelsDone = 0;
 
 	private bool showMainMenu = false;
 
@@ -550,15 +559,36 @@ public class GameLogic : MonoBehaviour {
 		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
 	}
 
+	public void loadPresentationLevelOnHold() {
+		this.isPresentationGame = true;
+		AudioPlayer.Instance.playMenuSound ();
+		this.showMainMenu = true;
+		this.isGameOver = true;
+		this.didLoadLevel = false;
+
+		// load flappy scream at the beginning
+
+		this.setIsSurviveLevel (true); // default will be survive level
+		Application.LoadLevel ("FlappyScream");
+	}
+
 	private void loadNextLevel() {
 		// load the next level
 		Application.LoadLevel (this.nextLevel);
 	}
 
 	private void prepareNextLevel() {
-		// increase bpm
-		int plusBeats = (this.numberOfLevelsCompleted / 2) * 16;
-		this.currentBPM = Mathf.Min(defaultBPM + plusBeats, defaultBPM * 2);
+
+		if (this.isPresentationGame) {
+			// increase bpm every level
+			int plusBeats = this.numberOfLevelsCompleted * 16;
+			this.currentBPM = Mathf.Min (defaultBPM + plusBeats, defaultBPM * 2);
+
+		} else {
+			// increase bpm
+			int plusBeats = (this.numberOfLevelsCompleted / 2) * 16;
+			this.currentBPM = Mathf.Min (defaultBPM + plusBeats, defaultBPM * 2);
+		}
 
 		this.didLoadLevel = false;
 		this.didTriggerReadyToStartEvent = false;
@@ -572,14 +602,49 @@ public class GameLogic : MonoBehaviour {
 		this.currentLevelMaxTime = this.actualLevelTime;
 
 		// get the next level to load
-		int randomNumber = UnityEngine.Random.Range(0, this.levels.Length * 5);
-		this.nextLevel = this.levels[randomNumber % this.levels.Length];
+		if (this.isPresentationGame) {
+			switch (this.levelsDone) {
+			case 0:
+				this.nextLevel = "TreeSawing";
+				this.levelsDone = 1;
+				break;
+
+			case 1:
+				this.nextLevel = "Road_Scene";
+				this.levelsDone = 2;
+				break;
+
+			case 2:
+				this.nextLevel = "GlassDestroying";
+				this.levelsDone = 3;
+				break;
+
+			case 3:
+				this.nextLevel = "FlappyScream";
+				this.levelsDone = 0;
+				break;
+
+			default:
+				break;
+			}
+
+		} else { 
+			int randomNumber = UnityEngine.Random.Range (0, this.levels.Length * 5);
+			this.nextLevel = this.levels [randomNumber % this.levels.Length];
+		}
 	}
 
 	private int getNextLevelBPM() {
-		int plusBeats = ((this.numberOfLevelsCompleted + 1) / 2) * 16;
-		int nextLevelBPM = Mathf.Min(defaultBPM + plusBeats, defaultBPM * 2);
-		return nextLevelBPM;
+		if (this.isPresentationGame) {
+			int plusBeats = (this.levelsDone + 1) * 16;
+			int nextLevelBPM = Mathf.Min (defaultBPM + plusBeats, defaultBPM * 2);
+			return nextLevelBPM;
+		} else {
+
+			int plusBeats = ((this.numberOfLevelsCompleted + 1) / 2) * 16;
+			int nextLevelBPM = Mathf.Min (defaultBPM + plusBeats, defaultBPM * 2);
+			return nextLevelBPM;
+		}
 	}
 
 	private void tickTockStarted() {
