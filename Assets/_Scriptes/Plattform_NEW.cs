@@ -216,7 +216,7 @@ public class Plattform_NEW : MonoBehaviour
         else {
             if (!onTheMove)
             {
-                if ((int)DB > 400)
+                if ((int)DB > 300)
                 {
                     //Debug.Log ("UP");
                     moveUp();
@@ -226,7 +226,7 @@ public class Plattform_NEW : MonoBehaviour
                     //Do noting
 
                 }
-                else if ((int)DB < 350)
+                else if ((int)DB < 300)
                 {
                     //Debug.Log ("DOWN");
                     moveDown();
@@ -272,7 +272,7 @@ public class Plattform_NEW : MonoBehaviour
             if(Player.transform.position.x == platforms[i].transform.position.x && !onTheMove)
             {
                 counter = i;
-                Debug.Log(counter);
+                //Debug.Log(counter);
             }
         }
     }
