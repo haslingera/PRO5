@@ -31,13 +31,9 @@ public class UIBehaviour : MonoBehaviour {
 
 	bool first = true;
 	
-	bool timeBand = false;
 	bool timeBandCreated = false;
 
 	GameObject[] images = new GameObject[4];
-	float redValue = 1.0f;
-
-	float lastTimeValue = 0.0f;
 
 	float cameraStartSpeed = 3.0f;
 	float cameraEndSpeed = 2.0f;
@@ -47,7 +43,6 @@ public class UIBehaviour : MonoBehaviour {
 	bool imageEffects = true;
 	bool mainMenu = false;
 
-	bool timeBandScale = false;
 	bool scaleTimeBand = false;
 
 	float timeBandWidth = 0.0f;
@@ -58,6 +53,31 @@ public class UIBehaviour : MonoBehaviour {
 
 	float scoreNewY = 0.0f;
 	float scoreImageY = 0.0f;
+
+	GameObject blackOverlay;
+	GameObject scoreImage;
+	GameObject scoreNew;
+	GameObject backgroundCamera;
+	GameObject livesOld;
+	GameObject lives;
+	GameObject livesNew;
+	GameObject tryAgain;
+	GameObject gameOver;
+	GameObject highscore;
+	GameObject startButton;
+	GameObject score;
+	GameObject scoreOld;
+	GameObject logo;
+	GameObject instructionText;
+	GameObject instructionImageScreen;
+
+	float tryAgainYPosition;
+	float gameOverYPosition;
+	float highscoreYPosition;
+	float livesYPosition;
+	float scoreOldY;
+	float originalInstructionImageScreamY;
+	float originalInstructionTextY;
 
 	private static UIBehaviour instance = null;
 
@@ -82,13 +102,41 @@ public class UIBehaviour : MonoBehaviour {
 
 	public void LevelStart() {
 
+		blackOverlay = GameObject.Find ("BlackOverlay");
+
+		images [0] = GameObject.Find ("timeBarLeft").transform.gameObject as GameObject;
+		images [1] = GameObject.Find ("timeBarTop").transform.gameObject as GameObject;
+		images [2] = GameObject.Find ("timeBarRight").transform.gameObject as GameObject;
+		images [3] = GameObject.Find ("timeBarBottom").transform.gameObject as GameObject;
+
+		scoreImage = GameObject.Find ("scoreImage");
+		scoreNew = GameObject.Find ("scoreNew");
+
+		livesNew = GameObject.Find ("livesNew");
+		livesOld = GameObject.Find ("livesOld");
+		lives = GameObject.Find ("lives");
+		
+		tryAgain = GameObject.Find ("tryAgain");
+		gameOver = GameObject.Find ("gameOver");
+		highscore = GameObject.Find ("highscore");
+		score = GameObject.Find ("score");
+		scoreOld = GameObject.Find ("scoreOld");
+		instructionText = GameObject.Find ("InstructionText");
+		instructionImageScreen = GameObject.Find ("InstructionImageScream");
+
+		startButton = GameObject.Find ("StartButton");
+
+		logo = GameObject.Find ("Logo");
+
+		backgroundCamera = GameObject.Find ("BackgroundCamera");
+
 		//Set Camera And Zoom To Object
 		if (GameObject.FindGameObjectsWithTag ("ZoomTo").Length != 0) {
 			zoomToObjects = GameObject.FindGameObjectsWithTag ("ZoomTo");
 		}
 
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
-		GameObject.Find ("BlackOverlay").GetComponent<Image> ().enabled = true;
+		blackOverlay.GetComponent<Image> ().enabled = true;
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
 			
 		//Set Camera To See All Things That Were Seen In 16:9
@@ -98,6 +146,9 @@ public class UIBehaviour : MonoBehaviour {
 		originalCameraPosition = Camera.main.transform.position;
 		originalCameraRotation = Camera.main.transform.eulerAngles;
 		originalCameraSize = Camera.main.orthographicSize;
+
+		scoreOldY = scoreOld.GetComponent<RectTransform> ().localPosition.y;
+		scoreNewY = scoreNew.GetComponent<RectTransform> ().localPosition.y;
 			
 		//Get's a new color based on the last player color
 		SetBackgroundColorFromZoomToObject ();
@@ -106,7 +157,7 @@ public class UIBehaviour : MonoBehaviour {
 		backgroundColor = zoomToObjectColor;
 		zoomToObjectColor = tempColor;
 			
-		GameObject.Find("BackgroundCamera").GetComponent<Camera> ().backgroundColor = backgroundColor;
+		backgroundCamera.GetComponent<Camera> ().backgroundColor = backgroundColor;
 
 		if (zoomToObjects != null) {
 			for (int i = 0; i < zoomToObjects.Length; i++) {
@@ -114,22 +165,21 @@ public class UIBehaviour : MonoBehaviour {
 			}
 		}
 
-		timeBandWidth = GameObject.Find ("timeBarLeft").transform.gameObject.GetComponent<RectTransform> ().sizeDelta.y;
+		timeBandWidth = images [0].transform.gameObject.GetComponent<RectTransform> ().sizeDelta.y;
 
 		timeBandEnded = false;
 		
 		if (GameLogic.Instance.getShowMainMenu ()) {
 
-			timeBandScale = true;
 			TimeBandStart (); 
 			StartScreen ();
 
 		} else {
 
 			if (scoreIsShown) {
-				GameObject.Find ("scoreImage").GetComponent<Image> ().enabled = true;
-				GameObject.Find ("scoreNew").GetComponent<Text> ().enabled = true;
-				GameObject.Find ("scoreNew").GetComponent<Text> ().text = GameLogic.Instance.getNumberOfLevelsCompleted() + "";
+				scoreImage.GetComponent<Image> ().enabled = true;
+				scoreNew.GetComponent<Text> ().enabled = true;
+				scoreNew.GetComponent<Text> ().text = GameLogic.Instance.getNumberOfLevelsCompleted() + "";
 			}
 
 			//Set the camera upwards and to the original position  
@@ -154,11 +204,6 @@ public class UIBehaviour : MonoBehaviour {
 
 	public void TimeBandStart() {
 
-		images [0] = GameObject.Find ("timeBarLeft").transform.gameObject as GameObject;
-		images [1] = GameObject.Find ("timeBarTop").transform.gameObject as GameObject;
-		images [2] = GameObject.Find ("timeBarRight").transform.gameObject as GameObject;
-		images [3] = GameObject.Find ("timeBarBottom").transform.gameObject as GameObject;
-
 		images [0].GetComponent<Image>().enabled = true;
 		images [0].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.height, 0);
 		images [1].GetComponent<Image>().enabled = true;
@@ -176,17 +221,18 @@ public class UIBehaviour : MonoBehaviour {
 
 		float ratio = Screen.width / Screen.height;
 
-		Color c = GameObject.Find ("BlackOverlay").GetComponent<Image> ().color;
-		c.a = value;
-		GameObject.Find ("BlackOverlay").GetComponent<Image> ().color = c;
+		Color overlay = new Color ();
+		overlay.a = value;
+
+		blackOverlay.GetComponent<Image> ().color = overlay;
 		
 		if (imageEffects) {
 			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().blurSize = 3.0f * value;
-			GameObject.Find ("BlackOverlay").GetComponent<Image> ().enabled = true;
+			blackOverlay.GetComponent<Image> ().enabled = true;
 			//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().saturation = 1.0f * value;
 		} else {
 			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
-			GameObject.Find ("BlackOverlay").GetComponent<Image> ().enabled = false;
+			blackOverlay.GetComponent<Image> ().enabled = false;
 			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
 		}
 
@@ -197,17 +243,17 @@ public class UIBehaviour : MonoBehaviour {
 		images [2].GetComponent<RectTransform> ().sizeDelta = new Vector2 (Screen.height, timeBandWidth * value);
 		images [3].GetComponent<RectTransform> ().sizeDelta = new Vector2 (Screen.width, timeBandWidth * value);
 
-		if (value < 0.95f) {
+		if (value < 0.9f) {
 			if (GameLogic.Instance.getIsSurviveLevel ()) {
-				images [0].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value);
-				images [1].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value);
-				images [2].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value);
-				images [3].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value);
+				images [0].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value / 0.9f);
+				images [1].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value / 0.9f);
+				images [2].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value / 0.9f);
+				images [3].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value / 0.9f);
 			} else {
-				images [0].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value);
-				images [1].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value);
-				images [2].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value);
-				images [3].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value);
+				images [0].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value / 0.9f);
+				images [1].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value / 0.9f);
+				images [2].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value / 0.9f);
+				images [3].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value / 0.9f);
 			}
 		} else {
 			images [0].GetComponent<Image> ().color = new Color (1.0f, 1.0f, 1.0f);
@@ -215,8 +261,6 @@ public class UIBehaviour : MonoBehaviour {
 			images [2].GetComponent<Image> ().color = new Color (1.0f, 1.0f, 1.0f);
 			images [3].GetComponent<Image> ().color = new Color (1.0f, 1.0f, 1.0f);
 		}
-
-		lastTimeValue = value;
 
 	}
 
@@ -269,7 +313,7 @@ public class UIBehaviour : MonoBehaviour {
 		float differenceValueB = zoomToObjectColor.b - backgroundColor.b;
 
 		Color differenceColor = new Color (backgroundColor.r + differenceValueR * value, backgroundColor.g + differenceValueG * value, backgroundColor.b + differenceValueB * value);
-		GameObject.Find("BackgroundCamera").GetComponent<Camera> ().backgroundColor = differenceColor;
+		backgroundCamera.GetComponent<Camera> ().backgroundColor = differenceColor;
 
 	}
 
@@ -289,29 +333,29 @@ public class UIBehaviour : MonoBehaviour {
 
 		scoreIsShown = false;
 
-		GameObject.Find ("livesOld").GetComponent<Text> ().text = lives + 1 + "";
-		//GameObject.Find ("livesOld").GetComponent<Text> ().color = backgroundColor;
-		GameObject.Find ("livesOld").GetComponent<Text> ().enabled = true;
-		GameObject.Find ("lives").GetComponent<Image> ().enabled = true;
+		livesOld.GetComponent<Text> ().text = lives + 1 + "";
+		livesOld.GetComponent<Text> ().enabled = true;
+		this.lives.GetComponent<Image> ().enabled = true;
 
-		float tryAgainYPosition = GameObject.Find ("tryAgain").GetComponent<RectTransform> ().localPosition.y;
-		float gameOverYPosition = GameObject.Find ("gameOver").GetComponent<RectTransform> ().localPosition.y;
-		float highscoreYPosition = GameObject.Find ("highscore").GetComponent<RectTransform> ().localPosition.y;
+		tryAgainYPosition = tryAgain.GetComponent<RectTransform> ().localPosition.y;
+		gameOverYPosition = gameOver.GetComponent<RectTransform> ().localPosition.y;
+		highscoreYPosition = highscore.GetComponent<RectTransform> ().localPosition.y;
+		livesYPosition = this.lives.GetComponent<RectTransform> ().localPosition.y;
 
 		if (lives != 0) {
-			GameObject.Find ("livesNew").GetComponent<Text> ().text = lives + "";
-			GameObject.Find ("livesNew").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("livesNew").GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
-			GameObject.Find ("livesNew").GetComponent<Text> ().enabled = true;
+			livesNew.GetComponent<Text> ().text = lives + "";
+			livesNew.GetComponent<RectTransform> ().localPosition = new Vector2 (livesNew.GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
+			livesNew.GetComponent<Text> ().enabled = true;
 			//GameObject.Find ("livesNew").GetComponent<Text> ().color = backgroundColor;
 
 		} else {
-			GameObject.Find ("gameOver").GetComponent<Image>().enabled = true;
-			GameObject.Find ("tryAgain").GetComponent<Text>().enabled = true;
-			GameObject.Find ("highscore").GetComponent<Text>().enabled = true;
-			GameObject.Find ("highscore").GetComponent<Text>().text = "highscore " + PlayerPrefs.GetInt("highscore") + " your score " + GameLogic.Instance.getNumberOfLevelsCompleted();
-			GameObject.Find ("highscore").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("highscore").GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
-			GameObject.Find ("tryAgain").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("tryAgain").GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
-			GameObject.Find ("gameOver").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("gameOver").GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
+			gameOver.GetComponent<Image>().enabled = true;
+			tryAgain.GetComponent<Text>().enabled = true;
+			highscore.GetComponent<Text>().enabled = true;
+			highscore.GetComponent<Text>().text = "highscore " + PlayerPrefs.GetInt("highscore") + " ... your score " + GameLogic.Instance.getNumberOfLevelsCompleted();
+			highscore.GetComponent<RectTransform> ().localPosition = new Vector2 (highscore.GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
+			tryAgain.GetComponent<RectTransform> ().localPosition = new Vector2 (tryAgain.GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
+			gameOver.GetComponent<RectTransform> ().localPosition = new Vector2 (gameOver.GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
 		}
 
 		float newTime = time / 3.0f + 0.2f;
@@ -320,8 +364,8 @@ public class UIBehaviour : MonoBehaviour {
 
 		if (lives != 0) {
 			iTween.ValueTo (GameObject.Find ("livesNew").gameObject, iTween.Hash (
-				"from", GameObject.Find ("livesNew").GetComponent<RectTransform> ().localPosition.y,
-				"to", GameObject.Find ("livesOld").GetComponent<RectTransform> ().localPosition.y,
+				"from", livesNew.GetComponent<RectTransform> ().localPosition.y,
+				"to", livesOld.GetComponent<RectTransform> ().localPosition.y,
 				"time", 0.4f,
 				"easetype", iTween.EaseType.easeInOutBack,
 				"onupdatetarget", this.gameObject, 
@@ -329,44 +373,22 @@ public class UIBehaviour : MonoBehaviour {
 
 		} else {
 
-			iTween.ValueTo (GameObject.Find ("tryAgain").gameObject, iTween.Hash (
-				"from", GameObject.Find ("tryAgain").GetComponent<RectTransform> ().localPosition.y,
-				"to", tryAgainYPosition,
-				"time", 0.4f,
-				"easetype", iTween.EaseType.easeInOutBack,
-				"onupdatetarget", this.gameObject, 
-				"onupdate", "MoveGuiElementTryAgain"));
+			iTween.ValueTo (
+				Camera.main.gameObject,
+				iTween.Hash("from",0.0f,
+			            "to", 1.0f,
+			            "time", 0.4f,
+			            "onupdatetarget", this.gameObject,
+			            "easetype",iTween.EaseType.easeInOutBack,
+			            "onupdate", "LivesMovementOne"));
 
-			iTween.ValueTo (GameObject.Find ("livesNew").gameObject, iTween.Hash (
-				"from", GameObject.Find ("gameOver").GetComponent<RectTransform> ().localPosition.y,
-				"to", gameOverYPosition,
-				"time", 0.4f,
-				"easetype", iTween.EaseType.easeInOutBack,
-				"onupdatetarget", this.gameObject, 
-				"onupdate", "MoveGuiElementGameOver"));
-
-			iTween.ValueTo (GameObject.Find ("highscore").gameObject, iTween.Hash (
-				"from", GameObject.Find ("highscore").GetComponent<RectTransform> ().localPosition.y,
-				"to", highscoreYPosition,
-				"time", 0.4f,
-				"easetype", iTween.EaseType.easeInOutBack,
-				"onupdatetarget", this.gameObject, 
-				"onupdate", "MoveGuiElementHighscore"));
-
-			iTween.ValueTo (GameObject.Find ("lives").gameObject, iTween.Hash (
-				"from", GameObject.Find ("lives").GetComponent<RectTransform> ().localPosition.y,
-				"to", -Screen.height * 2f,
-				"time", 0.4f,
-				"easetype", iTween.EaseType.easeInOutBack,
-				"onupdatetarget", this.gameObject, 
-				"onupdate", "MoveGuiElementLives"));
-
-			GameObject.Find ("StartButton").GetComponent<Button>().onClick.AddListener(() => { OnRestartButtonGameClicked();});
+			startButton.GetComponent<Button>().onClick.AddListener(() => { OnRestartButtonGameClicked();});
+			startButton.GetComponent<Image>().enabled = true;
 
 		}
 
-		iTween.ValueTo(GameObject.Find ("livesOld").gameObject, iTween.Hash(
-			"from", GameObject.Find ("livesOld").GetComponent<RectTransform> ().localPosition.y,
+		iTween.ValueTo(livesOld.gameObject, iTween.Hash(
+			"from", livesOld.GetComponent<RectTransform> ().localPosition.y,
 			"to", -Screen.height * 2f,
 			"time", 0.4f,
 			"easetype", iTween.EaseType.easeInOutBack,
@@ -376,39 +398,35 @@ public class UIBehaviour : MonoBehaviour {
 		yield return new WaitForSeconds (time *  2.0f / 3.0f);
 
 		if (lives != 0) {
-			GameObject.Find ("livesOld").GetComponent<Text> ().enabled = false;
-			GameObject.Find ("livesNew").GetComponent<Text> ().enabled = false;
-			GameObject.Find ("lives").GetComponent<Image> ().enabled = false;
+			livesOld.GetComponent<Text> ().enabled = false;
+			livesNew.GetComponent<Text> ().enabled = false;
+			this.lives.GetComponent<Image> ().enabled = false;
 		}
 
 	}
 
-	public void MoveGuiElementScore(float yPosition){
-		GameObject.Find ("score").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("score").GetComponent<RectTransform> ().localPosition.x,yPosition);
-	}
+	void LivesMovementOne(float value) {
 
-	public void MoveGuiElementHighscore(float yPosition){
-		GameObject.Find ("highscore").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("highscore").GetComponent<RectTransform> ().localPosition.x,yPosition);
-	}
+		tryAgain.GetComponent<RectTransform> ().localPosition =
+			new Vector2 (tryAgain.GetComponent<RectTransform> ().localPosition.x, tryAgainYPosition * value);
 
-	public void MoveGuiElementLives(float yPosition){
-		GameObject.Find ("lives").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("lives").GetComponent<RectTransform> ().localPosition.x,yPosition);
+		gameOver.GetComponent<RectTransform> ().localPosition =
+			new Vector2 (gameOver.GetComponent<RectTransform> ().localPosition.x, gameOverYPosition * value);
+
+		highscore.GetComponent<RectTransform> ().localPosition =
+			new Vector2 (highscore.GetComponent<RectTransform> ().localPosition.x, highscoreYPosition * value);
+
+		lives.GetComponent<RectTransform> ().localPosition =
+			new Vector2 (lives.GetComponent<RectTransform> ().localPosition.x, livesYPosition - Screen.height * value);
+
 	}
 
 	public void MoveGuiElementNewLives(float yPosition){
-		GameObject.Find ("livesNew").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("livesNew").GetComponent<RectTransform> ().localPosition.x,yPosition);
-	}
-
-	public void MoveGuiElementGameOver(float yPosition){
-		GameObject.Find ("gameOver").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("gameOver").GetComponent<RectTransform> ().localPosition.x,yPosition);
-	}
-
-	public void MoveGuiElementTryAgain(float yPosition){
-		GameObject.Find ("tryAgain").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("gameOver").GetComponent<RectTransform> ().localPosition.x,yPosition);
+		livesNew.GetComponent<RectTransform> ().localPosition = new Vector2 (livesNew.GetComponent<RectTransform> ().localPosition.x,yPosition);
 	}
 
 	public void MoveGuiElementOldLives(float yPosition){
-		GameObject.Find ("livesOld").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("livesOld").GetComponent<RectTransform> ().localPosition.x,yPosition);
+		livesOld.GetComponent<RectTransform> ().localPosition = new Vector2 (livesOld.GetComponent<RectTransform> ().localPosition.x,yPosition);
 	}
 
 	public void StartScoreNumerator() {
@@ -417,53 +435,46 @@ public class UIBehaviour : MonoBehaviour {
 	
 	void ShowScoreNumerator(float time, int lives) {
 
-		GameObject.Find ("scoreImage").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("scoreImage").GetComponent<RectTransform> ().localPosition.x, scoreImageY);
-		GameObject.Find ("scoreNew").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("livesNew").GetComponent<RectTransform> ().localPosition.x, scoreNewY);
-		
-		GameObject.Find ("scoreOld").GetComponent<Text> ().text = lives - 1 + "";
-		GameObject.Find ("scoreOld").GetComponent<Text> ().enabled = true;
-		GameObject.Find ("scoreImage").GetComponent<Image> ().enabled = true;
-		
-		GameObject.Find ("scoreNew").GetComponent<Text> ().text = lives + "";
-		GameObject.Find ("scoreNew").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("livesNew").GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
-		GameObject.Find ("scoreNew").GetComponent<Text> ().enabled = true;
+		//scoreOldY = scoreOld.GetComponent<RectTransform> ().localPosition.y;
+		//scoreNewY = scoreNew.GetComponent<RectTransform> ().localPosition.y;
 
-		iTween.ValueTo (GameObject.Find ("scoreNew").gameObject, iTween.Hash (
-			"from", GameObject.Find ("scoreNew").GetComponent<RectTransform> ().localPosition.y,
-			"to", GameObject.Find ("scoreOld").GetComponent<RectTransform> ().localPosition.y,
-			"time", 0.4f,
-			"easetype", iTween.EaseType.easeInOutBack,
-			"onupdatetarget", this.gameObject, 
-			"onupdate", "MoveGuiElementScoreNew"));
+		scoreImage.GetComponent<RectTransform> ().localPosition = new Vector2 (scoreImage.GetComponent<RectTransform> ().localPosition.x, scoreImageY);
+
+		scoreOld.GetComponent<Text> ().text = lives - 1 + "";
+		scoreOld.GetComponent<Text> ().enabled = true;
+		scoreImage.GetComponent<Image> ().enabled = true;
 		
-		iTween.ValueTo(GameObject.Find ("scoreOld").gameObject, iTween.Hash(
-			"from", GameObject.Find ("scoreOld").GetComponent<RectTransform> ().localPosition.y,
-			"to", -Screen.height * 2f,
-			"time", 0.4f,
-			"easetype", iTween.EaseType.easeInOutBack,
-			"onupdatetarget", this.gameObject, 
-			"onupdate", "MoveGuiElementScoreOld"));
+		scoreNew.GetComponent<Text> ().text = lives + "";
+		scoreNew.GetComponent<RectTransform> ().localPosition = new Vector2 (scoreNew.GetComponent<RectTransform> ().localPosition.x, scoreNew.GetComponent<RectTransform> ().localPosition.y + Screen.height);
+		scoreNew.GetComponent<Text> ().enabled = true;
+
+		iTween.ValueTo (
+			Camera.main.gameObject,
+			iTween.Hash("from",0.0f,
+		            "to", 1.0f,
+		            "time", 0.4f,
+		            "onupdatetarget", this.gameObject,
+		            "easetype",iTween.EaseType.easeInOutBack,
+		            "onupdate", "ShowScoreMovementOne"));
 
 		scoreIsShown = true;
 
 	}
 
+	void ShowScoreMovementOne(float value) {
+
+		scoreNew.GetComponent<RectTransform> ().localPosition =
+			new Vector2 (scoreNew.GetComponent<RectTransform> ().localPosition.x, scoreNewY + Screen.height *  (1 - value));
+
+		scoreOld.GetComponent<RectTransform> ().localPosition =
+			new Vector2 (scoreOld.GetComponent<RectTransform> ().localPosition.x, scoreOldY - Screen.height * value);
+
+	}
+
 	public void HideScoreNumerator () {
-		GameObject.Find ("scoreOld").GetComponent<Text> ().enabled = false;
-		GameObject.Find ("scoreImage").GetComponent<Image> ().enabled = false;
-		GameObject.Find ("scoreNew").GetComponent<Text> ().enabled = false;
-	}
-
-	public void MoveGuiElementScoreOld(float yPosition){
-		GameObject.Find ("scoreOld").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("scoreOld").GetComponent<RectTransform> ().localPosition.x,yPosition);
-	}
-	
-	public void MoveGuiElementScoreNew(float yPosition){
-		GameObject.Find ("scoreNew").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("scoreNew").GetComponent<RectTransform> ().localPosition.x,yPosition);
-	}
-
-	public void MoveGuiElementScoreImage(float yPosition){
-		GameObject.Find ("scoreImage").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("scoreImage").GetComponent<RectTransform> ().localPosition.x,yPosition);
+		scoreOld.GetComponent<Text> ().enabled = false;
+		scoreImage.GetComponent<Image> ().enabled = false;
+		scoreNew.GetComponent<Text> ().enabled = false;
 	}
 
 	public void StartScreen () {
@@ -471,35 +482,36 @@ public class UIBehaviour : MonoBehaviour {
 		imageEffects = true;
 
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
-		GameObject.Find ("BlackOverlay").GetComponent<Image> ().enabled = true;
+		blackOverlay.GetComponent<Image> ().enabled = true;
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
 
-		GameObject.Find ("StartText").GetComponent<Text> ().enabled = true;
-		GameObject.Find ("Logo").GetComponent<Image> ().enabled = true;
-		GameObject.Find ("StartButton").GetComponent<Button>().onClick.AddListener(() => { OnButtonGameClicked();});
+		logo.GetComponent<Image> ().enabled = true;
+		startButton.GetComponent<Button>().onClick.AddListener(() => { OnButtonGameClicked();});
+		startButton.GetComponent<Image>().enabled = true;
 
 	}
 
 	public void OnButtonGameClicked() {
 
-		GameObject.Find ("StartButton").GetComponent<Button> ().onClick.RemoveAllListeners ();
+		startButton.GetComponent<Button> ().onClick.RemoveAllListeners ();
+		startButton.GetComponent<Image>().enabled = false;
 
 		//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
 		//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
 
-		GameObject.Find ("StartText").GetComponent<Text> ().enabled = false;
-		GameObject.Find ("Logo").GetComponent<Image> ().enabled = false;
+		logo.GetComponent<Image> ().enabled = false;
 		//GameObject.Find ("BlackOverlay").GetComponent<Image> ().enabled = false;
 		
 		GameLogic.Instance.startNewSinglePlayerGame ();
 	}
 
 	public void OnRestartButtonGameClicked() {
-		GameObject.Find ("StartButton").GetComponent<Button> ().onClick.RemoveAllListeners ();
+		startButton.GetComponent<Button> ().onClick.RemoveAllListeners ();
+		startButton.GetComponent<Image>().enabled = false;
 
-		GameObject.Find ("gameOver").GetComponent<Image>().enabled = false;
-		GameObject.Find ("tryAgain").GetComponent<Text>().enabled = false;
-		GameObject.Find ("highscore").GetComponent<Text>().enabled = false;
+		gameOver.GetComponent<Image>().enabled = false;
+		tryAgain.GetComponent<Text>().enabled = false;
+		highscore.GetComponent<Text>().enabled = false;
 
 		GameLogic.Instance.restart ();
 
@@ -508,94 +520,94 @@ public class UIBehaviour : MonoBehaviour {
 	public void ShowInstruction () {
 
 		if (Application.loadedLevelName.Equals ("Road_Scene")) {
-			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "to run";
+			instructionText.GetComponent<Text> ().text = "to run";
 		} else if (Application.loadedLevelName.Equals ("TreeSawing")) {
-			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "high and low by turns";
+			instructionText.GetComponent<Text> ().text = "high and low by turns";
 		} else if (Application.loadedLevelName.Equals ("Plattformen-Szene")) {
-			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "high or low";
+			instructionText.GetComponent<Text> ().text = "high or low";
 		} else if (Application.loadedLevelName.Equals ("FlappyScream")) {
-			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "to fly";
+			instructionText.GetComponent<Text> ().text = "to fly";
 		} else if (Application.loadedLevelName.Equals ("Tod-Szene-Spiel")) {
-			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "to scare enemies";
+			instructionText.GetComponent<Text> ().text = "to scare enemies";
 		} else if (Application.loadedLevelName.Equals ("GlassDestroying")) {
-			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "and find the right pitch";
+			instructionText.GetComponent<Text> ().text = "and find the right pitch";
 		} else if (Application.loadedLevelName.Equals ("Tennis")) {
-			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "to swing";
+			instructionText.GetComponent<Text> ().text = "to swing";
 		} else if (Application.loadedLevelName.Equals ("JumpAndDuck")) {
-			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "hight to jump, low to duck";
+			instructionText.GetComponent<Text> ().text = "hight to jump, low to duck";
 		} else if (Application.loadedLevelName.Equals ("BabyScream")) {
-			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "don’t wake the baby";
+			instructionImageScreen.GetComponent<Image> ().sprite = Resources.Load <Sprite> ("quiet");
+			instructionText.GetComponent<Text> ().text = "don’t wake the baby";
 		} else if (Application.loadedLevelName.Equals ("PedestrianScare")) {
-			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "to scare";
+			instructionText.GetComponent<Text> ().text = "to scare";
 		} else {
-			GameObject.Find ("InstructionText").GetComponent<Text> ().text = "do soitast net sein";
+			instructionText.GetComponent<Text> ().text = "do soitast net sein";
 		}
 
-		float originalInstructionImageScreamY = GameObject.Find ("InstructionImageScream").GetComponent<RectTransform> ().localPosition.y;
-		float originalInstructionTextY = GameObject.Find ("InstructionText").GetComponent<RectTransform> ().localPosition.y;
+		originalInstructionImageScreamY = instructionImageScreen.GetComponent<RectTransform> ().localPosition.y;
+		originalInstructionTextY = instructionText.GetComponent<RectTransform> ().localPosition.y;
 
-		GameObject.Find ("InstructionImageScream").GetComponent<Image> ().enabled = true;
-		GameObject.Find ("InstructionImageScream").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("InstructionImageScream").GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
+		instructionImageScreen.GetComponent<Image> ().enabled = true;
+		instructionImageScreen.GetComponent<RectTransform> ().localPosition = new Vector2 (instructionImageScreen.GetComponent<RectTransform> ().localPosition.x, originalInstructionImageScreamY + Screen.height);
 
-		GameObject.Find ("InstructionText").GetComponent<Text> ().enabled = true;
-		GameObject.Find ("InstructionText").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("InstructionText").GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
+		instructionText.GetComponent<Text> ().enabled = true;
+		instructionText.GetComponent<RectTransform> ().localPosition = new Vector2 (instructionText.GetComponent<RectTransform> ().localPosition.x, originalInstructionTextY + Screen.height);
 
-		iTween.ValueTo (GameObject.Find ("InstructionImageScream").gameObject, iTween.Hash (
-			"from", GameObject.Find ("InstructionImageScream").GetComponent<RectTransform> ().localPosition.y,
-			"to", originalInstructionImageScreamY,
-			"time", 0.4f,
-			"easetype", iTween.EaseType.easeInOutBack,
-			"onupdatetarget", this.gameObject, 
-			"onupdate", "MoveGuiElementInstructionImageScream"));
-
-		iTween.ValueTo (GameObject.Find ("InstructionText").gameObject, iTween.Hash (
-			"from", GameObject.Find ("InstructionText").GetComponent<RectTransform> ().localPosition.y,
-			"to", originalInstructionTextY,
-			"time", 0.4f,
-			"easetype", iTween.EaseType.easeInOutBack,
-			"onupdatetarget", this.gameObject, 
-			"onupdate", "MoveGuiElementInstructionText"));
+		iTween.ValueTo (
+			Camera.main.gameObject,
+			iTween.Hash("from",1.0f,
+		            "to", 0.0f,
+		            "time", 0.4f,
+		            "onupdatetarget", this.gameObject,
+		            "easetype",iTween.EaseType.easeInOutBack,
+		            "onupdate", "ShowInstructionMovementOne"));
 
 		if (scoreIsShown) {
 
-			scoreNewY = GameObject.Find ("scoreNew").GetComponent<RectTransform> ().localPosition.y;
-			scoreImageY = GameObject.Find ("scoreImage").GetComponent<RectTransform> ().localPosition.y;
+			scoreNewY = scoreNew.GetComponent<RectTransform> ().localPosition.y;
+			scoreImageY = scoreImage.GetComponent<RectTransform> ().localPosition.y;
 
-			iTween.ValueTo (GameObject.Find ("scoreNew").gameObject, iTween.Hash (
-				"from", GameObject.Find ("scoreNew").GetComponent<RectTransform> ().localPosition.y,
-				"to", -Screen.height * 2f,
-				"time", 0.4f,
-				"easetype", iTween.EaseType.easeInOutBack,
-				"onupdatetarget", this.gameObject, 
-				"onupdate", "MoveGuiElementScoreNew"));
+			iTween.ValueTo (
+				Camera.main.gameObject,
+				iTween.Hash("from",0.0f,
+			            "to", 1.0f,
+			            "time", 0.4f,
+			            "onupdatetarget", this.gameObject,
+			            "easetype",iTween.EaseType.easeInOutBack,
+			            "onupdate", "ShowInstructionMovementTwo"));
 
-			iTween.ValueTo (GameObject.Find ("scoreImage").gameObject, iTween.Hash (
-				"from", GameObject.Find ("scoreImage").GetComponent<RectTransform> ().localPosition.y,
-				"to", -Screen.height * 2f,
-				"time", 0.4f,
-				"easetype", iTween.EaseType.easeInOutBack,
-				"onupdatetarget", this.gameObject, 
-				"onupdate", "MoveGuiElementScoreImage"));
 		}
 	}
 
-	public void MoveGuiElementInstructionImageScream(float yPosition){
-		GameObject.Find ("InstructionImageScream").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("InstructionImageScream").GetComponent<RectTransform> ().localPosition.x,yPosition);
+	void ShowInstructionMovementOne(float value) {
+		
+		instructionImageScreen.GetComponent<RectTransform> ().localPosition =
+			new Vector2 (instructionImageScreen.GetComponent<RectTransform> ().localPosition.x, originalInstructionImageScreamY + Screen.height * value);
+
+		instructionText.GetComponent<RectTransform> ().localPosition =
+			new Vector2 (instructionText.GetComponent<RectTransform> ().localPosition.x, originalInstructionTextY + Screen.height * value);
+
 	}
 
-	public void MoveGuiElementInstructionText(float yPosition){
-		GameObject.Find ("InstructionText").GetComponent<RectTransform> ().localPosition = new Vector2 (GameObject.Find ("InstructionText").GetComponent<RectTransform> ().localPosition.x,yPosition);
+	void ShowInstructionMovementTwo(float value) {
+		
+		scoreNew.GetComponent<RectTransform> ().localPosition =
+			new Vector2 (scoreNew.GetComponent<RectTransform> ().localPosition.x, scoreNewY - Screen.height * value);
+		
+		scoreImage.GetComponent<RectTransform> ().localPosition =
+			new Vector2 (scoreImage.GetComponent<RectTransform> ().localPosition.x, scoreImageY - Screen.height * value);
+			
 	}
 
 	public void HideInstruction () {
 		imageEffects = false;
 		scaleTimeBand = true;
-		GameObject.Find ("InstructionText").GetComponent<Text> ().enabled = false;
-		GameObject.Find ("InstructionImageScream").GetComponent<Image> ().enabled = false;
+		instructionText.GetComponent<Text> ().enabled = false;
+		instructionImageScreen.GetComponent<Image> ().enabled = false;
 
-		GameObject.Find ("scoreOld").GetComponent<Text> ().enabled = false;
-		GameObject.Find ("scoreImage").GetComponent<Image> ().enabled = false;
-		GameObject.Find ("scoreNew").GetComponent<Text> ().enabled = false;
+		scoreOld.GetComponent<Text> ().enabled = false;
+		scoreImage.GetComponent<Image> ().enabled = false;
+		scoreNew.GetComponent<Text> ().enabled = false;
 
 	}
 
@@ -624,11 +636,6 @@ public class UIBehaviour : MonoBehaviour {
 	public UIBehaviour CameraStartRotation(Vector3 vec) {
 		cameraStartRotation = vec;
 		startRotSet = true;
-		return this;
-	}
-	
-	public UIBehaviour TimeBand(bool time) {
-		timeBand = time;
 		return this;
 	}
 	
