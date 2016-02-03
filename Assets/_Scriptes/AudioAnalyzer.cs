@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.Audio;
 using System.Threading;
 using Pitch;
@@ -41,6 +42,7 @@ public class AudioAnalyzer : MonoBehaviour {
 	private float latestPitch;
 
 	private MIT mit;
+	private Queue<float> pitchQueue;
 
 	// Static singleton property
 	public static AudioAnalyzer Instance {
@@ -73,6 +75,12 @@ public class AudioAnalyzer : MonoBehaviour {
 		this.pitchTracker = new PitchTracker();
 		this.pitchTracker.SampleRate = 44100.0;
 		this.latestPitch = -1.0f;
+		this.pitchQueue = new Queue<float> ();
+		this.pitchQueue.Enqueue (0.0f);
+		this.pitchQueue.Enqueue (0.0f);
+		this.pitchQueue.Enqueue (0.0f);
+		this.pitchQueue.Enqueue (0.0f);
+		this.pitchQueue.Enqueue (0.0f);
 	}
 
 //mic initialization
@@ -131,9 +139,39 @@ public class AudioAnalyzer : MonoBehaviour {
 		double[] doubleWaveData = new double[waveData.Length];
 		waveData.CopyTo (doubleWaveData, 0);
 		double thepitch = this.mit.dywapitch_computepitch(pitchtracker, doubleWaveData, 0, waveData.Length);
+
 		this.latestPitch = (float) thepitch;
-		if (this.latestPitch <= 1 || MicLoudness < 0)
-			this.latestPitch = -1;
+
+		// only use the pitch if the micLoudness is >= 10
+		if (thepitch <= 1.0 || MicLoudness < 10.0)
+			thepitch = -1.0;
+
+		// enqueue the latest pitch
+		this.pitchQueue.Enqueue ((float)this.latestPitch);
+
+		// iterate over all pitches
+		float[] pitches = this.pitchQueue.ToArray();
+		int negValuesCounter = 0;
+		float pitchSum = 0.0f;
+		foreach (float pitch in pitches) {
+			// count the number of values which are <= 1 (where no pitch was detected)
+			if (pitch <= 1.0f)
+				negValuesCounter++;
+
+			pitchSum += pitch;
+		}
+
+		this.pitchQueue.Dequeue ();
+		float pitchAverage = pitchSum / pitches.Length;
+
+		// if more valid pitches have been detected, then use the average pitch as the detected pitch
+		if (negValuesCounter < pitches.Length / 2) {
+			this.latestPitch = pitchAverage;
+		} else {
+			this.latestPitch = -1.0f;
+		}
+
+		Debug.Log ("pitchAVG: " + pitchAverage + ", negValues: " + negValuesCounter);
 		Debug.Log ("thepitch: " + thepitch + ", loudness: " + MicLoudness);
 	
 		// new version
