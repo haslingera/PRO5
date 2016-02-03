@@ -21,6 +21,10 @@ public class Initiate : MonoBehaviour {
 			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-90f, 16.27f, 0f)).CameraStartSize (0.01f).LevelStart ();
 		} else if (Application.loadedLevelName.Equals ("Tennis")) {
 			UIBehaviour.Instance.CameraStartRotation (new Vector3 (14f, -307f, 0f)).CameraStartSize (0.01f).LevelStart ();
+		} else if (Application.loadedLevelName.Equals ("BabyScream")) {
+			UIBehaviour.Instance.CameraStartPosition(new Vector3 (20f, 1.88f, -1.64f)).LevelStart ();
+		} else if (Application.loadedLevelName.Equals ("PedestrianScare")) {
+			UIBehaviour.Instance.CameraStartRotation (new Vector3 (9.200302f, 80f, 0f)).LevelStart ();
 		} else {
 			UIBehaviour.Instance.CameraStartRotation (new Vector3 (-90f, 90f, 0f)).CameraStartSize (0.01f).LevelStart ();
 		}
@@ -52,6 +56,10 @@ public class Initiate : MonoBehaviour {
 			UIBehaviour.Instance.CameraEndRotation (new Vector3 (-90f, 16.27f, 0f)).CameraStartSize (0.01f).LevelEnd ();
 		} else if (Application.loadedLevelName.Equals ("Tennis")) {
 			UIBehaviour.Instance.CameraEndRotation (new Vector3 (14f, -307f, 0f)).CameraStartSize (0.01f).LevelEnd ();
+		} else if (Application.loadedLevelName.Equals ("BabyScream")) {
+			UIBehaviour.Instance.CameraEndPosition(new Vector3 (20f, 1.88f, -1.64f)).LevelEnd ();
+		} else if (Application.loadedLevelName.Equals ("PedestrianScare")) {
+			UIBehaviour.Instance.CameraEndRotation (new Vector3 (9.200302f, 80f, 0f)).LevelEnd ();
 		} else {
 			UIBehaviour.Instance.CameraEndRotation (new Vector3 (0f, 0f, 0f)).CameraEndSize (0.01f).LevelEnd ();
 		}
