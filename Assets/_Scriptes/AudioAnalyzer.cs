@@ -81,6 +81,8 @@ public class AudioAnalyzer : MonoBehaviour {
 		this.pitchQueue.Enqueue (0.0f);
 		this.pitchQueue.Enqueue (0.0f);
 		this.pitchQueue.Enqueue (0.0f);
+		this.pitchQueue.Enqueue (0.0f);
+		this.pitchQueue.Enqueue (0.0f);
 	}
 
 //mic initialization
@@ -124,7 +126,7 @@ public class AudioAnalyzer : MonoBehaviour {
 		// levelMax equals to the highest normalized value power 2, a small number because < 1
 		// pass the value to a static var so we can access it from anywhere
 		MicLoudness = LevelMax ();
-
+		/*
 		MIT._dywapitchtracker pitchtracker;
 		pitchtracker._pitchConfidence = 0;
 		pitchtracker._prevPitch = 0.0;
@@ -140,7 +142,8 @@ public class AudioAnalyzer : MonoBehaviour {
 		waveData.CopyTo (doubleWaveData, 0);
 		double thepitch = this.mit.dywapitch_computepitch(pitchtracker, doubleWaveData, 0, waveData.Length);
 
-		this.latestPitch = (float) thepitch;
+		this.latestPitch = (float)thepitch;
+		Debug.Log ("thepitch: " + thepitch);
 
 		// only use the pitch if the micLoudness is >= 10
 		if (thepitch <= 1.0 || MicLoudness < 10.0)
@@ -171,9 +174,10 @@ public class AudioAnalyzer : MonoBehaviour {
 			this.latestPitch = -1.0f;
 		}
 
-		Debug.Log ("pitchAVG: " + pitchAverage + ", negValues: " + negValuesCounter);
-		Debug.Log ("thepitch: " + thepitch + ", loudness: " + MicLoudness);
-	
+		Debug.Log ("pitchAVG: " + pitchAverage + ", negValues: " + negValuesCounter + "loudness: " + MicLoudness + "pitch: " + thepitch);
+		//Debug.Log ("thepitch: " + thepitch + ", loudness: " + MicLoudness);
+	*/
+
 		// new version
 		/*
 		float[] waveData = new float[this.yinSampleWindow];
@@ -190,11 +194,11 @@ public class AudioAnalyzer : MonoBehaviour {
 			this.latestPitch = -1.0f;
 		}
 				Debug.Log ("pitch: " + this.latestPitch);
-
 */
 
+
 		// old YIN algorithm
-		 /*if (!this.yinThread.IsAlive) {
+		 if (!this.yinThread.IsAlive) {
 			// read mic data
 			float[] waveData = new float[this.yinSampleWindow];
 			int micPosition = Microphone.GetPosition (null) - (this.yinSampleWindow + 1); // null means the first microphone
@@ -211,7 +215,7 @@ public class AudioAnalyzer : MonoBehaviour {
 			this.yinThread.IsBackground = true;
 			this.yinThread.Start ();
 		} 
-*/
+
 
 
 
@@ -257,8 +261,8 @@ public class AudioAnalyzer : MonoBehaviour {
 	}
 
 	public float getPitch() {
-		return this.latestPitch;
-		//return this.yin.getPitch ();
+		//return this.latestPitch;
+		return this.yin.getPitch ();
 	}
 
 	public float getMicLoudness() {
