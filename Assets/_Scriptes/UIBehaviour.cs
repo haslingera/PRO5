@@ -78,6 +78,7 @@ public class UIBehaviour : MonoBehaviour {
 	float scoreOldY;
 	float originalInstructionImageScreamY;
 	float originalInstructionTextY;
+	float firstValue;
 
 	private static UIBehaviour instance = null;
 
@@ -130,6 +131,8 @@ public class UIBehaviour : MonoBehaviour {
 
 		backgroundCamera = GameObject.Find ("BackgroundCamera");
 
+		firstValue = GameLogic.Instance.getRemainingLevelTime () / GameLogic.Instance.getLevelTime ();
+
 		//Set Camera And Zoom To Object
 		if (GameObject.FindGameObjectsWithTag ("ZoomTo").Length != 0) {
 			zoomToObjects = GameObject.FindGameObjectsWithTag ("ZoomTo");
@@ -158,6 +161,8 @@ public class UIBehaviour : MonoBehaviour {
 		zoomToObjectColor = tempColor;
 			
 		backgroundCamera.GetComponent<Camera> ().backgroundColor = backgroundColor;
+
+		scaleTimeBand = true;
 
 		if (zoomToObjects != null) {
 			for (int i = 0; i < zoomToObjects.Length; i++) {
@@ -199,7 +204,6 @@ public class UIBehaviour : MonoBehaviour {
 			endRotSet = false;
 			
 		}
-		
 	}
 
 	public void TimeBandStart() {
@@ -213,7 +217,7 @@ public class UIBehaviour : MonoBehaviour {
 		images [3].GetComponent<Image>().enabled = true;
 		images [3].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, 0);
 
-		ChangeTimeBandSize (1.0f);
+		ChangeTimeBandSize (GameLogic.Instance.getRemainingLevelTime () / GameLogic.Instance.getLevelTime ());
 
 	}
 	
@@ -238,22 +242,22 @@ public class UIBehaviour : MonoBehaviour {
 
 		ChangeOrthographicCameraSize (originalCameraSize + (originalCameraSize *  timeBandWidth / Screen.height * value));
 
-		images [0].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.height, timeBandWidth * value);
-		images [1].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, timeBandWidth * value);
-		images [2].GetComponent<RectTransform> ().sizeDelta = new Vector2 (Screen.height, timeBandWidth * value);
-		images [3].GetComponent<RectTransform> ().sizeDelta = new Vector2 (Screen.width, timeBandWidth * value);
+		images [0].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.height, timeBandWidth * value / firstValue);
+		images [1].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, timeBandWidth * value / firstValue);
+		images [2].GetComponent<RectTransform> ().sizeDelta = new Vector2 (Screen.height, timeBandWidth * value / firstValue);
+		images [3].GetComponent<RectTransform> ().sizeDelta = new Vector2 (Screen.width, timeBandWidth * value / firstValue);
 
 		if (value < 0.9f) {
 			if (GameLogic.Instance.getIsSurviveLevel ()) {
-				images [0].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value / 0.9f);
-				images [1].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value / 0.9f);
-				images [2].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value / 0.9f);
-				images [3].GetComponent<Image> ().color = new Color (1.0f * value, 1.0f, 1.0f * value / 0.9f);
+				images [0].GetComponent<Image> ().color = new Color (1.0f * value / 0.9f, 1.0f, 1.0f * value / 0.9f);
+				images [1].GetComponent<Image> ().color = new Color (1.0f * value / 0.9f, 1.0f, 1.0f * value / 0.9f);
+				images [2].GetComponent<Image> ().color = new Color (1.0f * value / 0.9f, 1.0f, 1.0f * value / 0.9f);
+				images [3].GetComponent<Image> ().color = new Color (1.0f * value / 0.9f, 1.0f, 1.0f * value / 0.9f);
 			} else {
-				images [0].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value / 0.9f);
-				images [1].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value / 0.9f);
-				images [2].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value / 0.9f);
-				images [3].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value, 1.0f * value / 0.9f);
+				images [0].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value / 0.9f, 1.0f * value / 0.9f);
+				images [1].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value / 0.9f, 1.0f * value / 0.9f);
+				images [2].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value / 0.9f, 1.0f * value / 0.9f);
+				images [3].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value / 0.9f, 1.0f * value / 0.9f);
 			}
 		} else {
 			images [0].GetComponent<Image> ().color = new Color (1.0f, 1.0f, 1.0f);
@@ -286,7 +290,7 @@ public class UIBehaviour : MonoBehaviour {
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
 
-		iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from", GameLogic.Instance.getRemainingLevelTime() / GameLogic.Instance.getLevelTime(), "to",1f, "time", time, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeTimeBandSize"));
+		iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from", GameLogic.Instance.getRemainingLevelTime() / GameLogic.Instance.getLevelTime(), "to",firstValue, "time", time, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeTimeBandSize"));
 	}
 
 	public void EndAnimation(float time) {
