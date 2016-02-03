@@ -18,6 +18,8 @@ public class Plattform_NEW : MonoBehaviour
     float speed = 0;
     float randspeed = 0;
     float globalSpeed;
+    public int lowDB = 300;
+    public int highDB = 300;
 
     // Use this for initialization
     void Start()
@@ -120,7 +122,7 @@ public class Plattform_NEW : MonoBehaviour
             }
             else
             {
-                    if ((int)DB > 300)
+                    if ((int)DB > highDB)
                     {
                         moveUp();
                         //Debug.Log("UP");
@@ -130,7 +132,7 @@ public class Plattform_NEW : MonoBehaviour
                         //Do noting
 
                     }
-                    else if ((int)DB < 300)
+                    else if ((int)DB < lowDB)
                     {
                         moveDown();
                         //Debug.Log("Down");
@@ -216,7 +218,7 @@ public class Plattform_NEW : MonoBehaviour
         else {
             if (!onTheMove)
             {
-                if ((int)DB > 300)
+                if ((int)DB > highDB)
                 {
                     //Debug.Log ("UP");
                     moveUp();
@@ -226,7 +228,7 @@ public class Plattform_NEW : MonoBehaviour
                     //Do noting
 
                 }
-                else if ((int)DB < 300)
+                else if ((int)DB < lowDB)
                 {
                     //Debug.Log ("DOWN");
                     moveDown();
