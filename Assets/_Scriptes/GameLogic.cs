@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public class GameLogic : MonoBehaviour {
@@ -23,6 +24,17 @@ public class GameLogic : MonoBehaviour {
 	void Awake() {
 		DontDestroyOnLoad(this.transform.gameObject);
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
+		this.levelProbabilities = new float[this.levels.Length];
+
+		// set the default probabilty for each level to be the next playable-level
+		for (int i = 0; i < this.levelProbabilities.Length; i++) {
+			this.levelProbabilities [i] = this.levelProbabilities.Length;
+		}
+
+		this.previousLevelsQueue = new Queue<int> ();
+		this.previousLevelsQueue.Enqueue (-1);
+		this.previousLevelsQueue.Enqueue (-1);
 	}
 
 	void Start() {
@@ -273,7 +285,6 @@ public class GameLogic : MonoBehaviour {
 					// prepare next level
 					this.prepareNextLevel();
 				}
-
 			}
 		}
 	}
@@ -380,6 +391,9 @@ public class GameLogic : MonoBehaviour {
 	private int numberOfLives;
 	private int numberOfLevelsCompleted;
 	private string[] levels = new string[] {"TreeSawing", "Tennis", "FlappyScream", "Road_Scene", "Plattformen-Szene", "Tod-Szene-Spiel", "JumpAndDuck", "GlassDestroying", "BabyScream", "PedestrianScare"};
+
+	private float[] levelProbabilities;
+	private Queue<int> previousLevelsQueue;
 	private string nextLevel;
 
 	private bool isPresentationGame = false;
@@ -446,6 +460,16 @@ public class GameLogic : MonoBehaviour {
 		this.frozenLevelTime = actualLevelTime;
 		this.currentLevelMaxTime = this.actualLevelTime;
 		this.setIsSurviveLevel (true); // default will be survive level
+
+		// reset the logic for not loading levels doubled
+		this.previousLevelsQueue.Clear ();
+		this.previousLevelsQueue.Enqueue (-1);
+		this.previousLevelsQueue.Enqueue(-1);
+
+		// set the default probabilty for each level to be the next playable-level
+		for (int i = 0; i < this.levelProbabilities.Length; i++) {
+			this.levelProbabilities [i] = this.levelProbabilities.Length;
+		}
 
 		// tell audioplayer to start new ticktock audio
 		AudioPlayer.Instance.startIntroAudio (this.currentBPM);
@@ -554,6 +578,8 @@ public class GameLogic : MonoBehaviour {
 
 		// load a random first level
 		int randomNumber = UnityEngine.Random.Range(0, this.levels.Length * 5);
+		this.previousLevelsQueue.Enqueue (randomNumber % this.levels.Length);
+		this.previousLevelsQueue.Dequeue ();
 
 		this.setIsSurviveLevel (true); // default will be survive level
 		Application.LoadLevel (this.levels[randomNumber % this.levels.Length]);
@@ -629,8 +655,63 @@ public class GameLogic : MonoBehaviour {
 			}
 
 		} else { 
-			int randomNumber = UnityEngine.Random.Range (0, this.levels.Length * 5);
-			this.nextLevel = this.levels [randomNumber % this.levels.Length];
+			// get the total number of elements
+			int probabilitySum = 0;
+			foreach (float probability in this.levelProbabilities) {
+				probabilitySum += (int) probability;
+			}
+
+			// create an array of length probability sum, and fill each level as often as its probability is in the array
+			int[] probabilities = new int[probabilitySum];
+			int probabilitiesSoFar = 0;
+			int loopCounter = 0;
+			foreach (float probability in this.levelProbabilities) {
+				for (int i = 0; i < (int)probability; i++) {
+					probabilities [probabilitiesSoFar + i] = loopCounter;
+				}
+				probabilitiesSoFar += (int)probability;
+				loopCounter++;
+			}
+
+			Debug.Log ("probability sum: " + probabilitySum);
+
+			// get the last played levels
+			int[] previousPlayedLevels = this.previousLevelsQueue.ToArray();
+			int randomNumber;
+			int randomLevel;
+			bool repeat = false;
+			do {
+				repeat = false;
+				randomNumber = UnityEngine.Random.Range (0, probabilitySum);
+				randomLevel = probabilities [randomNumber];
+
+				// check if the new level is contained in the previous loaded levels
+				foreach (int previousPlayedLevel in previousPlayedLevels) {
+					if (randomLevel == previousPlayedLevel) {
+						repeat = true;
+						Debug.Log("repeating");
+					}
+				}
+			} while (repeat);
+
+			this.nextLevel = this.levels[randomLevel % this.levels.Length];
+			this.previousLevelsQueue.Enqueue(randomLevel);
+			this.previousLevelsQueue.Dequeue ();
+
+			// increase probability for loaded level
+			for (int i = 0; i < this.levels.Length; i++) {
+				if (i == randomLevel) {
+					// this level is the loaded one, decrease by one
+					this.levelProbabilities [i] = Math.Max (this.levelProbabilities [i] - 3.0f, 0);
+				
+				} else {
+					this.levelProbabilities [i] += (1.0f / this.levels.Length) * 3.0f;
+				}
+			}
+
+
+			/*int randomNumber = UnityEngine.Random.Range (0, this.levels.Length * 5);
+			this.nextLevel = this.levels [randomNumber % this.levels.Length];*/
 		}
 	}
 
