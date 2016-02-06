@@ -126,7 +126,8 @@ public class AudioAnalyzer : MonoBehaviour {
 		// levelMax equals to the highest normalized value power 2, a small number because < 1
 		// pass the value to a static var so we can access it from anywhere
 		MicLoudness = LevelMax ();
-		/*
+		/*rome
+		 * 
 		MIT._dywapitchtracker pitchtracker;
 		pitchtracker._pitchConfidence = 0;
 		pitchtracker._prevPitch = 0.0;

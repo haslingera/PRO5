@@ -71,7 +71,7 @@ public class Plattform_NEW : MonoBehaviour
         {
             DB = AudioAnalyzer.Instance.getPitch();//GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().MicLoudness;
                                                    //frequ = GameObject.Find ("Audio Source").GetComponent<InputAnalyser> ().getPitch ();
-            Debug.Log(DB);
+            //Debug.Log(DB);
             if (first == 1 && counter == 0)
             {
                 startGame();
