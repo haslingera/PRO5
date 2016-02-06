@@ -30,10 +30,10 @@ public class UIBehaviour : MonoBehaviour {
 	bool endRotSet = false;
 
 	bool first = true;
-	
+
 	bool timeBandCreated = false;
 
-	GameObject[] images = new GameObject[4];
+	Image[] images = new Image[4];
 
 	float cameraStartSpeed = 3.0f;
 	float cameraEndSpeed = 2.0f;
@@ -70,7 +70,9 @@ public class UIBehaviour : MonoBehaviour {
 	GameObject logo;
 	GameObject instructionText;
 	GameObject instructionImageScreen;
+	GameObject tweenObject;
 
+	float screenRatio;
 	float tryAgainYPosition;
 	float gameOverYPosition;
 	float highscoreYPosition;
@@ -79,6 +81,10 @@ public class UIBehaviour : MonoBehaviour {
 	float originalInstructionImageScreamY;
 	float originalInstructionTextY;
 	float firstValue;
+	float livesOldYPosition;
+	float livesNewYPosition;
+
+	RectTransform [] imageRects = new RectTransform[4];
 
 	private static UIBehaviour instance = null;
 
@@ -105,10 +111,14 @@ public class UIBehaviour : MonoBehaviour {
 
 		blackOverlay = GameObject.Find ("BlackOverlay");
 
-		images [0] = GameObject.Find ("timeBarLeft").transform.gameObject as GameObject;
-		images [1] = GameObject.Find ("timeBarTop").transform.gameObject as GameObject;
-		images [2] = GameObject.Find ("timeBarRight").transform.gameObject as GameObject;
-		images [3] = GameObject.Find ("timeBarBottom").transform.gameObject as GameObject;
+		images [0] = GameObject.Find ("timeBarLeft").transform.gameObject.GetComponent<Image>();
+		imageRects [0] = images [0].GetComponent<RectTransform> ();
+		images [1] = GameObject.Find ("timeBarTop").transform.gameObject.GetComponent<Image>();
+		imageRects [1] = images [1].GetComponent<RectTransform> ();
+		images [2] = GameObject.Find ("timeBarRight").transform.gameObject.GetComponent<Image>();
+		imageRects [2] = images [2].GetComponent<RectTransform> ();
+		images [3] = GameObject.Find ("timeBarBottom").transform.gameObject.GetComponent<Image>();
+		imageRects [3] = images [3].GetComponent<RectTransform> ();
 
 		scoreImage = GameObject.Find ("scoreImage");
 		scoreNew = GameObject.Find ("scoreNew");
@@ -172,13 +182,14 @@ public class UIBehaviour : MonoBehaviour {
 
 		timeBandWidth = images [0].transform.gameObject.GetComponent<RectTransform> ().sizeDelta.y;
 
+		tweenObject = new GameObject ();
+		Instantiate (tweenObject);
+
 		timeBandEnded = false;
 		
 		if (GameLogic.Instance.getShowMainMenu ()) {
-
 			TimeBandStart (); 
 			StartScreen ();
-
 		} else {
 
 			if (scoreIsShown) {
@@ -193,10 +204,10 @@ public class UIBehaviour : MonoBehaviour {
 			if (startSizeSet) { ChangeOrthographicCameraSize (cameraStartSize); } else { ChangeOrthographicCameraSize (originalCameraSize + (originalCameraSize *  timeBandWidth / Screen.height)); };
 			
 			//Start the camera entering process
-			iTween.MoveTo(Camera.main.gameObject, iTween.Hash("x", originalCameraPosition.x, "y", originalCameraPosition.y, "z", originalCameraPosition.z, "easetype",iTween.EaseType.easeInOutSine, "time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f));
-			iTween.RotateTo(Camera.main.gameObject,iTween.Hash("x", originalCameraRotation.x, "y", originalCameraRotation.y, "z", originalCameraRotation.z, "easetype",iTween.EaseType.easeInOutSine,"time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f));
-			iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from",Camera.main.orthographicSize, "to", originalCameraSize + (originalCameraSize *  timeBandWidth / Screen.height), "time", cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeCameraSize"));
-	
+			LeanTween.move(Camera.main.gameObject, new Vector3(originalCameraPosition.x,originalCameraPosition.y,originalCameraPosition.z), cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f).setEase(LeanTweenType.easeInOutSine);
+			LeanTween.rotate (Camera.main.gameObject, new Vector3(originalCameraRotation.x, originalCameraRotation.y, originalCameraRotation.z), cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f).setEase(LeanTweenType.easeInOutSine);
+			LeanTween.value (tweenObject, ChangeCameraSize, Camera.main.orthographicSize, originalCameraSize + (originalCameraSize *  timeBandWidth / Screen.height), cameraStartSpeed / GameLogic.Instance.getLevelSpeed() * 5.0f / 6.0f).setEase(LeanTweenType.easeInOutSine);
+
 			imageEffects = true;
 			TimeBandStart();
 
@@ -208,22 +219,20 @@ public class UIBehaviour : MonoBehaviour {
 
 	public void TimeBandStart() {
 
-		images [0].GetComponent<Image>().enabled = true;
-		images [0].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.height, 0);
-		images [1].GetComponent<Image>().enabled = true;
-		images [1].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, 0);
-		images [2].GetComponent<Image>().enabled = true;
-		images [2].GetComponent<RectTransform> ().sizeDelta = new Vector2 (Screen.height, 0);
-		images [3].GetComponent<Image>().enabled = true;
-		images [3].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, 0);
+		images [0].enabled = true;
+		imageRects [0].sizeDelta = new Vector2(Screen.height, 0);
+		images [1].enabled = true;
+		imageRects [1].sizeDelta = new Vector2(Screen.width, 0);
+		images [2].enabled = true;
+		imageRects [2].sizeDelta = new Vector2 (Screen.height, 0);
+		images [3].enabled = true;
+		imageRects [3].sizeDelta = new Vector2(Screen.width, 0);
 
 		ChangeTimeBandSize (GameLogic.Instance.getRemainingLevelTime () / GameLogic.Instance.getLevelTime ());
 
 	}
 	
 	void ChangeTimeBandSize (float value) {
-
-		float ratio = Screen.width / Screen.height;
 
 		Color overlay = new Color ();
 		overlay.a = value;
@@ -232,39 +241,36 @@ public class UIBehaviour : MonoBehaviour {
 		
 		if (imageEffects) {
 			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().blurSize = 3.0f * value;
-			blackOverlay.GetComponent<Image> ().enabled = true;
+			if (blackOverlay.GetComponent<Image> ().enabled == false) blackOverlay.GetComponent<Image> ().enabled = true;
 			//Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().saturation = 1.0f * value;
 		} else {
-			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
-			blackOverlay.GetComponent<Image> ().enabled = false;
-			Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
+			if (Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled == true) Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = false;
+			if (blackOverlay.GetComponent<Image> ().enabled == true) blackOverlay.GetComponent<Image> ().enabled = false;
+			if (Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled == true) Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = false;
 		}
 
 		ChangeOrthographicCameraSize (originalCameraSize + (originalCameraSize *  timeBandWidth / Screen.height * value));
 
-		images [0].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.height, timeBandWidth * value / firstValue);
-		images [1].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, timeBandWidth * value / firstValue);
-		images [2].GetComponent<RectTransform> ().sizeDelta = new Vector2 (Screen.height, timeBandWidth * value / firstValue);
-		images [3].GetComponent<RectTransform> ().sizeDelta = new Vector2 (Screen.width, timeBandWidth * value / firstValue);
+		imageRects [0] .sizeDelta = new Vector2(Screen.height, timeBandWidth * value / firstValue);
+		imageRects [1] .sizeDelta = new Vector2(Screen.width, timeBandWidth * value / firstValue);
+		imageRects [2] .sizeDelta = new Vector2 (Screen.height, timeBandWidth * value / firstValue);
+		imageRects [3] .sizeDelta = new Vector2 (Screen.width, timeBandWidth * value / firstValue);
+
+		Color current = Color.white;
 
 		if (value < 0.9f) {
 			if (GameLogic.Instance.getIsSurviveLevel ()) {
-				images [0].GetComponent<Image> ().color = new Color (1.0f * value / 0.9f, 1.0f, 1.0f * value / 0.9f);
-				images [1].GetComponent<Image> ().color = new Color (1.0f * value / 0.9f, 1.0f, 1.0f * value / 0.9f);
-				images [2].GetComponent<Image> ().color = new Color (1.0f * value / 0.9f, 1.0f, 1.0f * value / 0.9f);
-				images [3].GetComponent<Image> ().color = new Color (1.0f * value / 0.9f, 1.0f, 1.0f * value / 0.9f);
+				current =ColorFromHSL (0.33, 0.39, 1.0 - (0.6 *  (1.0 - value / 0.9)));
+				//new Color (1.0f * value / 0.9f, 1.0f, 1.0f * value / 0.9f);
 			} else {
-				images [0].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value / 0.9f, 1.0f * value / 0.9f);
-				images [1].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value / 0.9f, 1.0f * value / 0.9f);
-				images [2].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value / 0.9f, 1.0f * value / 0.9f);
-				images [3].GetComponent<Image> ().color = new Color (1.0f, 1.0f * value / 0.9f, 1.0f * value / 0.9f);
+				current = ColorFromHSL (1.0, 0.6, 1.0 - (0.6 *  (1.0 - value / 0.9)));
 			}
-		} else {
-			images [0].GetComponent<Image> ().color = new Color (1.0f, 1.0f, 1.0f);
-			images [1].GetComponent<Image> ().color = new Color (1.0f, 1.0f, 1.0f);
-			images [2].GetComponent<Image> ().color = new Color (1.0f, 1.0f, 1.0f);
-			images [3].GetComponent<Image> ().color = new Color (1.0f, 1.0f, 1.0f);
 		}
+
+		images [0].color = current;
+		images [1].color = current;
+		images [2].color = current;
+		images [3].color = current;
 
 	}
 
@@ -289,8 +295,8 @@ public class UIBehaviour : MonoBehaviour {
 
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.BlurOptimized> ().enabled = true;
 		Camera.main.GetComponent<UnityStandardAssets.ImageEffects.ColorCorrectionCurves> ().enabled = true;
-
-		iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from", GameLogic.Instance.getRemainingLevelTime() / GameLogic.Instance.getLevelTime(), "to",firstValue, "time", time, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeTimeBandSize"));
+			
+		LeanTween.value (tweenObject, ChangeTimeBandSize, GameLogic.Instance.getRemainingLevelTime() / GameLogic.Instance.getLevelTime(), firstValue, time).setEase(LeanTweenType.easeInOutSine);
 	}
 
 	public void EndAnimation(float time) {
@@ -300,11 +306,11 @@ public class UIBehaviour : MonoBehaviour {
 		if (!startSizeSet) {cameraEndSize = Camera.main.orthographicSize; }
 
 		//Start the camera process
-		iTween.MoveTo(Camera.main.gameObject, iTween.Hash("x", cameraEndPosition.x, "y", cameraEndPosition.y, "z", cameraEndPosition.z, "easetype",iTween.EaseType.easeInOutSine, "time", time));
-		iTween.RotateTo(Camera.main.gameObject,iTween.Hash("x", cameraEndRotation.x, "y", cameraEndRotation.y, "z", cameraEndRotation.z, "easetype",iTween.EaseType.easeInOutSine,"time", time));
-		iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from",Camera.main.orthographicSize, "to",cameraEndSize, "time", time, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "ChangeCameraSize"));
-		iTween.ValueTo (Camera.main.gameObject, iTween.Hash("from",0 ,"to", 1, "time", time, "onupdatetarget", this.gameObject, "easetype",iTween.EaseType.easeInOutSine, "onupdate", "LerpBackgroundColors"));
-		
+		LeanTween.move (Camera.main.gameObject, new Vector3(cameraEndPosition.x, cameraEndPosition.y, cameraEndPosition.z), time).setEase(LeanTweenType.easeInOutSine);
+		LeanTween.rotate (Camera.main.gameObject, new Vector3(cameraEndRotation.x, cameraEndRotation.y, cameraEndRotation.z), time).setEase(LeanTweenType.easeInOutSine);
+		LeanTween.value (tweenObject, ChangeCameraSize, Camera.main.orthographicSize, cameraEndSize, time).setEase(LeanTweenType.easeInOutSine);
+		LeanTween.value (tweenObject, LerpBackgroundColors, 0.0f, 1.0f, time).setEase(LeanTweenType.easeInOutSine);
+
 		endSizeSet = false;
 		endRotSet = false;
 		endPosSet = false;
@@ -345,10 +351,12 @@ public class UIBehaviour : MonoBehaviour {
 		gameOverYPosition = gameOver.GetComponent<RectTransform> ().localPosition.y;
 		highscoreYPosition = highscore.GetComponent<RectTransform> ().localPosition.y;
 		livesYPosition = this.lives.GetComponent<RectTransform> ().localPosition.y;
+		livesOldYPosition = livesOld.GetComponent<RectTransform> ().localPosition.y;
+		livesNewYPosition = livesNew.GetComponent<RectTransform> ().localPosition.y;
 
 		if (lives != 0) {
 			livesNew.GetComponent<Text> ().text = lives + "";
-			livesNew.GetComponent<RectTransform> ().localPosition = new Vector2 (livesNew.GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
+			livesNew.GetComponent<RectTransform> ().localPosition = new Vector2 (livesNew.GetComponent<RectTransform> ().localPosition.x, livesNewYPosition + Screen.height);
 			livesNew.GetComponent<Text> ().enabled = true;
 			//GameObject.Find ("livesNew").GetComponent<Text> ().color = backgroundColor;
 
@@ -357,9 +365,9 @@ public class UIBehaviour : MonoBehaviour {
 			tryAgain.GetComponent<Text>().enabled = true;
 			highscore.GetComponent<Text>().enabled = true;
 			highscore.GetComponent<Text>().text = "highscore " + PlayerPrefs.GetInt("highscore") + " ... your score " + GameLogic.Instance.getNumberOfLevelsCompleted();
-			highscore.GetComponent<RectTransform> ().localPosition = new Vector2 (highscore.GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
-			tryAgain.GetComponent<RectTransform> ().localPosition = new Vector2 (tryAgain.GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
-			gameOver.GetComponent<RectTransform> ().localPosition = new Vector2 (gameOver.GetComponent<RectTransform> ().localPosition.x, Screen.height * 2f);
+			highscore.GetComponent<RectTransform> ().localPosition = new Vector2 (highscore.GetComponent<RectTransform> ().localPosition.x, highscoreYPosition + Screen.height);
+			tryAgain.GetComponent<RectTransform> ().localPosition = new Vector2 (tryAgain.GetComponent<RectTransform> ().localPosition.x, tryAgainYPosition + Screen.height);
+			gameOver.GetComponent<RectTransform> ().localPosition = new Vector2 (gameOver.GetComponent<RectTransform> ().localPosition.x, gameOverYPosition + Screen.height);
 		}
 
 		float newTime = time / 3.0f + 0.2f;
@@ -367,37 +375,20 @@ public class UIBehaviour : MonoBehaviour {
 		yield return new WaitForSeconds (newTime);
 
 		if (lives != 0) {
-			iTween.ValueTo (GameObject.Find ("livesNew").gameObject, iTween.Hash (
-				"from", livesNew.GetComponent<RectTransform> ().localPosition.y,
-				"to", livesOld.GetComponent<RectTransform> ().localPosition.y,
-				"time", 0.4f,
-				"easetype", iTween.EaseType.easeInOutBack,
-				"onupdatetarget", this.gameObject, 
-				"onupdate", "MoveGuiElementNewLives"));
-
+			LeanTween.move (livesNew.GetComponent<RectTransform> (), new Vector2 (livesNew.GetComponent<RectTransform> ().localPosition.x,livesNewYPosition), 0.4f).setEase(LeanTweenType.easeInOutBack);
 		} else {
 
-			iTween.ValueTo (
-				Camera.main.gameObject,
-				iTween.Hash("from",0.0f,
-			            "to", 1.0f,
-			            "time", 0.4f,
-			            "onupdatetarget", this.gameObject,
-			            "easetype",iTween.EaseType.easeInOutBack,
-			            "onupdate", "LivesMovementOne"));
+			LeanTween.move (tryAgain.GetComponent<RectTransform> (), new Vector2 (tryAgain.GetComponent<RectTransform> ().localPosition.x, tryAgainYPosition), 0.4f).setEase(LeanTweenType.easeInOutBack);
+			LeanTween.move (gameOver.GetComponent<RectTransform> (), new Vector2 (gameOver.GetComponent<RectTransform> ().localPosition.x, gameOverYPosition), 0.4f).setEase(LeanTweenType.easeInOutBack);
+			LeanTween.move (highscore.GetComponent<RectTransform> (), new Vector2 (highscore.GetComponent<RectTransform> ().localPosition.x, highscoreYPosition), 0.4f).setEase(LeanTweenType.easeInOutBack);
+			LeanTween.move (this.lives.GetComponent<RectTransform> (), new Vector2 (this.lives.GetComponent<RectTransform> ().localPosition.x, livesYPosition - Screen.height), 0.4f).setEase(LeanTweenType.easeInOutBack);
 
 			startButton.GetComponent<Button>().onClick.AddListener(() => { OnRestartButtonGameClicked();});
 			startButton.GetComponent<Image>().enabled = true;
 
 		}
 
-		iTween.ValueTo(livesOld.gameObject, iTween.Hash(
-			"from", livesOld.GetComponent<RectTransform> ().localPosition.y,
-			"to", -Screen.height * 2f,
-			"time", 0.4f,
-			"easetype", iTween.EaseType.easeInOutBack,
-			"onupdatetarget", this.gameObject, 
-			"onupdate", "MoveGuiElementOldLives"));
+		LeanTween.move (livesOld.GetComponent<RectTransform> (), new Vector2 (livesOld.GetComponent<RectTransform> ().localPosition.x, livesOldYPosition - Screen.height), 0.4f).setEase(LeanTweenType.easeInOutBack);
 
 		yield return new WaitForSeconds (time *  2.0f / 3.0f);
 
@@ -407,30 +398,6 @@ public class UIBehaviour : MonoBehaviour {
 			this.lives.GetComponent<Image> ().enabled = false;
 		}
 
-	}
-
-	void LivesMovementOne(float value) {
-
-		tryAgain.GetComponent<RectTransform> ().localPosition =
-			new Vector2 (tryAgain.GetComponent<RectTransform> ().localPosition.x, tryAgainYPosition * value);
-
-		gameOver.GetComponent<RectTransform> ().localPosition =
-			new Vector2 (gameOver.GetComponent<RectTransform> ().localPosition.x, gameOverYPosition * value);
-
-		highscore.GetComponent<RectTransform> ().localPosition =
-			new Vector2 (highscore.GetComponent<RectTransform> ().localPosition.x, highscoreYPosition * value);
-
-		lives.GetComponent<RectTransform> ().localPosition =
-			new Vector2 (lives.GetComponent<RectTransform> ().localPosition.x, livesYPosition - Screen.height * value);
-
-	}
-
-	public void MoveGuiElementNewLives(float yPosition){
-		livesNew.GetComponent<RectTransform> ().localPosition = new Vector2 (livesNew.GetComponent<RectTransform> ().localPosition.x,yPosition);
-	}
-
-	public void MoveGuiElementOldLives(float yPosition){
-		livesOld.GetComponent<RectTransform> ().localPosition = new Vector2 (livesOld.GetComponent<RectTransform> ().localPosition.x,yPosition);
 	}
 
 	public void StartScoreNumerator() {
@@ -443,35 +410,19 @@ public class UIBehaviour : MonoBehaviour {
 		//scoreNewY = scoreNew.GetComponent<RectTransform> ().localPosition.y;
 
 		scoreImage.GetComponent<RectTransform> ().localPosition = new Vector2 (scoreImage.GetComponent<RectTransform> ().localPosition.x, scoreImageY);
+		scoreNew.GetComponent<RectTransform> ().localPosition = new Vector2 (scoreNew.GetComponent<RectTransform> ().localPosition.x, scoreNewY + Screen.height);
 
 		scoreOld.GetComponent<Text> ().text = lives - 1 + "";
 		scoreOld.GetComponent<Text> ().enabled = true;
 		scoreImage.GetComponent<Image> ().enabled = true;
 		
 		scoreNew.GetComponent<Text> ().text = lives + "";
-		scoreNew.GetComponent<RectTransform> ().localPosition = new Vector2 (scoreNew.GetComponent<RectTransform> ().localPosition.x, scoreNew.GetComponent<RectTransform> ().localPosition.y + Screen.height);
 		scoreNew.GetComponent<Text> ().enabled = true;
 
-		iTween.ValueTo (
-			Camera.main.gameObject,
-			iTween.Hash("from",0.0f,
-		            "to", 1.0f,
-		            "time", 0.4f,
-		            "onupdatetarget", this.gameObject,
-		            "easetype",iTween.EaseType.easeInOutBack,
-		            "onupdate", "ShowScoreMovementOne"));
+		LeanTween.move (scoreNew.GetComponent<RectTransform> (), new Vector2 (scoreNew.GetComponent<RectTransform> ().localPosition.x, scoreNewY), 0.4f).setEase(LeanTweenType.easeInOutBack);
+		LeanTween.move (scoreOld.GetComponent<RectTransform> (), new Vector2 (scoreOld.GetComponent<RectTransform> ().localPosition.x, scoreOldY - Screen.height), 0.4f).setEase(LeanTweenType.easeInOutBack);
 
 		scoreIsShown = true;
-
-	}
-
-	void ShowScoreMovementOne(float value) {
-
-		scoreNew.GetComponent<RectTransform> ().localPosition =
-			new Vector2 (scoreNew.GetComponent<RectTransform> ().localPosition.x, scoreNewY + Screen.height *  (1 - value));
-
-		scoreOld.GetComponent<RectTransform> ().localPosition =
-			new Vector2 (scoreOld.GetComponent<RectTransform> ().localPosition.x, scoreOldY - Screen.height * value);
 
 	}
 
@@ -505,7 +456,7 @@ public class UIBehaviour : MonoBehaviour {
 
 		logo.GetComponent<Image> ().enabled = false;
 		//GameObject.Find ("BlackOverlay").GetComponent<Image> ().enabled = false;
-		
+
 		GameLogic.Instance.startNewSinglePlayerGame ();
 	}
 
@@ -516,6 +467,8 @@ public class UIBehaviour : MonoBehaviour {
 		gameOver.GetComponent<Image>().enabled = false;
 		tryAgain.GetComponent<Text>().enabled = false;
 		highscore.GetComponent<Text>().enabled = false;
+
+		scoreIsShown = false;
 
 		GameLogic.Instance.restart ();
 
@@ -557,53 +510,22 @@ public class UIBehaviour : MonoBehaviour {
 		instructionText.GetComponent<Text> ().enabled = true;
 		instructionText.GetComponent<RectTransform> ().localPosition = new Vector2 (instructionText.GetComponent<RectTransform> ().localPosition.x, originalInstructionTextY + Screen.height);
 
-		iTween.ValueTo (
-			Camera.main.gameObject,
-			iTween.Hash("from",1.0f,
-		            "to", 0.0f,
-		            "time", 0.4f,
-		            "onupdatetarget", this.gameObject,
-		            "easetype",iTween.EaseType.easeInOutBack,
-		            "onupdate", "ShowInstructionMovementOne"));
-
+		LeanTween.move (instructionText.GetComponent<RectTransform> (), new Vector2 (instructionText.GetComponent<RectTransform> ().localPosition.x, originalInstructionTextY), 0.4f).setEase(LeanTweenType.easeInOutBack);
+		LeanTween.move (instructionImageScreen.GetComponent<RectTransform> (), new Vector2 (instructionImageScreen.GetComponent<RectTransform> ().localPosition.x, originalInstructionImageScreamY), 0.4f).setEase(LeanTweenType.easeInOutBack);
+	
 		if (scoreIsShown) {
 
 			scoreNewY = scoreNew.GetComponent<RectTransform> ().localPosition.y;
 			scoreImageY = scoreImage.GetComponent<RectTransform> ().localPosition.y;
 
-			iTween.ValueTo (
-				Camera.main.gameObject,
-				iTween.Hash("from",0.0f,
-			            "to", 1.0f,
-			            "time", 0.4f,
-			            "onupdatetarget", this.gameObject,
-			            "easetype",iTween.EaseType.easeInOutBack,
-			            "onupdate", "ShowInstructionMovementTwo"));
-
+			LeanTween.move (scoreNew.GetComponent<RectTransform> (), new Vector2 (scoreNew.GetComponent<RectTransform> ().localPosition.x, scoreNewY - Screen.height), 0.4f).setEase(LeanTweenType.easeInOutBack);
+			LeanTween.move (scoreImage.GetComponent<RectTransform> (), new Vector2 (scoreImage.GetComponent<RectTransform> ().localPosition.x, scoreImageY - Screen.height), 0.4f).setEase(LeanTweenType.easeInOutBack);
+		
 		}
 	}
 
-	void ShowInstructionMovementOne(float value) {
-		
-		instructionImageScreen.GetComponent<RectTransform> ().localPosition =
-			new Vector2 (instructionImageScreen.GetComponent<RectTransform> ().localPosition.x, originalInstructionImageScreamY + Screen.height * value);
-
-		instructionText.GetComponent<RectTransform> ().localPosition =
-			new Vector2 (instructionText.GetComponent<RectTransform> ().localPosition.x, originalInstructionTextY + Screen.height * value);
-
-	}
-
-	void ShowInstructionMovementTwo(float value) {
-		
-		scoreNew.GetComponent<RectTransform> ().localPosition =
-			new Vector2 (scoreNew.GetComponent<RectTransform> ().localPosition.x, scoreNewY - Screen.height * value);
-		
-		scoreImage.GetComponent<RectTransform> ().localPosition =
-			new Vector2 (scoreImage.GetComponent<RectTransform> ().localPosition.x, scoreImageY - Screen.height * value);
-			
-	}
-
 	public void HideInstruction () {
+
 		imageEffects = false;
 		scaleTimeBand = true;
 		instructionText.GetComponent<Text> ().enabled = false;
@@ -662,9 +584,9 @@ public class UIBehaviour : MonoBehaviour {
 	void SetBackgroundColorFromZoomToObject() {
 		if (first) {
 			first = false;
-			zoomToObjectColor = CreatePastelColor(); //new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
+			zoomToObjectColor = CreatePastelColorFromColor(new Color(1.0f,1.0f,1.0f)); //new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
 		}
-		backgroundColor = CreatePastelColor(); //new Color(Random.Range(0.0f,1.0f),Random.Range(0.0f,1.0f),Random.Range(0.0f,1.0f));
+		backgroundColor = CreatePastelColorFromColor(new Color(1.0f,1.0f,1.0f)); //new Color(Random.Range(0.0f,1.0f),Random.Range(0.0f,1.0f),Random.Range(0.0f,1.0f));
 	}
 
 	Color CreatePastelColor() {
@@ -672,10 +594,27 @@ public class UIBehaviour : MonoBehaviour {
 		float add = 127f / 255f;
 		return new Color (Random.Range (0.0f, middle) + add, Random.Range (0.0f, middle) + add, Random.Range (0.0f, middle) + add);
 	}
+
+	Color CreatePastelColorFromColor(Color color) {
+		
+		float red = Random.Range (0f, 1f);
+		float green = Random.Range (0f, 1f);
+		float blue = Random.Range (0f, 1f);
+
+		// mix the color
+		if (color != null) {
+			red = (red + color.r) / 2;
+			green = (green + color.g) / 2;
+			blue = (blue + color.b) / 2;
+		}
+
+		return new Color(red, green, blue);
+
+	}
 	
 	public void AdjustCamera() {
 
-		float screenRatio =  (float)Screen.width / (float)Screen.height;
+		screenRatio = (float)Screen.width / (float)Screen.height;
 		float desiredRatio = 16.0f / 9.0f;
 
 		if (screenRatio < desiredRatio) {
@@ -691,7 +630,7 @@ public class UIBehaviour : MonoBehaviour {
 
 	void ChangeOrthographicCameraSize(float size) {
 
-		float screenRatio = (float)Screen.width / (float)Screen.height;
+		screenRatio = (float)Screen.width / (float)Screen.height;
 		float desiredRatio = 16.0f / 9.0f;
 
 		if (screenRatio < desiredRatio) {
@@ -707,4 +646,48 @@ public class UIBehaviour : MonoBehaviour {
 
 	}
 
+	Color ColorFromHSL(double h, double s, double l) {
+		
+		double r = 0, g = 0, b = 0;
+		if (l != 0)
+		{
+			if (s == 0)
+				r = g = b = l;
+			else
+			{
+				double temp2;
+				if (l < 0.5)
+					temp2 = l * (1.0 + s);
+				else
+					temp2 = l + s - (l * s);
+
+				double temp1 = 2.0 * l - temp2;
+
+				r = GetColorComponent(temp1, temp2, h + 1.0 / 3.0);
+				g = GetColorComponent(temp1, temp2, h);
+				b = GetColorComponent(temp1, temp2, h - 1.0 / 3.0);
+			}
+		}
+
+		return new Color((float)r,(float)g,(float)b);
+
+	}
+
+	double GetColorComponent(double temp1, double temp2, double temp3)
+	{
+		if (temp3 < 0.0)
+			temp3 += 1.0;
+		else if (temp3 > 1.0)
+			temp3 -= 1.0;
+
+		if (temp3 < 1.0 / 6.0)
+			return temp1 + (temp2 - temp1) * 6.0 * temp3;
+		else if (temp3 < 0.5)
+			return temp2;
+		else if (temp3 < 2.0 / 3.0)
+			return temp1 + ((temp2 - temp1) * ((2.0 / 3.0) - temp3) * 6.0);
+		else
+			return temp1;
+	}
+		
 }
