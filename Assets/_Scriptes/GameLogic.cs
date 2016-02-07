@@ -216,7 +216,9 @@ public class GameLogic : MonoBehaviour {
 
 						// check if game over
 						if (this.numberOfLives <= 0) {
-
+							if (PlayerPrefs.GetInt ("highscore") < numberOfLevelsCompleted) {
+								PlayerPrefs.SetInt ("highscore", numberOfLevelsCompleted);
+							}
 							if (this.isGameOver == false) {
 								this.isGameOver = true;
 
