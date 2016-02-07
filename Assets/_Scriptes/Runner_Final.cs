@@ -4,7 +4,6 @@ using System.Collections;
 public class Runner_Final : MonoBehaviour {
 
 	private Rigidbody rigbi;
-	private InputAnalyser sound;
 	private float startTimer;
 	private float EndTimer;
 	private bool already = false;
