@@ -84,6 +84,8 @@ public class UIBehaviour : MonoBehaviour {
 	float livesOldYPosition;
 	float livesNewYPosition;
 
+	int screenshotCounter = 1;
+
 	RectTransform [] imageRects = new RectTransform[4];
 
 	private static UIBehaviour instance = null;
@@ -105,6 +107,15 @@ public class UIBehaviour : MonoBehaviour {
 		if (scaleTimeBand) {
 			ChangeTimeBandSize(GameLogic.Instance.getRemainingLevelTime() / GameLogic.Instance.getLevelTime());
 		}
+
+		if (Input.GetKeyDown (KeyCode.S)) {
+			Debug.Log ("Here");
+			Application.CaptureScreenshot(Application.dataPath + "/Screenshot" + screenshotCounter + ".png", 4);
+			Debug.Log (Application.dataPath + "Screenshot" + screenshotCounter + ".png");
+			screenshotCounter++;
+		}
+
+
 	}
 
 	public void LevelStart() {
@@ -584,9 +595,9 @@ public class UIBehaviour : MonoBehaviour {
 	void SetBackgroundColorFromZoomToObject() {
 		if (first) {
 			first = false;
-			zoomToObjectColor = CreatePastelColorFromColor(new Color(1.0f,1.0f,1.0f)); //new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
+			zoomToObjectColor = CreatePastelColor(); //new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
 		}
-		backgroundColor = CreatePastelColorFromColor(new Color(1.0f,1.0f,1.0f)); //new Color(Random.Range(0.0f,1.0f),Random.Range(0.0f,1.0f),Random.Range(0.0f,1.0f));
+		backgroundColor = CreatePastelColor(); //new Color(Random.Range(0.0f,1.0f),Random.Range(0.0f,1.0f),Random.Range(0.0f,1.0f));
 	}
 
 	Color CreatePastelColor() {
