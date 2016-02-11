@@ -40,13 +40,13 @@ public class YIN {
 
 		// perform the yin algorithm
 		float pitch = 0.0f;
-		int bufferSize = 100;
-		while (pitch < 10.0f && bufferSize < this.yinSampleWindow) {
+		int bufferSize = 1024;
+		//while (pitch < 10.0f && bufferSize < this.yinSampleWindow) {
 			this.yinInit(bufferSize);
 			pitch = this.yinGetPitch();
 			bufferSize += 4;
-		}
-
+		//4}
+		Debug.Log("piiiitch: " + pitch);
 		lock (this) {
 			this.yinPitch = pitch;
 		}
