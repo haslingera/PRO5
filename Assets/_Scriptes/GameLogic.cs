@@ -614,7 +614,7 @@ public class GameLogic : MonoBehaviour {
 
 		} else {
 			// increase bpm
-			int plusBeats = (this.numberOfLevelsCompleted / 2) * 16;
+			int plusBeats = (this.numberOfLevelsCompleted / 2) * 8;
 			this.currentBPM = Mathf.Min (defaultBPM + plusBeats, defaultBPM * 2);
 		}
 
@@ -724,7 +724,7 @@ public class GameLogic : MonoBehaviour {
 			return nextLevelBPM;
 		} else {
 
-			int plusBeats = ((this.numberOfLevelsCompleted + 1) / 2) * 16;
+			int plusBeats = ((this.numberOfLevelsCompleted + 1) / 2) * 8;
 			int nextLevelBPM = Mathf.Min (defaultBPM + plusBeats, defaultBPM * 2);
 			return nextLevelBPM;
 		}
