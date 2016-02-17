@@ -14,6 +14,8 @@ public class Runner_Final : MonoBehaviour {
 	private bool levelDidStart;
     bool stop = false;
     int frequ;
+    int high = 0;
+    int low = 0;
 
 	void Start () {
 		rigbi = GetComponent<Rigidbody> ();
@@ -77,20 +79,34 @@ public class Runner_Final : MonoBehaviour {
                 //Debug.Log(frequ);
 
                 if (!onStart) {
-                    if(frequ == -1)
-                    {
-                        //Do nothing
-                    }
 
-                    if (frequ < 350f && frequ > 0)
+                    if (frequ < 250f && frequ > 0)
                     {
-                        duck();
+                        low++;
+                        if(low == 5)
+                        {
+                            duck();
+                            low = 0;
+                        } 
+                        if(high > 0)
+                        {
+                            high--;
+                        }
                         //Debug.Log("duck");
                     }
 
-                    if (frequ > 400f)
+                    if (frequ > 300f)
                     {
-                        jump();
+                        high++;
+                        if (high == 5)
+                        {
+                            jump();
+                            high = 0;
+                        }
+                        if (low > 0)
+                        {
+                            low--;
+                        }
                         //Debug.Log("jump");
                     }
 
@@ -104,14 +120,11 @@ public class Runner_Final : MonoBehaviour {
                     {
                         startTimer = Time.time;
                     }
+                    /*if (this.transform.eulerAngles.x > 50 & this.transform.eulerAngles.x < 100)
+                    {
+                        Debug.Log("Umgefallen");
+                    }*/
                 }
-                /*if (!onStart && (int)start.x != (int)this.transform.position.x) {
-				    StartCoroutine (endGame ());
-			    }
-                if (this.transform.eulerAngles.x > 50 & this.transform.eulerAngles.x < 100)
-                {
-                    //Debug.Log (this.transform.eulerAngles.x);
-                }*/
             }
         }
 	}
